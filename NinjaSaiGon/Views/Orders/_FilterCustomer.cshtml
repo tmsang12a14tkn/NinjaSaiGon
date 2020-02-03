@@ -1,0 +1,18 @@
+﻿@model List<OrderCustomerFilterResult>
+
+@for (var i = 0; i < Model.Count; i++)
+{
+    var item = Model[i];
+    <tr class="row-cus-chks">
+        <td class="text-center">
+            <input class="m-checkbox--solid m-checkbox--brand cus-chks" type="checkbox" value="@item.Id" />
+            <input type="hidden" class="selectedCusType" value="@item.OrderCustomerType" />
+            <input type="hidden" class="selectedPrimaryName" value="@item.PrimaryName" />
+            <input type="hidden" class="selectedFirstName" value="@item.FirstName" />
+            <input type="hidden" class="selectedMidName" value="@item.MidName" />
+            <input type="hidden" class="selectedLastName" value="@item.LastName" />
+        </td>
+        <td>@item.PrimaryName</td>
+        <td>@Html.Raw(string.Join("<br />", item.Phones))</td>
+    </tr>
+}

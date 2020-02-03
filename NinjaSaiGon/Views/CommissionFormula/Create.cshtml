@@ -1,0 +1,134 @@
+﻿@model CommissionFormula
+
+@{
+    ViewData["Title"] = "Thêm công thức tính hoa hồng";
+
+    var cultureInfo = new CultureInfo("vi-VN");
+    cultureInfo.NumberFormat.NumberDecimalSeparator = ".";
+    CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+    CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Thêm công thức tính hoa hồng
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <form asp-action="Create" class="m-form m-form--label-align-right">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="m-portlet__body">
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-3 col-form-label">
+                                Ngày bắt đầu áp dụng
+                            </label>
+                            <div class="col-lg-4">
+                                <input type="text" asp-for="StartDate" class="form-control m-input datepicker" autocomplete="off" />
+                                <span asp-validation-for="StartDate" class="form-control-feedback"></span>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-3 col-form-label">
+                                Ngày kết thúc áp dụng
+                            </label>
+                            <div class="col-lg-4">
+                                <input type="text" asp-for="EndDate" class="form-control m-input datepicker" autocomplete="off" />
+                                <span asp-validation-for="EndDate" class="form-control-feedback"></span>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-3 col-form-label">
+                                Thưởng/Khách mới
+                            </label>
+                            <div class="col-lg-4">
+                                <select asp-for="NewCusCommissionType" asp-items="Html.GetEnumSelectList<CommissionType>()" class="form-control m-input m-input--square"></select>
+                                <span asp-validation-for="NewCusCommissionType" class="form-control-feedback"></span>
+                            </div>
+                            <div class="col-lg-4">
+                                <input asp-for="NewCusCommissionValue" class="form-control m-input" autocomplete="off" />
+                                <span asp-validation-for="NewCusCommissionValue" class="form-control-feedback"></span>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-3 col-form-label">
+                                Thưởng/Khách cũ
+                            </label>
+                            <div class="col-lg-4">
+                                <select asp-for="OldCusCommissionType" asp-items="Html.GetEnumSelectList<CommissionType>()" class="form-control m-input m-input--square"></select>
+                                <span asp-validation-for="OldCusCommissionType" class="form-control-feedback"></span>
+                            </div>
+                            <div class="col-lg-4">
+                                <input asp-for="OldCusCommissionValue" class="form-control m-input" autocomplete="off" />
+                                <span asp-validation-for="OldCusCommissionValue" class="form-control-feedback"></span>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-3 col-form-label">
+                                Thưởng/Vùng kinh doanh
+                            </label>
+                            <div class="col-lg-4">
+                                <select asp-for="AreaCommissionType" asp-items="Html.GetEnumSelectList<CommissionType>()" class="form-control m-input m-input--square"></select>
+                                <span asp-validation-for="AreaCommissionType" class="form-control-feedback"></span>
+                            </div>
+                            <div class="col-lg-4">
+                                <input asp-for="AreaCommissionValue" class="form-control m-input" autocomplete="off" />
+                                <span asp-validation-for="AreaCommissionValue" class="form-control-feedback"></span>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-3 col-form-label">
+                                Thưởng chung hệ thống
+                            </label>
+                            <div class="col-lg-4">
+                                <select asp-for="AllCommissionType" asp-items="Html.GetEnumSelectList<CommissionType>()" class="form-control m-input m-input--square"></select>
+                                <span asp-validation-for="AllCommissionType" class="form-control-feedback"></span>
+                            </div>
+                            <div class="col-lg-4">
+                                <input asp-for="AllCommissionValue" class="form-control m-input" autocomplete="off" />
+                                <span asp-validation-for="AllCommissionValue" class="form-control-feedback"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="m-portlet__foot m-portlet__foot--fit">
+                        <div class="m-form__actions m-form__actions">
+                            <div class="row">
+                                <div class="col-lg-2"></div>
+                                <div class="col-lg-6">
+                                    <input type="submit" value="Submit" class="btn btn-primary" />
+                                    <a asp-action="Index">Back to List</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+            SetActiveMenu('commissionFormulaMenu');
+
+            $(".datepicker").datepicker({
+                format: "dd/mm/yyyy",
+                todayHighlight: !0,
+                orientation: "bottom left",
+                templates: {
+                    leftArrow: '<i class="la la-angle-left"></i>',
+                    rightArrow: '<i class="la la-angle-right"></i>'
+                }
+            });
+        });
+    </script>
+}

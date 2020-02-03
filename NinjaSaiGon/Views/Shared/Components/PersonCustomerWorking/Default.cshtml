@@ -1,0 +1,29 @@
+﻿@model PersonCustomerWorkingViewModel
+
+<tr class="pcw-item" data-index="@Model.Index">
+    <td>@Model.Position</td>
+    <td>@Model.Department</td>
+    <td>@Model.Company</td>
+    <td class="text-center"><input type="checkbox" @(Model.IsMainPosition ? "checked" : "") readonly /></td>
+    <td class="text-center"><input type="checkbox" @(Model.IsWorking ? "checked" : "") readonly /></td>
+    <td class="text-center">@Model.StartDate?.ToString("dd/MM/yyyy")</td>
+    <td class="text-center">@Model.EndDate?.ToString("dd/MM/yyyy")</td>
+    <td class="text-center">
+        <a data-index="@Model.Index" data-id="@Model.Id" data-personid="@Model.PersonId" data-position="@Model.Position" data-department="@Model.Department" data-company="@Model.Company" data-ismainposition="@Model.IsMainPosition.ToString()" data-isworking="@Model.IsWorking.ToString()" data-startdate="@Model.StartDate?.ToString("dd/MM/yyyy")" data-enddate="@Model.EndDate?.ToString("dd/MM/yyyy")" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill btnEditPCW">
+            <i class="la la-edit"></i>
+        </a>
+        <a data-index="@Model.Index" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btnDeletePCW">
+            <i class="la la-trash"></i>
+        </a>
+        <input type="hidden" name="PersonCustomerWorkings[@Model.Index].Position" value="@Model.Position" />
+        <input type="hidden" name="PersonCustomerWorkings[@Model.Index].Department" value="@Model.Department" />
+        <input type="hidden" name="PersonCustomerWorkings[@Model.Index].Company" value="@Model.Company" />
+        <input type="hidden" name="PersonCustomerWorkings[@Model.Index].IsMainPosition" value="@Model.IsMainPosition.ToString()" />
+        <input type="hidden" name="PersonCustomerWorkings[@Model.Index].IsWorking" value="@Model.IsWorking.ToString()" />
+        <input type="hidden" name="PersonCustomerWorkings[@Model.Index].StartDate" value="@Model.StartDate">
+        <input type="hidden" name="PersonCustomerWorkings[@Model.Index].EndDate" value="@Model.EndDate">
+        <input type="hidden" name="PersonCustomerWorkings[@Model.Index].PersonId" value="@Model.PersonId">
+        <input type="hidden" class="IsDeletePCW" data-index="@Model.Index" name="PersonCustomerWorkings[@Model.Index].IsDeleted" value="false">
+        <input type="hidden" name="PersonCustomerWorkings[@Model.Index].Id" value="@Model.Id">
+    </td>
+</tr>

@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Thêm nhanh khách hàng";
+    PersonType personType = ViewBag.PersonType;
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Thêm nhanh khách hàng
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                @await Component.InvokeAsync("QuickCreatePerson", new { type = personType })
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/person_agency.js?t=@(DateTimeOffset.UtcNow.ToUnixTimeSeconds())"></script>
+    <script>
+        $(document).ready(function () {
+            if (@((int)personType) == 0)
+                //SetActiveMenu('employeeMenu');
+            else if (@((int)personType) == 1)
+                SetActiveMenu('quickCreateCusMenu');
+            else if (@((int)personType) == 2)
+                //SetActiveMenu('resprentativeMenu');
+        });
+    </script>
+}

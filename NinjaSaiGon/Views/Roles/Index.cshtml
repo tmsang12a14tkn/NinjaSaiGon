@@ -1,0 +1,79 @@
+﻿@model List<IdentityRole>
+
+@{
+    ViewBag.Title = "Quản lý vai trò";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="main-box clearfix">
+            <header class="main-box-header clearfix">
+                <h2 class="pull-left">Quản lý vai trò</h2>
+                <div class="filter-block pull-right">
+                    <a href="/Roles/Create" class="btn btn-success pull-right">
+                        <i class="fa fa-plus fa-lg"></i> Tạo mới vai trò
+                    </a>
+                </div>
+            </header>
+            <div class="main-box-body clearfix">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover" id="m_table_1">
+                        <thead>
+                            <tr>
+                                <th><span>Tên</span></th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var r in Model)
+                            {
+                                <tr id="role_@r.Id">
+                                    <td><a href="/Roles/Edit/@r.Id" class="table-link">@r.Name</a></td>
+                                    <td style="width: 15%;">
+                                        <a href="/Roles/Delete/@r.Id" class="table-link danger" data-toggle="modal" data-target="#deleteRoleModal"
+                                           data-ajax="true"
+                                           data-ajax-complete=""
+                                           data-ajax-mode="replace"
+                                           data-ajax-update="#deleteRoleContent">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="deleteRoleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="deleteRoleContent">
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        function OnDeleteSuccess(data)
+        {
+            if (data.success) {
+                $("#deleteRoleModal").modal("hide");
+                $("#role_" + data.id).remove();
+            }
+            else {
+                alert(data.error);
+            }
+        }
+
+    </script>
+}
+
+

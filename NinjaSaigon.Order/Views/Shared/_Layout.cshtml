@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - NinjaSaiGon.Com</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.min.css?t=@(DateTimeOffset.UtcNow.ToUnixTimeSeconds())" />
+</head>
+<body>
+    <nav class="navbar fixed-top navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img class="img-logo" src="~/images/logo.png" />
+                NINJA SAIGON
+            </a>
+            <span class="navbar-text">
+                Hotline: 090.906.3366
+            </span>
+        </div>
+    </nav>
+    <div class="container main-wrapper">
+        @RenderBody()
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/popper.js/dist/umd/popper.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <environment names="Development">
+        <script src="~/js/main.js?t=@(DateTimeOffset.UtcNow.ToUnixTimeSeconds())"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="~/js/main.min.js?t=@(DateTimeOffset.UtcNow.ToUnixTimeSeconds())"></script>
+    </environment>
+    
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBR_KWc-REWjRIdDQQX0rbsV08_WQtXC8E&libraries=places&callback=initMap" type="text/javascript"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,264 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ninja SaiGon</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600&amp;subset=vietnamese" rel="stylesheet">
+    <link href="~/fonts/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet" />
+    <link href="~/fonts/linearicons-v1.0.0/icon-font.min.css" rel="stylesheet" />
+    <link href="~/vendor/animate/animate.css" rel="stylesheet" />
+    <link href="~/vendor/css-hamburgers/hamburgers.min.css" rel="stylesheet" />
+    <link href="~/vendor/animsition/css/animsition.min.css" rel="stylesheet" />
+    <link href="~/vendor/select2/select2.min.css" rel="stylesheet" />
+    <link href="~/vendor/daterangepicker/daterangepicker.css" rel="stylesheet" />
+    <link href="~/vendor/slick/slick.css" rel="stylesheet" />
+    <link href="~/vendor/lightbox2/css/lightbox.min.css" rel="stylesheet" />
+    <link href="~/vendor/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" />
+    <link href="~/vendor/revolution/css/layers.css" rel="stylesheet" />
+    <link href="~/vendor/revolution/css/navigation.css" rel="stylesheet" />
+    <link href="~/vendor/revolution/css/settings.css" rel="stylesheet" />
+    <link href="~/css/util.css" rel="stylesheet" />
+    <link href="~/css/main.css" rel="stylesheet" />
+</head>
+<body class="animsition">
+    <header class="header-v1">
+        <!-- Header desktop -->
+        <div class="container-menu-desktop">
+            <div class="wrap-menu-desktop">
+                <nav class="limiter-menu-desktop">
+                    <div class="left-header">
+                        <!-- Menu desktop -->
+                        <div class="menu-desktop">
+                            <ul class="main-menu">
+                                <li class="active-menu">
+                                    <a href="/">TRANG CHỦ</a>
+                                </li>
+
+                                <li>
+                                    <a href="#sec_about">GIỚI THIỆU</a>
+                                </li>
+
+                                <li>
+                                    <a href="#sec_menu">Menu</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="center-header">
+                        <!-- Logo desktop -->
+                        <div class="logo">
+                            <a href="/"><img src="images/icons/logo-05.png" alt="IMG-LOGO"></a>
+                        </div>
+                    </div>
+
+                    <div class="right-header">
+                        <div class="menu-desktop">
+                            <ul class="main-menu">
+                                <li>
+                                    <a href="http://order.ninjasaigon.com" target="_blank">ĐẶT HÀNG</a>
+                                </li>
+
+                                <li>
+                                    <a href="/">KHUYẾN MÃI</a>
+                                </li>
+
+                                <li>
+                                    <a href="#sec_contact">LIÊN HỆ</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Header Mobile -->
+        <div class="wrap-header-mobile">
+            <!-- Logo moblie -->
+            <div class="logo-mobile">
+                <a href="/"><img src="images/icons/logo-05.png" alt="IMG-LOGO"></a>
+            </div>
+
+            <!-- Button show menu -->
+            <div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+                <span class="hamburger-box">
+                    <span class="hamburger-inner"></span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Menu Mobile -->
+        <div class="menu-mobile">
+            <ul class="main-menu-m">
+                <li>
+                    <a href="/">TRANG CHỦ</a>
+                </li>
+
+                <li>
+                    <a href="#sec_about">GIỚI THIỆU</a>
+                </li>
+
+                <li>
+                    <a href="#sec_menu">Menu</a>
+                </li>
+
+                <li>
+                    <a href="http://order.ninjasaigon.com" target="_blank">ĐẶT HÀNG</a>
+                </li>
+
+                <li>
+                    <a href="/">KHUYẾN MÃI</a>
+                </li>
+
+                <li>
+                    <a href="#sec_contact">LIÊN HỆ</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Modal Search -->
+        <div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
+            <button class="flex-c-m btn-hide-modal-search trans-04 js-hide-modal-search">
+                <span class="lnr lnr-cross"></span>
+            </button>
+
+            <div class="container-search-header">
+                <form class="wrap-search-header flex-w">
+                    <button class="flex-c-m trans-04">
+                        <span class="lnr lnr-magnifier"></span>
+                    </button>
+                    <input class="plh1" type="text" name="search" placeholder="Search...">
+                </form>
+            </div>
+        </div>
+    </header>
+
+    @RenderBody()
+
+    <script>
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '249343169006549',
+                autoLogAppEvents: true,
+                xfbml: true,
+                version: 'v2.11'
+            });
+        };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) { return; }
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+    <div class="fb-customerchat" page_id="1685922521523805" ref="website" theme_color="#043349"></div>
+
+    <ul class="scroll_social unstyled">
+        <li class="social-right icon_hotline_r right_hline">
+            <a href="https://order.ninjasaigon.com/" target="_blank">
+                <span class="social-icon">
+                    <img src="~/images/icon_order.png" alt="Order" />
+                </span>
+            </a>
+            <span class="social-title hidden-xs">Đặt hàng</span>
+        </li>
+        <li class="social-right icon_hotline_r right_hline">
+            <a href="#" style="visibility: hidden;">
+                <span class="social-icon">
+                    <img src="~/images/icon_chat.png" alt="Chat" />
+                </span>
+            </a>
+            <span class="social-title fb-chat-text hidden-xs">Chat</span>
+        </li>
+        <li class="social-right icon_hotline_r right_hline">
+            <a href="tel:0909063366">
+                <span class="social-icon">
+                    <img src="~/images/icon_hotline.png" alt="Hotline" />
+                </span>
+            </a>
+            <span class="social-title hidden-xs">090.906.3366</span>
+        </li>
+    </ul>
+
+    <footer class="bg12" id="sec_contact">
+        <div class="container">
+            <div class="p-t-20 p-b-20">
+                <h3 class="txt-center cl6 txt-l-112 p-b-18 respon1">
+                    NINJA SAIGON
+                </h3>
+                <p class="txt-center cl6 txt-s-101 size-w-44 m-rl-auto">
+                    <span class="size-w-12">
+                        <i class="fa fa-facebook-square"></i>
+                    </span>
+                    <span class="size-w-12 p-t-1">
+                        <a href="http://fb.com/Ninjasaigon" class="cl6">fb.com/Ninjasaigon</a>
+                    </span>
+                </p>
+                <p class="txt-center cl6 txt-s-101 size-w-44 m-rl-auto">
+                    <span class="size-w-12">
+                        <i class="fa fa-clock-o"></i>
+                    </span>
+                    <span class="size-w-12 p-t-1">
+                        Mở cửa: 8h00 - 17h00
+                    </span>
+                </p>
+                <p class="txt-center cl6 txt-s-101 size-w-44 m-rl-auto">
+                    <span class="size-w-12">
+                        <i class="fa fa-phone"></i>
+                    </span>
+                    <span class="size-w-12 p-t-1">
+                        090 906 3366
+                    </span>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    @*<div class="btn-back-to-top bg0-hov" id="myBtn">
+            <span class="symbol-btn-back-to-top">
+                <span class="lnr lnr-chevron-up"></span>
+            </span>
+        </div>*@
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/vendor/animsition/js/animsition.min.js"></script>
+    <script src="~/vendor/bootstrap/js/popper.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/vendor/revolution/js/jquery.themepunch.tools.min.js"></script>
+    <script src="~/vendor/revolution/js/jquery.themepunch.revolution.min.js"></script>
+    <script src="~/vendor/revolution/js/extensions/revolution.extension.video.min.js"></script>
+    <script src="~/vendor/revolution/js/extensions/revolution.extension.carousel.min.js"></script>
+    <script src="~/vendor/revolution/js/extensions/revolution.extension.slideanims.min.js"></script>
+    <script src="~/vendor/revolution/js/extensions/revolution.extension.actions.min.js"></script>
+    <script src="~/vendor/revolution/js/extensions/revolution.extension.layeranimation.min.js"></script>
+    <script src="~/vendor/revolution/js/extensions/revolution.extension.kenburn.min.js"></script>
+    <script src="~/vendor/revolution/js/extensions/revolution.extension.navigation.min.js"></script>
+    <script src="~/vendor/revolution/js/extensions/revolution.extension.migration.min.js"></script>
+    <script src="~/vendor/revolution/js/extensions/revolution.extension.parallax.min.js"></script>
+    <script src="~/js/revo-custom.js"></script>
+    <script src="~/vendor/select2/select2.min.js"></script>
+    <script src="~/vendor/daterangepicker/moment.min.js"></script>
+    <script src="~/vendor/daterangepicker/daterangepicker.js"></script>
+    <script src="~/vendor/slick/slick.min.js"></script>
+    <script src="~/js/slick-custom.js"></script>
+    <script src="~/vendor/parallax100/parallax100.js"></script>
+    <script src="~/vendor/lightbox2/js/lightbox.min.js"></script>
+    <script src="~/vendor/isotope/isotope.pkgd.min.js"></script>
+    <script src="~/vendor/sweetalert/sweetalert.min.js"></script>
+    <script src="~/vendor/countdowntime/moment.min.js"></script>
+    <script src="~/vendor/countdowntime/moment-timezone.min.js"></script>
+    <script src="~/vendor/countdowntime/moment-timezone-with-data.min.js"></script>
+    <script src="~/vendor/countdowntime/jquery.countdown.min.js"></script>
+    <script src="~/vendor/countdowntime/countdowntime.js"></script>
+    <script src="~/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="~/js/main.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBR_KWc-REWjRIdDQQX0rbsV08_WQtXC8E"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

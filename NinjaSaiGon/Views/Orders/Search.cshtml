@@ -1,0 +1,344 @@
+﻿@{
+    ViewData["Title"] = "Tìm kiếm đơn hàng";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Tìm kiếm đơn hàng
+                        </h3>
+                    </div>
+                </div>
+                <div class="m-portlet__head-tools">
+                    <ul class="m-portlet__nav">
+                        <li class="m-portlet__nav-item">
+                            <input type="text" id="dateSrch" class="form-control m-input" readonly="" placeholder="Chọn thời gian" style="width: 270px;">
+                        </li>
+                        <li class="m-portlet__nav-item">
+                            <select asp-items="Html.GetEnumSelectList<OrderStatus>()" id="statusSrch" class="form-control m-input m-input--square">
+                                <option value="">Chọn trạng thái</option>
+                            </select>
+                        </li>
+                        @*<li class="m-portlet__nav-item">
+                            <a asp-action="Create" class="btn btn-accent m-btn m-btn--custom m-btn--pill m-btn--icon m-btn--air">
+                                <span>
+                                    <i class="la la-plus"></i>
+                                    <span>
+                                        Thêm mới
+                                    </span>
+                                </span>
+                            </a>
+                        </li>*@
+                    </ul>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <!--begin: Datatable -->
+                <table class="table table-striped table-bordered table-hover" id="m_table_1">
+                    <thead>
+                        <tr>
+                            <th>
+                                Mã đơn hàng
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>Thời gian đặt</th>
+                            <th>Thời gian giao</th>
+                            <th>Số lượng món</th>
+                            <th>Ghi chú</th>
+                            <th>
+                                Họ tên
+                            </th>
+                            <th>
+                                Địa chỉ
+                            </th>
+                            <th>
+                                Số điện thoại
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteOrderModal" tabindex="-1" role="dialog" aria-labelledby="deleteOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Xóa đơn hàng
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                    </span>
+                </button>
+            </div>
+            <form asp-action="Delete" asp-controller="Orders" class="m-form m-form--label-align-right" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccessDeleteOrder" data-ajax-failure="onFailureDeleteOrder">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" id="hiddenOrderId" name="Id" />
+                <div class="modal-body">
+                    <div class="form-group m-form__group row">
+                        <div class="col-lg-12">
+                            <p>Bạn có chắc chắn muốn xóa đơn hàng này không?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger">
+                        Xóa
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Đóng
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="orderDetailModal" tabindex="-1" role="dialog" aria-labelledby="orderDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-slg" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+@section Styles{
+    <style>
+        .table-fixed {
+            width: 100%;
+            background-color: #f3f3f3;
+        }
+
+            .table-fixed tbody {
+                max-height: calc(100vh - 600px);
+                overflow-y: auto;
+                overflow-x: hidden;
+                width: 100%;
+            }
+
+            .table-fixed thead, .table-fixed tfoot, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+                display: block;
+            }
+
+                .table-fixed tbody td {
+                    float: left;
+                }
+
+                .table-fixed thead tr th, .table-fixed tfoot tr th {
+                    float: left;
+                }
+
+        .highlight, .highlight a, .highlight a:hover {
+            color: goldenrod !important;
+        }
+
+        a.m-link, a.m-link:hover {
+            color: #575962;
+        }
+    </style>
+}
+@section Scripts
+    {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var table;
+
+        $("#dateSrch").daterangepicker({
+            startDate: moment("09/29/2018"),
+            buttonClasses: "m-btn btn",
+            applyClass: "btn-primary",
+            cancelClass: "btn-secondary",
+            timePicker: false,
+            locale: { format: "DD/MM/YYYY" },
+            opens: 'left'
+        });
+
+        $.fn.dataTableExt.afnFiltering.push(
+            function (settings, data, dataIndex) {
+                var min = moment.utc($('#dateSrch').data('daterangepicker').startDate._d);
+                var max = moment.utc($('#dateSrch').data('daterangepicker').endDate._d);
+                var col2 = data[2].split(' ');
+                var vnDF = col2[1].split('/');
+                var startDate = moment(vnDF[1] + "/" + vnDF[0] + "/" + vnDF[2]);
+                if (startDate >= min && startDate <= max) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        );
+
+        $(document).ready(function () {
+            SetActiveMenu('orderSearch');
+
+            table = $("#m_table_1").DataTable({
+                "order": [[3, "asc"]],
+                "language": {
+                    "emptyTable": "Không có dữ liệu",
+                    "info": "Hiện _START_ đến _END_ trên _TOTAL_ dòng",
+                    "infoEmpty": "Không có dữ liệu",
+                    "lengthMenu": "Hiện _MENU_ dòng",
+                    "loadingRecords": "Đang tải...",
+                    "processing": "Đang xử lý...",
+                    "search": "Tìm kiếm:",
+                    "zeroRecords": "Không tìm thấy dữ liệu phù hợp",
+                },
+                "fixedHeader": {
+                    headerOffset: $('#m_header').outerHeight()
+                },
+                "ajax": '/Orders/All',
+                "createdRow": function (row, data, index) {
+                    if (data[10] == false) {
+                        $(row).addClass('highlight');
+                    }
+                },
+                "columnDefs": [
+                    {
+                        "targets": 7,
+                        "createdCell": function (td, cellData, rowData, row, col) {
+                            if (rowData[11] <= 0) {
+                                $(td).addClass("m--font-danger");
+                            }
+                        }
+                    },
+                    {
+                        "targets": 0,
+                        "render": function (data, type, rowData, row) {
+                            return "<a href='/Orders/QuickEdit?orderId=" + rowData[9] + "' class='m-link'>" + data + "</a>";
+                        }
+                    },
+                    {
+                        "targets": [2, 3],
+                        render: function (data, type, row) {
+                            if (type === 'display' || type === 'filter') {
+                                var d = new Date(data * 1000);
+                                return moment.utc(d).format("HH:mm DD/MM/YYYY");
+                            }
+
+                            return data;
+                        }
+                    },
+                    {
+                        "targets": -1,
+                        "render": function (data, type, row) {
+                            return "<a href='#' data-toggle='modal' data-target='#orderDetailModal' data-id='" + data + "' class='m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill' title='Chi tiết'>"
+                                + "<i class='la la-eye'></i></a>"
+                                + "<a href='/Orders/Edit?orderId=" + data + "' class='m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill' title='Edit'>"
+                                + "<i class='la la-edit'></i></a>"
+                                + "<a data-id='" + data + "' class='m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btnDeleteOrder' title='Delete'>"
+                                + "<i class='la la-trash'></i></a>";
+                        }
+                    }]
+            });            
+
+            if (window.location.hash != '') {
+                $('a[href="#' + activeTab + '"]').click();
+            } else {
+                table.draw();
+            }
+
+            var url = window.location.href;
+            var indexOfHashtag = url.indexOf("#");
+            if (indexOfHashtag > 0) {
+                var activeTab = url.substring(url.indexOf("#") + 1);
+                if (activeTab != null || activeTab != "")
+                    $("#" + activeTab).trigger("click");
+            }
+            $('.nav-pills > li > a[data-toggle="tab"]').click(function (e) {
+                if (history.pushState) {
+                    history.pushState(null, null, e.target.hash);
+                } else {
+                    window.location.hash = e.target.hash;
+                }
+            });
+        });
+
+        $(document).on('change', '#statusSrch', function () {
+            var status = $(this).find("option:selected").text();
+            if (status == 'Chọn trạng thái') status = '';
+            table.column(1).search(status, true, false, false).draw();
+        });
+
+        $(document).on('change', '#dateSrch', function () {
+            var startDate = $(this).data('daterangepicker').startDate._d;
+            var endDate = $(this).data('daterangepicker').endDate._d;
+            table.draw();
+        });
+
+        $(document).on('click', '.btnDeleteOrder', function (e) {
+            e.preventDefault();
+            $('#hiddenOrderId').val($(this).data('id'));
+            $('#deleteOrderModal').modal('show');
+        });
+
+        $(document).on('click', '.btnPrintDetail', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                type: "POST",
+                url: '/Orders/GetPdf',
+                data: { orderId: $(this).data('orderid'), type: $(this).data('type') },
+                xhrFields: { responseType: "arraybuffer" }
+            }).done(function (data) {
+                if (data.byteLength > 0) {
+                    var newBlob = new Blob([data], { type: 'application/pdf' });
+
+                    // IE doesn't allow using a blob object directly as link href
+                    // instead it is necessary to use msSaveOrOpenBlob
+                    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                        window.navigator.msSaveOrOpenBlob(newBlob);
+                        return;
+                    }
+
+                    // For other browsers:
+                    // Create a link pointing to the ObjectURL containing the blob.
+                    var objectUrl = window.URL.createObjectURL(newBlob);
+                    var newTab = window.open(objectUrl);
+                    newTab.print();
+                    // newTab.close();
+
+                    setTimeout(function () {
+                        // For Firefox it is necessary to delay revoking the ObjectURL
+                        window.URL.revokeObjectURL(objectUrl);
+                    }, 100);
+                }
+            });
+        });
+
+        var onSuccessDeleteOrder = function (data) {
+            $('#deleteOrderModal').modal('hide');
+            if (data.success) {
+                //$('#Order_' + data.id).remove();
+                reloadTable();
+                alert("Xóa thành công");
+            }
+            else {
+                alert("Xóa thất bại");
+            }
+        }
+
+        var onFailureDeleteOrder = function () {
+            $('#deleteOrderModal').modal('hide');
+            alert("Xóa thất bại");
+        }
+
+        $("#orderDetailModal").on("show.bs.modal", function (e) {
+            var id = $(e.relatedTarget).data("id");
+            $.get("/Orders/Details?orderId=" + id, function (data) {
+                $("#orderDetailModal .modal-content").html(data);
+            })
+        });
+    </script>
+}

@@ -1,0 +1,250 @@
+﻿@model NinjaSaiGon.Data.Models.Order
+
+@{
+    ViewData["Title"] = "Tạo mới đơn hàng";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Tạo mới đơn hàng
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <div id="map" style="display: none;"></div>
+                <form asp-action="Create" class="m-form m-form--label-align-right">
+                    <div class="m-portlet__body">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input asp-for="IsAutoDiscount" type="hidden" value="true" />
+                        <input asp-for="IsAutoShipFee" type="hidden" value="true" />
+                        <input asp-for="IsAutoSurcharge" type="hidden" value="true" />
+                        <div class="form-group m-form__group row mt-4">
+                            <div class="col-lg-6">
+                                <div class="m-form__heading">
+                                    <h3 class="m-form__heading-title">
+                                        TRẠNG THÁI ĐƠN HÀNG:
+                                    </h3>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-4 col-form-label">
+                                        Trạng thái
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <select asp-for="Status" asp-items="Html.GetEnumSelectList<OrderStatus>()" class="form-control m-input m-input--square">
+                                            <option value="">Chọn trạng thái</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-4 col-form-label">
+                                        Ghi chú
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <textarea asp-for="StatusNote" class="form-control m-input m-input--air" rows="3"></textarea>
+                                        <span asp-validation-for="StatusNote" class="form-control-feedback"></span>
+                                    </div>
+                                </div>
+
+                                <div class="m-form__heading">
+                                    <h3 class="m-form__heading-title">
+                                        THÔNG TIN CHUNG:
+                                    </h3>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-4 col-form-label">
+                                        Nguồn đơn hàng
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <input asp-for="OrderSource" class="form-control m-input" placeholder="Nhập nguồn đơn hàng" />
+                                        <span asp-validation-for="OrderSource" class="form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-4 col-form-label">
+                                        Nhân viên bán hàng
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <input asp-for="EmployeeName" class="form-control m-input" placeholder="Nhập tên nhân viên bán hàng" />
+                                        <span asp-validation-for="EmployeeName" class="form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-4 col-form-label">
+                                        Thời gian đặt hàng
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <input asp-for="OrderPlaced" type="text" class="form-control m-input datepicker" value="@DateTime.Now.ToString("dd/MM/yyyy HH:mm")" />
+                                        <span asp-validation-for="OrderPlaced" class="form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-4 col-form-label">
+                                        Thời gian giao hàng
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <input asp-for="OrderDeliveried" type="text" class="form-control m-input datepicker" value="@DateTime.Now.AddMinutes(40).ToString("dd/MM/yyyy HH:mm")" />
+                                        <span asp-validation-for="OrderDeliveried" class="form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-4 col-form-label">
+                                        Ghi chú (của NVCSKH)
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <textarea asp-for="EmployeeNote" class="form-control m-input m-input--air" rows="3"></textarea>
+                                        <span asp-validation-for="EmployeeNote" class="form-control-feedback"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="m-form__heading">
+                                    <h3 class="m-form__heading-title">
+                                        THÔNG TIN KHÁCH HÀNG:
+                                    </h3>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-4 col-form-label">
+                                        Mã thẻ khách hàng
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <input asp-for="CardCode" class="form-control m-input" placeholder="Nhập mã thẻ khách hàng" />
+                                        <span asp-validation-for="CardCode" class="form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-4 col-form-label">
+                                        Nhóm khách hàng
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <select class="form-control m-input m-input--square">
+                                            <option value="">Chọn nhóm</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-4 col-form-label">
+                                        Tên khách hàng
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <input asp-for="LastName" class="form-control m-input" placeholder="Họ" />
+                                                <span asp-validation-for="LastName" class="form-control-feedback"></span>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <input asp-for="MiddleName" class="form-control m-input" placeholder="Đệm và lót" />
+                                                <span asp-validation-for="MiddleName" class="form-control-feedback"></span>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <input asp-for="FirstName" class="form-control m-input" placeholder="Tên" required />
+                                                <span asp-validation-for="FirstName" class="form-control-feedback"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-4 col-form-label">
+                                        Địa chỉ
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <input type="hidden" id="Distance" name="Distance" value="0" />
+                                        <input type="hidden" id="ShipFee" name="ShipFee" value="0" />
+                                        <input asp-for="AddressLine" class="form-control m-input" placeholder="Nhập địa chỉ" required />
+                                        <span asp-validation-for="AddressLine" class="form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-4 col-form-label">
+                                        Số điện thoại
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <input asp-for="PhoneNumber" type="text" class="form-control m-input" required />
+                                        <span asp-validation-for="PhoneNumber" class="form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-4 col-form-label">
+                                        Email
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <input asp-for="Email" type="text" class="form-control m-input" />
+                                        <span asp-validation-for="Email" class="form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-4 col-form-label">
+                                        Mạng xã hội
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <input asp-for="SocialNetwork" type="text" class="form-control m-input" />
+                                        <span asp-validation-for="SocialNetwork" class="form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-4 col-form-label">
+                                        Ghi chú của khách hàng
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <textarea asp-for="CustomerNote" class="form-control m-input m-input--air" rows="3"></textarea>
+                                        <span asp-validation-for="CustomerNote" class="form-control-feedback"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="m-portlet__foot m-portlet__foot--fit">
+                        <div class="m-form__actions m-form__actions">
+                            <div class="row">
+                                <div class="col-lg-2"></div>
+                                <div class="col-lg-6">
+                                    <input type="submit" value="Lưu đơn hàng" class="btn btn-primary" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>      
+        $(document).ready(function () {
+            SetActiveMenu('orderMenu');
+        });
+
+        $(".datepicker").datetimepicker({
+            format: "dd/mm/yyyy hh:ii",
+            todayHighlight: !0,
+            pickerPosition: "bottom left",
+        });
+
+        $(document).on('click', '#btn-addDrink', function (e) {
+            e.preventDefault();        
+        });
+
+        $(window).on('keydown', function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        $(document).on('keyup', 'input', function (event) {
+            if (event.keyCode === 13) {
+                $(this).blur();
+                event.preventDefault();
+            }
+        });
+    </script>
+}

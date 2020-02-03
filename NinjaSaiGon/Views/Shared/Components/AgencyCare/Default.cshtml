@@ -1,0 +1,21 @@
+﻿@model AgencyCareViewModel
+
+<tr class="ac-item" data-index="@Model.Index">
+    <td class="text-center">@Model.StartDate?.ToString("dd/MM/yyyy")</td>
+    <td class="text-center">@Model.EndDate?.ToString("dd/MM/yyyy")</td>
+    <td>@Model.EmployeeName</td>
+    <td>
+        <a data-index="@Model.Index" data-id="@Model.Id" data-agencyid="@Model.AgencyId" data-employeeid="@Model.EmployeeId" data-employeename="@Model.EmployeeName" data-startdate="@Model.StartDate?.ToString("dd/MM/yyyy")" data-enddate="@Model.EndDate?.ToString("dd/MM/yyyy")" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill btnEditAC">
+            <i class="la la-edit"></i>
+        </a>
+        <a data-index="@Model.Index" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btnDeleteAC">
+            <i class="la la-trash"></i>
+        </a>
+        <input type="hidden" name="AgencyCares[@Model.Index].StartDate" value="@Model.StartDate">
+        <input type="hidden" name="AgencyCares[@Model.Index].EndDate" value="@Model.EndDate">
+        <input type="hidden" name="AgencyCares[@Model.Index].AgencyId" value="@Model.AgencyId">
+        <input type="hidden" name="AgencyCares[@Model.Index].EmployeeId" value="@Model.EmployeeId">
+        <input type="hidden" class="IsDeleteAC" data-index="@Model.Index" name="AgencyCares[@Model.Index].IsDeleted" value="false">
+        <input type="hidden" name="AgencyCares[@Model.Index].Id" value="@Model.Id">
+    </td>
+</tr>

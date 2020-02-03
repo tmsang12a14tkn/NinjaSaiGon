@@ -1,0 +1,121 @@
+﻿@model IEnumerable<DrinkCategory>
+
+@{
+    ViewData["Title"] = "Danh sách nhóm món";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Nhóm món
+                        </h3>
+                    </div>
+                </div>
+                <div class="m-portlet__head-tools">
+                    <ul class="m-portlet__nav">
+                        <li class="m-portlet__nav-item">
+                            <a asp-action="Create" class="btn btn-accent m-btn m-btn--custom m-btn--pill m-btn--icon m-btn--air">
+                                <span>
+                                    <i class="la la-plus"></i>
+                                    <span>
+                                        Thêm nhóm
+                                    </span>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="m-portlet__nav-item">
+                            <a asp-action="Sort" class="btn btn-accent m-btn m-btn--custom m-btn--pill m-btn--icon m-btn--air">
+                                <span>
+                                    <i class="la la-list"></i>
+                                    <span>
+                                        Sắp xếp
+                                    </span>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <!--begin: Datatable -->
+                <table class="table table-striped- table-bordered table-hover table-checkable" id="m_table_1">
+                    <thead>
+                        <tr class="text-center">
+                            <th>Tên VN</th>
+                            <th>Tên EN</th>
+                            <th>Mô tả</th>
+                            <th width="10%">Trạng thái</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Món mới</td>
+                            <td>New Drinks</td>
+                            <td>Danh sách món mới</td>
+                            <td></td>
+                            <td class="text-center">
+                                <a asp-action="Edit" asp-route-id="-1" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
+                                    <i class="la la-edit"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.EnglishName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td class="text-center">
+                                    <span class="m-badge m-badge--@(item.IsActive ? "success" : "danger") m-badge--wide"></span>
+                                </td>
+                                <td class="text-center">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
+                                        <i class="la la-edit"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">
+                                        <i class="la la-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+            SetActiveMenu('drinkCatMenu');
+
+            $("#m_table_1").DataTable({
+                "aaSorting": [],
+                "language": {
+                    "emptyTable": "Không có dữ liệu",
+                    "info": "Hiện _START_ đến _END_ trên _TOTAL_ dòng",
+                    "infoEmpty": "Không có dữ liệu",
+                    "lengthMenu": "Hiện _MENU_ dòng",
+                    "loadingRecords": "Đang tải...",
+                    "processing": "Đang xử lý...",
+                    "search": "Tìm kiếm:",
+                    "zeroRecords": "Không tìm thấy dữ liệu phù hợp",
+                },
+            });
+        });
+    </script>
+}

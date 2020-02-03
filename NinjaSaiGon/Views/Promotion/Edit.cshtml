@@ -1,0 +1,334 @@
+﻿@model Promotion
+
+@{
+    ViewData["Title"] = "Chỉnh sửa khuyến mãi";
+    var enumList = Enum.GetValues(typeof(NinjaSaiGon.Data.Models.DayOfWeek)).Cast<NinjaSaiGon.Data.Models.DayOfWeek>();
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Chỉnh sửa khuyến mãi
+                        </h3>
+                    </div>
+                </div>
+                <div class="m-portlet__head-tools">
+                    <ul class="nav nav-pills nav-pills--brand m-nav-pills--btn-pill" role="tablist">
+                        <li class="nav-item m-tabs__item">
+                            <a class="nav-link m-tabs__link active show" data-toggle="tab" href="#promo" role="tab" aria-selected="true">
+                                Chương trình
+                            </a>
+                        </li>
+                        <li class="nav-item m-tabs__item">
+                            <a class="nav-link m-tabs__link" data-toggle="tab" href="#promocondition" role="tab" aria-selected="true">
+                                Điều kiện khuyến mãi
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <div class="tab-content">
+                    <div class="tab-pane active show" id="promo" aria-expanded="true">
+                        <form asp-action="Edit" class="m-form m-form--label-align-right">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="m-portlet__body">
+                                @* Photo *@
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Hình ảnh
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <div class="row" id="photo-container" data-index="@(Model != null ? Model.Photos.Count : 0)">
+                                            @if (Model != null)
+                                            {
+                                                for (int i = 0; i < Model.Photos.Count; i++)
+                                                {
+                                                    var photo = Model.Photos.ElementAt(i);
+                                                    <div class="col-sm-3 text-center" id="photo-@i">
+                                                        <div style="background-image: url(@photo.Url); background-size: 100%; height: 180px" class="square img@(photo.IsPrimary?" img-bordered":"")"></div>
+                                                        <input type="hidden" name="Photos[@i].Id" value="@photo.Id" />
+                                                        <input type="hidden" name="Photos[@i].Url" class="url-hidden" value="@photo.Url" />
+                                                        <input type="hidden" name="Photos[@i].PhysicalPath" value="@photo.PhysicalPath" />
+                                                        <input type="hidden" name="Photos[@i].IsPrimary" class="isprimary-hidden" value="@photo.IsPrimary.ToString()" />
+                                                        <input type="hidden" name="Photos[@i].IsDeleted" class="IsDeletedPhoto" value="false" />
+                                                        <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deletePhoto" data-id="@i" title="Xoá ảnh">
+                                                            <i class="la la-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label for="photoInput" class="btn btn-default">Chọn ảnh</label>
+                                            <input id="photoInput" type="file" name="files" accept="image/*" hidden>
+                                        </div>
+                                        <div hidden id="addPhotoTemplate">
+                                            <div style="background-image: url(''); background-size: 100%; height: 180px" class="square img"></div>
+                                            <input type="hidden" name="Photos[{pIndex}].Url" class="url-hidden" />
+                                            <input type="hidden" name="Photos[{pIndex}].PhysicalPath" class="url-hidden" />
+                                            <input type="hidden" name="Photos[{pIndex}].IsPrimary" class="isprimary-hidden" value="false" />
+                                            <input type="hidden" name="Photos[{pIndex}].IsDeleted" class="IsDeletedPhoto" value="false" />
+                                            <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deletePhoto" data-id="{pIndex}" title="Xoá ảnh">
+                                                <i class="la la-trash"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Mã đợt khuyến mãi
+                                    </label>
+                                    <div class="col-lg-4">
+                                        <input asp-for="Code" class="form-control m-input" placeholder="Nhập mã" required />
+                                        <span asp-validation-for="Code" class="form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Tên đợt khuyến mãi
+                                    </label>
+                                    <div class="col-lg-4">
+                                        <input asp-for="Name" class="form-control m-input" placeholder="Nhập tên" />
+                                        <span asp-validation-for="Name" class="form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Mô tả
+                                    </label>
+                                    <div class="col-lg-10">
+                                        <textarea asp-for="Description" class="form-control m-input m-input--air" rows="3"></textarea>
+                                        <span asp-validation-for="Description" class="form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Mã khuyến mãi
+                                    </label>
+                                    <div class="col-lg-4">
+                                        <input asp-for="PromotionCode" class="form-control m-input" placeholder="Nhập mã" />
+                                        <span asp-validation-for="PromotionCode" class="form-control-feedback"></span>
+                                    </div>
+                                    <label class="col-lg-2 col-form-label">
+                                        Tự động
+                                    </label>
+                                    <div class="col-lg-4">
+                                        <input asp-for="AutoPromotion" class="form-control" />
+                                    </div>
+
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-3 col-form-label">Áp dụng với chương trình khác</label>
+                                    <div class="col-lg-6">
+                                        <label class="m-checkbox m-checkbox--focus">
+                                            <input asp-for="ApplyWithOther" />
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Loại áp dụng
+                                    </label>
+                                    <div class="col-lg-4">
+                                        <select asp-for="ApplyTimeType" asp-items="Html.GetEnumSelectList<ApplyTimeType>()" class="form-control m-input m-input--square"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Thời gian áp dụng
+                                    </label>
+                                    <div class="col-lg-10" id="apply-hr-container" data-index="@(Model != null ? Model.ApplyHours.Count : 0)">
+                                        <div class="row" id="applyDatesSelect">
+                                            <div class="col-lg-5 row">
+                                                <label class="col-lg-3 col-form-label">
+                                                    Từ ngày
+                                                </label>
+                                                <div class="col-lg-6">
+                                                    <input asp-for="ApplyFromDate" type="text" class="form-control m-input datepicker" />
+                                                    <span asp-validation-for="ApplyFromDate" class="form-control-feedback"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-5 row">
+                                                <label class="col-lg-3 col-form-label">
+                                                    Đến ngày
+                                                </label>
+                                                <div class="col-lg-6">
+                                                    <input asp-for="ApplyToDate" type="text" class="form-control m-input datepicker" />
+                                                    <span asp-validation-for="ApplyToDate" class="form-control-feedback"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" id="applyHoursSelect">
+                                            <div class="col-lg-11" id="add-applyhr-container">
+                                                @if (Model.ApplyHours != null)
+                                                {
+                                                    for (int i = 0; i < Model.ApplyHours.Count; i++)
+                                                    {
+                                                        var hr = Model.ApplyHours.ElementAt(i);
+                                                        <input type="hidden" name="ApplyHours[@i].Id" value="@hr.Id" />
+                                                        <div class="row mt-3" id="apply-hr-@i">
+                                                            <div class="col-lg-5 row">
+                                                                <label class="col-lg-4 col-form-label">
+                                                                    Giờ bắt đầu
+                                                                </label>
+                                                                <div class="col-lg-6">
+                                                                    <input type="text" name="ApplyHours[@i].From" class="form-control m-input timepicker" value="@hr.From" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-5 row">
+                                                                <label class="col-lg-4 col-form-label">
+                                                                    Giờ kết thúc
+                                                                </label>
+                                                                <div class="col-lg-6">
+                                                                    <input type="text" name="ApplyHours[@i].To" class="form-control m-input timepicker" value="@hr.To" />
+                                                                </div>
+                                                            </div>
+                                                            <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deleteApplyHour" data-id="@i" title="Xoá giờ">
+                                                                <i class="la la-trash"></i>
+                                                            </a>
+                                                            <input type="hidden" name="ApplyHours[@i].IsDeleted" class="IsDeletedApplyHour" value="false" />
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill mt-3 btn-addApplyHour" title="Thêm giờ">
+                                                    <i class="la la-plus"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div id="applyDOWSelect">
+                                            <div class="row mt-3" id="apply-dow">
+                                                <label class="col-lg-2 col-form-label">
+                                                    Ngày trong tuần
+                                                </label>
+                                                <div class="col-lg-10 mt-2">
+                                                    @foreach (var opt in enumList)
+                                                    {
+                                                        <label class="m-checkbox m-checkbox--focus ml-3">
+                                                            <input type="checkbox" class="dow-chkbox" name="DayOfWeeks" value="@Convert.ToInt32(opt).ToString()" @(Model.ApplyDayOfWeek.HasValue && Model.ApplyDayOfWeek.Value.HasFlag(opt) ? "checked" : "") />
+                                                            @Html.DisplayFor(e => opt)
+                                                            <span></span>
+                                                        </label>
+                                                    }
+                                                    <input asp-for="ApplyDayOfWeek" type="hidden" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div hidden id="addApplyHourTemplate">
+                                            <div class="row mt-3" id="apply-hr-{pIndex}">
+                                                <div class="col-lg-5 row">
+                                                    <label class="col-lg-4 col-form-label">
+                                                        Giờ bắt đầu
+                                                    </label>
+                                                    <div class="col-lg-6">
+                                                        <input type="text" name="ApplyHours[{pIndex}].From" class="form-control m-input timepicker" value="" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-5 row">
+                                                    <label class="col-lg-4 col-form-label">
+                                                        Giờ kết thúc
+                                                    </label>
+                                                    <div class="col-lg-6">
+                                                        <input type="text" name="ApplyHours[{pIndex}].To" class="form-control m-input timepicker" value="" />
+                                                    </div>
+                                                </div>
+                                                <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deleteApplyHour" data-id="{pIndex}" title="Xoá giờ">
+                                                    <i class="la la-trash"></i>
+                                                </a>
+                                                <input type="hidden" name="ApplyHours[{pIndex}].IsDeleted" class="IsDeletedApplyHour" value="false" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Đối tượng áp dụng
+                                    </label>
+                                    <div class="col-lg-4">
+                                        <select asp-for="ApplyFor" asp-items="Html.GetEnumSelectList<ApplyFor>()" class="form-control m-input m-input--square">
+                                            <option value="">Chọn đối tượng</option>
+                                        </select>
+                                    </div>
+                                    <label class="col-lg-2 col-form-label">
+                                        Loại khách hàng
+                                    </label>
+                                    <div class="col-lg-4">
+                                        <select class="form-control m-input m-input--square">
+                                            <option value="">Chọn khách hàng</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Hình thức áp dụng
+                                    </label>
+                                    <div class="col-lg-4">
+                                        <select asp-for="ApplyRule" asp-items="Html.GetEnumSelectList<ApplyRule>()" class="form-control m-input m-input--square">
+                                            <option value="">Chọn hình thức</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Loại giảm giá
+                                    </label>
+                                    <div class="col-lg-4">
+                                        <select asp-for="DiscountType" asp-items="Html.GetEnumSelectList<DiscountType>()" class="form-control m-input m-input--square">
+                                            <option value="">Chọn loại giảm giá</option>
+                                        </select>
+                                    </div>
+                                    <label class="col-lg-2 col-form-label">
+                                        Giá trị giảm
+                                    </label>
+                                    <div class="col-lg-4">
+                                        <input class="form-control m-input currency-input" placeholder="Nhập giá trị" type="text" name="DiscountValue" id="DiscountValue" value="@Model.DiscountValue" />
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">Kích hoạt</label>
+                                    <div class="col-lg-6">
+                                        <label class="m-checkbox m-checkbox--focus">
+                                            <input asp-for="IsActive" />
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-portlet__foot m-portlet__foot--fit">
+                                <div class="m-form__actions m-form__actions">
+                                    <div class="row">
+                                        <div class="col-lg-2"></div>
+                                        <div class="col-lg-6">
+                                            <input type="submit" value="Lưu Khuyến Mãi" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane" id="promocondition" aria-expanded="true">
+                        @await Component.InvokeAsync("PromotionDrinkSetting", new { promotionId = Model.Id})
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/promotioncondition.js?t=@(DateTimeOffset.UtcNow.ToUnixTimeSeconds())"></script>
+    <script>
+        $(document).ready(function () {
+            SetActiveMenu('promotionMenu');
+        });
+    </script>
+}

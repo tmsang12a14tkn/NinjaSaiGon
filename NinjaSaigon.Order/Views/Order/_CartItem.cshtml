@@ -1,0 +1,94 @@
+﻿@model CartDrinkView
+
+@{
+    CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN");
+}
+
+<div class="col-12 cart-item" data-index="@Model.Index" data-original-size="@Model.DrinkSize" data-original-size-price="@Model.DrinkSize" data-price="@Model.Price" data-max-price="@Model.DrinkMaxSizePrice" data-min-price="@Model.DrinkMinSizePrice" data-max-size-id="@Model.DrinkMaxSizeId" data-min-size-id="@Model.DrinkMinSizeId" data-max-size-name="@Model.DrinkMaxSize" data-min-size-name="@Model.DrinkMinSize" data-quantity="@Model.Quantity" data-amount="@Model.Amount" data-isnew="@Model.IsNewDrink">
+    <div class="row">
+        <div class="col-5">
+            <strong class="cart-item-name">@Model.DrinkName</strong>
+        </div>
+        <div class="col-4 text-center">
+            <div class="select-quantity">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-round btn-info btn-xs btn-less-drink">
+                        <i class="material-icons">remove</i>
+                    </button>
+                    <button type="button" class="btn btn-info btn-xs mid-button">
+                        <i class="material-icons"></i>
+                        <span>@Model.Quantity</span>
+                    </button>
+                    <button type="button" class="btn btn-round btn-info btn-xs btn-more-drink">
+                        <i class="material-icons">add</i>
+                    </button>
+                </div>
+                @Html.Hidden("OrderDetails[" + Model.Index + "][Quantity]", Model.Quantity, new { @class = "quantity-value" })
+            </div>
+        </div>
+        <div class="col-3 text-right">
+            <strong class="drink-multi-price">@((Model.Price * Model.Quantity).ToString("#,###", cul.NumberFormat))</strong>
+        </div>
+    </div>
+    @if (Model.DrinkSizeId != 0)
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group cart-item-size">
+                    + Size @Model.DrinkSize
+                </div>
+            </div>
+        </div>
+    }
+    @if (Model.IceOptionId != 0)
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group cart-item-ice">
+                    + Đá @Model.IceOption
+                </div>
+            </div>
+        </div>
+    }
+    @if (Model.SugarOptionId != 0)
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group cart-item-sugar">
+                    + Đường @Model.SugarOption
+                </div>
+            </div>
+        </div>
+    }
+    @if (Model.Toppings != null)
+    {
+        for (var i = 0; i < Model.Toppings.Count; i++)
+        {
+            var topping = Model.Toppings[i];
+            <div class="row cart-item-topping" data-toppingid="@topping.ToppingId" data-quantity="@topping.Quantity" data-price="@topping.Price">
+                <div class="col-5">
+                    <div class="form-group topping-name">
+                        + @topping.Topping
+                        @Html.Hidden($"OrderDetails[{Model.Index}][OrderDetailToppings][{i}][ToppingId]", topping.ToppingId)
+                        @Html.Hidden($"OrderDetails[{Model.Index}][OrderDetailToppings][{i}][Quantity]", topping.Quantity)
+                    </div>
+                </div>
+                <div class="col-4 text-center topping-multi-quantity">
+                    @(topping.Quantity * Model.Quantity)
+                </div>
+                <div class="col-3 text-right topping-multi-price">
+                    @((topping.Price * topping.Quantity * Model.Quantity).ToString("#,###", cul.NumberFormat))
+                </div>
+            </div>
+        }
+    }
+    @Html.Hidden("OrderDetails[" + Model.Index + "][DrinkId]", Model.DrinkId)
+    @Html.Hidden("OrderDetails[" + Model.Index + "][DrinkName]", Model.DrinkName)
+    @Html.Hidden("OrderDetails[" + Model.Index + "][SugarOptionId]", Model.SugarOptionId)
+    @Html.Hidden("OrderDetails[" + Model.Index + "][SugarOption]", Model.SugarOption)
+    @Html.Hidden("OrderDetails[" + Model.Index + "][IceOptionId]", Model.IceOptionId)
+    @Html.Hidden("OrderDetails[" + Model.Index + "][IceOption]", Model.IceOption)
+    @Html.Hidden("OrderDetails[" + Model.Index + "][DrinkSizeId]", Model.DrinkSizeId, new { @class = "drinkSizeId" })
+    @Html.Hidden("OrderDetails[" + Model.Index + "][IsPromoDiscount]", Model.IsPromoDiscount, new { @class = "isPromoDiscount" })
+    @Html.Hidden("OrderDetails[" + Model.Index + "][IsDeleted]", Model.IsDeleted, new { @class = "isDeleted" })
+</div>

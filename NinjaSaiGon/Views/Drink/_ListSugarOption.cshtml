@@ -1,0 +1,38 @@
+﻿@model IEnumerable<SugarOption>
+
+<table class="table" id="lstSugarOption">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>TÊN MỨC</th>
+            <th>ĐỊNH MỨC</th>
+            <th>ĐƠN VỊ</th>
+            <th>MẶC ĐỊNH</th>
+            <th>HIỂN THỊ</th>
+            <th>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (var i = 0; i < Model.Count(); i++)
+        {
+            var opt = Model.ElementAt(i);
+            <tr>
+                <td>@(i + 1)</td>
+                <td>@opt.Name</td>
+                <td>@opt.Quota</td>
+                <td>@opt.UnitId</td>
+                <td><input type="checkbox" class="drink-ice-chkbox" data-id="@opt.Id" data-drinkid="@opt.DrinkId" @(opt.IsPrimary ? "checked" : "") /></td>
+                <td>@Html.CheckBox("SugarOptions[" + i + "].IsActive", opt.IsActive)</td>
+                <td>
+                    <a href="#" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill btnEditSugarOption" title="Edit" data-id="@opt.Id" data-drinkid="@opt.DrinkId">
+                        <i class="la la-edit"></i>
+                    </a>
+                    <a href="#" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btnDelSugarOption" title="Delete" data-id="@opt.Id" data-drinkid="@opt.DrinkId">
+                        <i class="la la-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

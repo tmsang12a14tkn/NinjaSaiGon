@@ -1,0 +1,160 @@
+﻿@model NinjaSaiGon.Data.Models.NotifyPopup
+
+@{
+    ViewData["Title"] = "Thêm mới thông báo";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Thêm mới thông báo
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <form asp-action="Create" asp-antiforgery="true" class="m-form m-form--label-align-right" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="m-portlet__body">
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">
+                                Tên
+                            </label>
+                            <div class="col-lg-6">
+                                <input asp-for="Name" class="form-control m-input" placeholder="Nhập tên" required />
+                                <span asp-validation-for="Name" class="form-control-feedback"></span>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">
+                                Nội dung
+                            </label>
+                            <div class="col-lg-6">
+                                <textarea asp-for="Content" class="form-control m-input editable" placeholder="Nhập nội dung"></textarea>
+                                <span asp-validation-for="Content" class="form-control-feedback"></span>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">
+                                Từ ngày
+                            </label>
+                            <div class="col-lg-6">
+                                <input asp-for="StartDate" class="form-control m-input datepicker" placeholder="Từ ngày" type="text" />
+                                <span asp-validation-for="StartDate" class="form-control-feedback"></span>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">
+                                Đến ngày
+                            </label>
+                            <div class="col-lg-6">
+                                <input asp-for="EndDate" class="form-control m-input datepicker" placeholder="Đến ngày" type="text" />
+                                <span asp-validation-for="EndDate" class="form-control-feedback"></span>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">Cho phép đặt hàng</label>
+                            <div class="col-lg-6">
+                                <label class="m-checkbox m-checkbox--focus">
+                                    <input asp-for="IsAllowOrder" />
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">Trạng thái</label>
+                            <div class="col-lg-6">
+                                <label class="m-checkbox m-checkbox--focus">
+                                    <input asp-for="IsActive" />
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="m-portlet__foot m-portlet__foot--fit">
+                        <div class="m-form__actions m-form__actions">
+                            <div class="row">
+                                <div class="col-lg-2"></div>
+                                <div class="col-lg-6">
+                                    <input type="submit" value="Lưu" class="btn btn-primary" />
+                                    <input type="reset" value="Hủy" class="btn btn-secondary" />
+                                    <a asp-action="Index">Quay lại danh sách</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+    <link href="~/lib/froala/froala_editor.css" rel="stylesheet">
+    <link href="~/lib/froala/froala_style.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/lib/froala/froala_editor.min.js"></script>
+    <script src="~/lib/froala/plugins/align.min.js"></script>
+    <script src="~/lib/froala/plugins/code_beautifier.min.js"></script>
+    <script src="~/lib/froala/plugins/code_view.min.js"></script>
+    <script src="~/lib/froala/plugins/colors.min.js"></script>
+    <script src="~/lib/froala/plugins/draggable.min.js"></script>
+    <script src="~/lib/froala/plugins/emoticons.min.js"></script>
+    <script src="~/lib/froala/plugins/entities.min.js"></script>
+    <script src="~/lib/froala/plugins/file.min.js"></script>
+    <script src="~/lib/froala/plugins/forms.min.js"></script>
+    <script src="~/lib/froala/plugins/fullscreen.min.js"></script>
+    <script src="~/lib/froala/plugins/font_family.min.js"></script>
+    <script src="~/lib/froala/plugins/font_size.min.js"></script>
+    <script src="~/lib/froala/plugins/video.min.js"></script>
+    <script src="~/lib/froala/plugins/image.min.js"></script>
+    <script src="~/lib/froala/plugins/image_manager.min.js"></script>
+    <script src="~/lib/froala/plugins/inline_style.min.js"></script>
+    <script src="~/lib/froala/plugins/line_breaker.min.js"></script>
+    <script src="~/lib/froala/plugins/link.min.js"></script>
+    <script src="~/lib/froala/plugins/lists.min.js"></script>
+    <script src="~/lib/froala/plugins/paragraph_format.min.js"></script>
+    <script src="~/lib/froala/plugins/paragraph_style.min.js"></script>
+    <script src="~/lib/froala/plugins/quote.min.js"></script>
+    <script src="~/lib/froala/plugins/table.min.js"></script>
+    <script src="~/lib/froala/plugins/url.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            SetActiveMenu('notifyMenu');
+
+            $(".datepicker").datepicker({
+                format: "dd/mm/yyyy",
+                todayHighlight: !0,
+                orientation: "bottom left",
+                language: 'vi',
+                templates: {
+                    leftArrow: '<i class="la la-angle-left"></i>',
+                    rightArrow: '<i class="la la-angle-right"></i>'
+                }
+            });
+
+            $('.editable').froalaEditor({
+                toolbarButtons: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', '|', 'color', 'emoticons', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', '|', 'quote', 'insertHR', 'undo', 'redo', 'clearFormatting', 'selectAll', 'html'],
+                pluginsEnabled: null,
+                imageUploadParam: 'files',
+                imageUploadURL: '/Home/FroalaUploadImage',
+                preloaderSrc: "~/img/loading.gif",
+                imageDeleteURL: "/Home/FroalaDelete",
+                emptytext: '',
+                minHeight: 400,
+                fontFamilySelection: true,
+                fontSizeSelection: true,
+                toolbarSticky: false,
+                imageDefaultWidth: '100%'
+            });
+        });
+    </script>
+}

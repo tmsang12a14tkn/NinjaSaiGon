@@ -1,0 +1,199 @@
+﻿@model List<PrivatePromotionCode>
+@{
+    ViewData["Title"] = "Mã khuyến mãi riêng";
+    List<PrivatePromotion> privatePromotions = ViewBag.PrivatePromotions;
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Danh sách mã khuyến mãi
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <form asp-action="ManageCode">
+                    <div class="m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30">
+                        <div class="row align-items-center">
+                            <div class="col-xl-10 order-2 order-xl-1">
+                                <div class="form-group m-form__group row align-items-center">
+                                    <div class="col-md-4">
+                                        <div class="m-form__group m-form__group--inline">
+                                            <div class="m-form__label">
+                                                <label style="width: 70px">Chương trình</label>
+                                            </div>
+                                            <div class="m-form__control">
+                                                <select class="form-control" name="ppid">
+                                                    <option value="0">Tất cả</option>
+                                                    @foreach (var pp in privatePromotions)
+                                                    {
+                                                        <option value="@pp.Id">@pp.Name</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="d-md-none m--margin-bottom-10"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control m-input" placeholder="Mã khuyến mãi" name="code">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="m-form__group m-form__group--inline">
+                                            <div class="m-form__label">
+                                                <label style="width: 70px">Trang thái</label>
+                                            </div>
+                                            <div class="m-form__control">
+                                                <select class="form-control" name="status">
+                                                    <option value="0">Tất cả</option>
+                                                    <option value="1">Hoạt động</option>
+                                                    <option value="2">Không hoạt động</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="d-md-none m--margin-bottom-10"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="m-form__group m-form__group--inline">
+                                            <div class="m-form__label">
+                                                <label style="width: 70px">Từ ngày</label>
+                                            </div>
+                                            <div class="m-form__control">
+                                                <input type="text" class="form-control m-input datepicker" autocomplete="off" name="startdate" />
+                                            </div>
+                                        </div>
+                                        <div class="d-md-none m--margin-bottom-10"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="m-form__group m-form__group--inline">
+                                            <div class="m-form__label">
+                                                <label style="width: 70px">Đến ngày</label>
+                                            </div>
+                                            <div class="m-form__control">
+                                                <input type="text" class="form-control m-input datepicker" autocomplete="off" name="enddate" />
+                                            </div>
+                                        </div>
+                                        <div class="d-md-none m--margin-bottom-10"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 order-1 order-xl-2">
+                                <button type="submit" class="btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill">Tìm kiếm</button>
+                                <div class="m-separator m-separator--dashed d-xl-none"></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <table class="table table-striped- table-bordered table-hover">
+                    <thead>
+                        <tr class="text-center">
+                            <th>STT</th>
+                            <th>Tên chương trình</th>
+                            <th>Mã</th>
+                            <th>Trạng thái</th>
+                            <th>Số lần sử dụng</th>
+                            <th>Thời gian tạo</th>
+                            <th>Thời gian áp dụng</th>
+                            <th>Comment</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tb-code-container">
+                        @for (var i = 0; i < Model.Count; i++)
+                        {
+                            var promotionCode = Model[i];
+                            <tr class="row-code" data-id="@promotionCode.Id">
+                                <td>@(i + 1)</td>
+                                <td>@promotionCode.PrivatePromotion.Name</td>
+                                <td>@promotionCode.Code</td>
+                                <td class="text-center row-code-status">
+                                    <span class="m-switch m-switch--sm m-switch--icon m-switch--success">
+                                        <label>
+                                            <input type="checkbox" class="code-status" data-id="@promotionCode.Id" @(promotionCode.Status ? "checked" : "")>
+                                            <span></span>
+                                        </label>
+                                    </span>
+                                </td>
+                                <td class="row-code-use">@(promotionCode.IsInfinityUse ? $"{promotionCode.CurrentUseCode} / Không giới hạn" : $"{promotionCode.CurrentUseCode} / {promotionCode.MaxUseCode}")</td>
+                                <td>@promotionCode.CreatedDate.ToString("dd/MM/yyyy")</td>
+                                <td class="row-code-time">@(promotionCode.IsInfinityTime ? "Không giới hạn" : promotionCode.StartDate?.ToString("dd/MM/yyyy") + " - " + promotionCode.EndDate?.ToString("dd/MM/yyyy"))</td>
+                                <td class="row-code-comment">@promotionCode.CodeComment</td>
+                                <td>
+                                    <a data-id="@promotionCode.Id" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill btnEditCode" title="Edit"><i class="la la-edit"></i></a>
+                                    <a data-id="@promotionCode.Id" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btnDeleteCode" title="Delete"><i class="la la-trash"></i></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteCodeModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    Xóa mã
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form asp-action="DeleteCode" class="m-form" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccessDeleteCode" data-ajax-failure="onFailureDeleteCode">
+                <div class="modal-body">
+                    <input type="hidden" name="CodeId" id="PrivateCodeId" />
+                    <div class="form-group m-form__group row">
+                        <label class="col-lg-12 col-form-label">
+                            Bạn có chắc chắn muốn xóa mã này không?
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editCodeModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    Chỉnh sửa mã
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form asp-action="EditCode" class="m-form" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccessEditCode" data-ajax-failure="onFailureEditCode">
+                <div class="modal-body">
+                    <div id="editcode-container"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/promotioncondition.js?t=@(DateTimeOffset.UtcNow.ToUnixTimeSeconds())"></script>
+    <script>
+        $(document).ready(function () {
+            SetActiveMenu('ppCodeMenu');
+        });
+    </script>
+}

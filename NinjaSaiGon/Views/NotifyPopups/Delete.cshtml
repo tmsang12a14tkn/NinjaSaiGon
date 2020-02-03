@@ -1,0 +1,99 @@
+﻿@model NinjaSaiGon.Data.Models.NotifyPopup
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Xóa thông báo
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <form asp-action="Delete" class="m-form m-form--label-align-right">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="m-portlet__body">
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">
+                                Tên
+                            </label>
+                            <div class="col-lg-6">
+                                <input asp-for="Name" class="form-control m-input" disabled />
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">
+                                Nội dung
+                            </label>
+                            <div class="col-lg-6">
+                                <input asp-for="Content" class="form-control m-input" disabled />
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">
+                                Từ ngày
+                            </label>
+                            <div class="col-lg-6">
+                                <input class="form-control m-input" value="@(Model.StartDate.HasValue ? Model.StartDate.Value.ToString("dd/MM/yyyy") : "")" disabled />
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">
+                                Đến ngày
+                            </label>
+                            <div class="col-lg-6">
+                                <input class="form-control m-input" value="@(Model.EndDate.HasValue ? Model.EndDate.Value.ToString("dd/MM/yyyy") : "")" disabled />
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">Cho phép đặt hàng</label>
+                            <div class="col-lg-6">
+                                <label class="m-checkbox m-checkbox--focus">
+                                    <input asp-for="IsAllowOrder" disabled />
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">Trạng thái</label>
+                            <div class="col-lg-6">
+                                <label class="m-checkbox m-checkbox--focus">
+                                    <input asp-for="IsActive" disabled />
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="m-portlet__foot m-portlet__foot--fit">
+                        <div class="m-form__actions m-form__actions">
+                            <div class="row">
+                                <div class="col-lg-2"></div>
+                                <div class="col-lg-6">
+                                    <input type="submit" value="Xóa" class="btn btn-primary" />
+                                    <a asp-action="Index">Quay lại danh sách</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+            SetActiveMenu('notifyMenu');
+        });
+    </script>
+}

@@ -1,0 +1,204 @@
+﻿@model Drink
+
+@{
+    ViewData["Title"] = "Sắp xếp và hiện thị ở trang đặt hàng";
+    var listDrinkSize = Model.DrinkSizes.OrderBy(io => io.Order);
+    var listSugarOpt = Model.SugarOptions.OrderBy(io => io.Order);
+    var listIceOpt = Model.IceOptions.OrderBy(io => io.Order);
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Sắp xếp và hiện thị ở trang đặt hàng
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <form class="m-form" asp-action="SortOptions" method="post">
+                <input asp-for="Id" type="hidden" />
+                <div class="m-portlet__body">
+                    <div class="m-portlet">
+                        <div class="m-portlet__head">
+                            <div class="m-portlet__head-caption">
+                                <div class="m-portlet__head-title">
+                                    <h4 class="m-portlet__head-text">
+                                        Size
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-portlet__body">
+                            <table class="table" id="lstDrinkSize">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>TÊN SIZE</th>
+                                        <th>ĐỊNH MỨC</th>
+                                        <th>ĐƠN VỊ</th>
+                                        <th>GIÁ BÁN</th>
+                                        <th>MẶC ĐỊNH</th>
+                                        <th>HIỂN THỊ</th>
+                                        <th>HIỆN Ở TRANG ĐẶT HÀNG</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (var i = 0; i < listDrinkSize.Count(); i++)
+                                    {
+                                        var size = listDrinkSize.ElementAt(i);
+                                        <tr>
+                                            <td>@(i + 1)</td>
+                                            <td>@size.Name</td>
+                                            <td>@size.Quota</td>
+                                            <td>@size.UnitId</td>
+                                            <td>@size.Price</td>
+                                            <td><input type="checkbox" class="drink-size-chkbox" @(size.IsPrimary ? "checked" : "") readonly /></td>
+                                            <td><input type="checkbox" class="active-size-chkbox" @(size.IsActive ? "checked" : "") readonly /></td>
+                                            <td>
+                                                <input type="checkbox" class="showorder-size-chkbox" name="Sizes[@i].IsShowOrder" @(size.IsShowOrder ? "checked" : "") value="true" />
+                                                <input type="hidden" name="Sizes[@i].Id" value="@size.Id" />
+                                                <input type="hidden" class="order-no" name="Sizes[@i].Order" value="@size.Order" />
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="m-portlet">
+                        <div class="m-portlet__head">
+                            <div class="m-portlet__head-caption">
+                                <div class="m-portlet__head-title">
+                                    <h4 class="m-portlet__head-text">
+                                        Mức đá
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-portlet__body">
+                            <table class="table" id="lstIceOption">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>TÊN MỨC</th>
+                                        <th>ĐỊNH MỨC</th>
+                                        <th>ĐƠN VỊ</th>
+                                        <th>MẶC ĐỊNH</th>
+                                        <th>HIỂN THỊ</th>
+                                        <th>HIỆN Ở TRANG ĐẶT HÀNG</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (var i = 0; i < listIceOpt.Count(); i++)
+                                    {
+                                        var opt = listIceOpt.ElementAt(i);
+                                        <tr>
+                                            <td>@(i + 1)</td>
+                                            <td>@opt.Name</td>
+                                            <td>@opt.Quota</td>
+                                            <td>@opt.UnitId</td>
+                                            <td><input type="checkbox" class="drink-ice-chkbox" @(opt.IsPrimary ? "checked" : "") readonly /></td>
+                                            <td><input type="checkbox" class="active-ice-chkbox" @(opt.IsActive ? "checked" : "") readonly /></td>
+                                            <td>
+                                                <input type="checkbox" class="showorder-ice-chkbox" name="Ices[@i].IsShowOrder" @(opt.IsShowOrder ? "checked" : "") value="true" />
+                                                <input type="hidden" name="Ices[@i].Id" value="@opt.Id" />
+                                                <input type="hidden" class="order-no" name="Ices[@i].Order" value="@opt.Order" />
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="m-portlet">
+                        <div class="m-portlet__head">
+                            <div class="m-portlet__head-caption">
+                                <div class="m-portlet__head-title">
+                                    <h4 class="m-portlet__head-text">
+                                        Mức đường
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-portlet__body">
+                            <table class="table" id="lstSugarOption">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>TÊN MỨC</th>
+                                        <th>ĐỊNH MỨC</th>
+                                        <th>ĐƠN VỊ</th>
+                                        <th>MẶC ĐỊNH</th>
+                                        <th>HIỂN THỊ</th>
+                                        <th>HIỆN Ở TRANG ĐẶT HÀNG</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (var i = 0; i < listSugarOpt.Count(); i++)
+                                    {
+                                        var opt = listSugarOpt.ElementAt(i);
+                                        <tr>
+                                            <td>@(i + 1)</td>
+                                            <td>@opt.Name</td>
+                                            <td>@opt.Quota</td>
+                                            <td>@opt.UnitId</td>
+                                            <td><input type="checkbox" class="drink-sugar-chkbox" @(opt.IsPrimary ? "checked" : "") readonly /></td>
+                                            <td><input type="checkbox" class="active-sugar-chkbox" @(opt.IsActive ? "checked" : "") readonly /></td>
+                                            <td>
+                                                <input type="checkbox" class="showorder-sugar-chkbox" name="Sugars[@i].IsShowOrder" @(opt.IsShowOrder ? "checked" : "") value="true" />
+                                                <input type="hidden" name="Sugars[@i].Id" value="@opt.Id" />
+                                                <input type="hidden" class="order-no" name="Sugars[@i].Order" value="@opt.Order" />
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="m-portlet__foot m-portlet__foot--fit">
+                    <div class="m-form__actions m-form__actions">
+                        <div class="row">
+                            <div class="col-lg-2"></div>
+                            <div class="col-lg-6">
+                                <input type="submit" value="Lưu" class="btn btn-primary" />
+                                <input type="reset" value="Hủy" class="btn btn-secondary" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function () {
+            SetActiveMenu('drinkMenu');
+        });
+
+        $("#lstDrinkSize tbody, #lstIceOption tbody, #lstSugarOption tbody").sortable({
+            helper: fixWidthHelper,
+            update: function (event, ui) {
+                $(this).children().each(function (index) {
+                    $(this).find('td:first-child').text(index + 1);
+                    $(this).find('.order-no').val(index + 1);
+                });
+            }
+        }).disableSelection();
+
+        function fixWidthHelper(e, ui) {
+            ui.children().each(function () {
+                $(this).width($(this).width());
+            });
+            return ui;
+        }
+    </script>
+}

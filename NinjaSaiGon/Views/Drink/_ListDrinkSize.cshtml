@@ -1,0 +1,40 @@
+﻿@model IEnumerable<DrinkSize>
+
+<table class="table" id="lstDrinkSize">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>TÊN SIZE</th>
+            <th>ĐỊNH MỨC</th>
+            <th>ĐƠN VỊ</th>
+            <th>GIÁ BÁN</th>
+            <th>MẶC ĐỊNH</th>
+            <th>HIỂN THỊ</th>
+            <th>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (var i = 0; i < Model.Count(); i++)
+        {
+            var size = Model.ElementAt(i);
+            <tr>
+                <td>@(i + 1)</td>
+                <td>@size.Name</td>
+                <td>@size.Quota</td>
+                <td>@size.UnitId</td>
+                <td>@size.Price</td>
+                <td><input type="checkbox" class="drink-size-chkbox" data-id="@size.Id" data-drinkid="@size.DrinkId" @(size.IsPrimary ? "checked" : "" ) /></td>
+                <td>@Html.CheckBox("DrinkSizes[" + i + "].IsActive", size.IsActive)</td>
+                <td>
+                    <a href="#" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill btnEditDrinkSize" title="Edit" data-id="@size.Id" data-drinkid="@size.DrinkId">
+                        <i class="la la-edit"></i>
+                    </a>
+                    <a href="#" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btnDelDrinkSize" title="Delete" data-id="@size.Id" data-drinkid="@size.DrinkId">
+                        <i class="la la-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,141 @@
+﻿@model Order
+
+@{
+    CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN");
+    var orderDetails = Model.OrderDetails.Where(od => od.IsFreeDrink == false).ToList();
+    var freeDrinkCount = Model.OrderDetails.Where(od => od.IsFreeDrink == true).Sum(od=>od.Quantity);
+}
+
+<div class="cart-container">
+    <div class="cart-table">
+        <table class="table table-hover" id="tb-cart-preview">
+            <thead>
+                <tr>
+                    <th class="col-4 text-left">Món</th>
+                    <th class="col-2 text-left">Giá</th>
+                    <th class="col-2 text-left">Số lượng</th>
+                    <th class="col-2 text-left">Tổng</th>
+                    <th class="col-2 text-left">Sửa/Bỏ món</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (var id = 0; id < orderDetails.Count; id++)
+                {
+                    var orderDetail = orderDetails[id];
+                    if (orderDetail.IsDeleted == false)
+                    {
+                        <tr class="cart-item" data-index="@id" width="50%" data-amount="@orderDetail.Amount" data-isnew="@orderDetail.IsNewDrink">
+                            <td class="col-4 td-name">
+                                <a>@orderDetail.DrinkName</a>
+                                <br>
+                                @if (!string.IsNullOrEmpty(orderDetail.DrinkSize))
+                                {
+                                    <small>
+                                        <span>- Size: @orderDetail.DrinkSize</span>
+                                    </small>
+                                }
+                                @if (!string.IsNullOrEmpty(orderDetail.SugarOption))
+                                {
+                                    <small>
+                                        <span>- Đường: @orderDetail.SugarOption</span>
+                                    </small>
+                                }
+                                @if (!string.IsNullOrEmpty(orderDetail.IceOption))
+                                {
+                                    <small>
+                                        <span>- Đá: @orderDetail.IceOption</span>
+                                    </small>
+                                }
+                                @if (orderDetail.OrderDetailToppings != null)
+                                {
+                                    for (var i = 0; i < orderDetail.OrderDetailToppings.Count; i++)
+                                    {
+                                        var topping = orderDetail.OrderDetailToppings.ElementAt(i);
+                                        <small>
+                                            <span>- @topping.ToppingName: @topping.Price.ToString("#,###", cul.NumberFormat)x@(topping.Quantity)</span>
+                                        </small>
+                                    }
+                                }
+                            </td>
+                            <td class="col-2">
+                                <span>@orderDetail.FullPrice.ToString("#,###", cul.NumberFormat)</span>
+                                <small>đ</small>
+                            </td>
+                            <td class="col-2 text-center">@orderDetail.Quantity</td>
+                            <td class="col-2">
+                                <span>@orderDetail.Amount.ToString("#,###", cul.NumberFormat)</span>
+                            </td>
+                            <td class="col-2 td-actions">
+                                <button type="button" class="btn btn-editDrinkCart">
+                                    <i class="material-icons">edit</i>
+                                </button>
+                                <button type="button" class="btn btn-removeDrinkCart">
+                                    <i class="material-icons">close</i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+                @if (freeDrinkCount > 0)
+                {
+                <tr>
+                    <td colspan="5" class="alert alert-success">Bạn được tặng @freeDrinkCount ly soda miễn phí</td>
+                </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th class="col-6" col-span="2">TỔNG</th>
+                    <th class="col-2 text-center" id="cartPreviewQuantity">@Model.OrderDetails.Sum(o => o.Quantity)</th>
+                    <th class="col-2" id="cartPreviewAmount">@Model.OrderDetails.Sum(o => o.Amount).ToString("#,##0", cul.NumberFormat)</th>
+                    <th class="col-2">&nbsp;</th>
+                </tr>
+                <tr>
+                    <th class="col-6" col-span="2">GIẢM GIÁ</th>
+                    <th class="col-2"></th>
+                    <th class="col-2" id="cartPreviewDiscount">@Model.DiscountAmount.ToString("#,##0", cul.NumberFormat)</th>
+                    <th class="col-2"></th>
+                </tr>
+                <tr>
+                    <th class="col-6" col-span="2">
+                        PHÍ GIAO HÀNG
+                        <span class="pgh-txt">@Model.Distance</span>
+                    </th>
+                    <th class="col-2"></th>
+                    <th class="col-2" id="cartPreviewFeeShip">@Model.ShipFee.ToString("#,##0", cul.NumberFormat)</th>
+                    <th class="col-2"></th>
+                </tr>
+            </tfoot>
+        </table>        
+    </div>
+    <div>
+        <div class="other-fee">
+            <div class="order-content">
+                <div class="discount-coupon">
+                    <div class="discount-icon">
+                        <i class="fa fa-ticket"></i>
+                    </div>
+                    <div class="discount-desc-input-coupon">
+                        <input placeholder="Nhập mã khuyến mãi" value="@Model.PromotionCode" class="input-coupon" id="cartPreviewPromotionCode">
+                        <button type="button" class="btn button-apply-coupon" id="applyCartPreviewPromotion">ÁP DỤNG</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <button class="btn btn-rose btn-round" id="return2Menu">
+            <i class="material-icons">shopping_cart</i>
+            <span>Tiếp tục chọn món</span>
+        </button>
+    </div>
+    <div class="col-6 right-cart">
+        <div class="total-text">THÀNH TIỀN</div>
+        <div class="total-price-order">
+            <span id="cartPreviewTotalAmount">@Model.OrderTotal.ToString("#,###", cul.NumberFormat)</span>
+        </div>
+    </div>
+</div>
+

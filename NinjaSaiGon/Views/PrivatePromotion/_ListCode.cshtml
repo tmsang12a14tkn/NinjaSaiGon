@@ -1,0 +1,26 @@
+﻿@model List<PrivatePromotionCode>
+
+@for (var i = 0; i < Model.Count; i++)
+{
+    var promotionCode = Model[i];
+    <tr class="row-code" data-id="@promotionCode.Id">
+        <td>@(i + 1)</td>
+        <td>@promotionCode.Code</td>
+        <td class="text-center">
+            <span class="m-switch m-switch--sm m-switch--icon m-switch--success">
+                <label>
+                    <input type="checkbox" class="code-status" data-id="@promotionCode.Id" @(promotionCode.Status ? "checked" : "")>
+                    <span></span>
+                </label>
+            </span>
+        </td>
+        <td>@(promotionCode.IsInfinityUse ? $"{promotionCode.CurrentUseCode} / Không giới hạn" : $"{promotionCode.CurrentUseCode} / {promotionCode.MaxUseCode}")</td>
+        <td>@promotionCode.CreatedDate.ToString("dd/MM/yyyy")</td>
+        <td>@(promotionCode.IsInfinityTime ? "Không giới hạn" : promotionCode.StartDate?.ToString("dd/MM/yyyy") + " - " + promotionCode.EndDate?.ToString("dd/MM/yyyy"))</td>
+        <td>@promotionCode.CodeComment</td>
+        <td>
+            <a data-id="@promotionCode.Id" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill btnEditCode" title="Edit"><i class="la la-edit"></i></a>
+            <a data-id="@promotionCode.Id" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btnDeleteCode" title="Delete"><i class="la la-trash"></i></a>
+        </td>
+    </tr>
+}

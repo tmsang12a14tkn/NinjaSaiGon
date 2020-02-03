@@ -1,0 +1,1631 @@
+﻿@model Agency
+
+@{
+    ViewData["Title"] = "Edit";
+    var cultureInfo = new CultureInfo("vi-VN");
+    cultureInfo.NumberFormat.NumberDecimalSeparator = ".";
+    CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+    CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+    IEnumerable<DistrictPlace> allDistricts = ViewBag.DistrictPlaces;
+    IEnumerable<Ward> allWards = ViewBag.Wards;
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Sửa đại lý
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <form asp-action="Edit" class="m-form m-form--label-align-right">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input asp-for="Code" type="hidden" />
+                    <div class="m-portlet__body">
+                        <div class="m-portlet m-portlet--tab">
+                            <div class="m-portlet__head">
+                                <div class="m-portlet__head-caption">
+                                    <div class="m-portlet__head-title">
+                                        <span class="m-portlet__head-icon m--hide">
+                                            <i class="la la-gear"></i>
+                                        </span>
+                                        <h3 class="m-portlet__head-text">
+                                            Phân loại
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-portlet__body">
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Loại đại lý
+                                    </label>
+                                    <div class="col-lg-3">
+                                        <select asp-for="AgencyType" asp-items="Html.GetEnumSelectList<AgencyType>()" class="form-control m-input m-input--square"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-portlet m-portlet--tab">
+                            <div class="m-portlet__head">
+                                <div class="m-portlet__head-caption">
+                                    <div class="m-portlet__head-title">
+                                        <span class="m-portlet__head-icon m--hide">
+                                            <i class="la la-gear"></i>
+                                        </span>
+                                        <h3 class="m-portlet__head-text">
+                                            Thông tin chung
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-portlet__body">
+                                <div class="form-group m-form__group row">
+                                    <div class="col-md-6">
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-3 col-form-label">
+                                                Tên khách hàng
+                                            </label>
+                                            <div class="col-lg-4">
+                                                <input asp-for="Name" class="form-control m-input" autocomplete="off" />
+                                                <span asp-validation-for="Name" class="form-control-feedback"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-3 col-form-label">
+                                                Tên giao dịch
+                                            </label>
+                                            <div class="col-lg-4">
+                                                <input asp-for="TradingName" class="form-control m-input" autocomplete="off" />
+                                                <span asp-validation-for="TradingName" class="form-control-feedback"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row nationality-item">
+                                            <label class="col-lg-3 col-form-label">
+                                                Nhóm đối tác
+                                            </label>
+                                            <div class="col-lg-4">
+                                                <select asp-for="AgencyGroupId" asp-items="@(new SelectList(ViewBag.AgencyGroups, "Id", "Value"))" class="form-control m-input m-input--square">
+                                                    <option value="" selected>Chọn</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-3 col-form-label">
+                                                Mã số thuế
+                                            </label>
+                                            <div class="col-lg-4">
+                                                <input asp-for="TaxCode" class="form-control m-input" autocomplete="off" />
+                                                <span asp-validation-for="TaxCode" class="form-control-feedback"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-3 col-form-label">
+                                                Số ĐKKD
+                                            </label>
+                                            <div class="col-lg-4">
+                                                <input asp-for="BusinessRegNumber" class="form-control m-input" autocomplete="off" />
+                                                <span asp-validation-for="BusinessRegNumber" class="form-control-feedback"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-3 col-form-label">
+                                                Ngày thành lập
+                                            </label>
+                                            <div class="col-lg-4">
+                                                <input type="text" asp-for="StartDate" class="form-control m-input datepicker" autocomplete="off" />
+                                                <span asp-validation-for="StartDate" class="form-control-feedback"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-3 col-form-label">
+                                                Ngành nghề kinh doanh
+                                            </label>
+                                            <div class="col-lg-4">
+                                                <select asp-for="AgencyBusinessId" asp-items="@(new SelectList(ViewBag.AgencyBusinesses, "Id", "Value"))" class="form-control m-input m-input--square"></select>
+                                                <span asp-validation-for="AgencyBusinessId" class="form-control-feedback"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-portlet m-portlet--tab">
+                            <div class="m-portlet__head">
+                                <div class="m-portlet__head-caption">
+                                    <div class="m-portlet__head-title">
+                                        <span class="m-portlet__head-icon m--hide">
+                                            <i class="la la-gear"></i>
+                                        </span>
+                                        <h3 class="m-portlet__head-text">
+                                            Thông tin liên hệ
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-portlet__body">
+                                <div id="phone-container">
+                                    <input type="hidden" name="AgencyContactInfo.Id" value="@Model.AgencyContactInfo.Id.">
+                                    @for (var i = 0; i < Model.AgencyContactInfo.Phones.Count; i++)
+                                    {
+                                        var phone = Model.AgencyContactInfo.Phones.ElementAt(i);
+                                        <div class="form-group m-form__group row phone-item" data-index="@i">
+                                            <input type="hidden" name="AgencyContactInfo.Phones[@i].Id" value="@phone.Id">
+                                            <input type="hidden" class="IsDeletedPhone" name="AgencyContactInfo.Phones[@i].IsDeleted" value="false">
+                                            <label class="col-lg-2 col-form-label">
+                                                Số điện thoại
+                                            </label>
+                                            <div class="col-lg-3">
+                                                <select name="AgencyContactInfo.Phones[@i].TypeId" asp-items="@(new SelectList(ViewBag.PhoneTypes, "Id", "Value", phone.TypeId))" class="form-control m-input m-input--square"></select>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <input name="AgencyContactInfo.Phones[@i].PhoneNumber" class="form-control m-input" autocomplete="off" value="@phone.PhoneNumber" />
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label class="m-checkbox m-checkbox--focus">
+                                                    <input type="checkbox" name="AgencyContactInfo.Phones[@i].IsPrimary" @(phone.IsPrimary ? "checked" : "") />
+                                                    SĐT chính
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                @if (i == 0)
+                                                {
+                                                    <button type="button" class="btn btn-secondary btn-sm" id="add-phone" data-index="@Model.AgencyContactInfo.Phones.Count">Thêm SĐT</button>
+                                                }
+                                                else
+                                                {
+                                                    <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deletePhone" data-index="@i">
+                                                        <i class="la la-trash"></i>
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                    <div hidden id="addPhoneTemplate">
+                                        <div class="form-group m-form__group row phone-item" data-index="{pIndex}">
+                                            <label class="col-lg-2 col-form-label">&nbsp;</label>
+                                            <div class="col-lg-3">
+                                                <select name="AgencyContactInfo.Phones[{pIndex}].TypeId" asp-items="@(new SelectList(ViewBag.PhoneTypes, "Id", "Value"))" class="form-control m-input m-input--square"></select>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <input name="AgencyContactInfo.Phones[{pIndex}].PhoneNumber" class="form-control m-input" autocomplete="off" />
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label class="m-checkbox m-checkbox--focus">
+                                                    <input type="checkbox" name="AgencyContactInfo.Phones[{pIndex}].IsPrimary" />
+                                                    SĐT chính
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <input type="hidden" class="IsDeletedPhone" name="AgencyContactInfo.Phones[{pIndex}].IsDeleted" value="false">
+                                                <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deletePhone" data-index="{pIndex}">
+                                                    <i class="la la-trash"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="email-container">
+                                    @for (var i = 0; i < Model.AgencyContactInfo.Emails.Count; i++)
+                                    {
+                                        var email = Model.AgencyContactInfo.Emails.ElementAt(i);
+                                        <div class="form-group m-form__group row email-item @(i == 0 ? "mt-4" : "")" data-index="@i">
+                                            <input type="hidden" name="AgencyContactInfo.Emails[@i].Id" value="@email.Id">
+                                            <input type="hidden" class="IsDeletedEmail" name="AgencyContactInfo.Emails[@i].IsDeleted" value="false">
+                                            <label class="col-lg-2 col-form-label">
+                                                Email
+                                            </label>
+                                            <div class="col-lg-3">
+                                                <select name="AgencyContactInfo.Emails[@i].TypeId" asp-items="@(new SelectList(ViewBag.EmailTypes, "Id", "Value", email.TypeId))" class="form-control m-input m-input--square"></select>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <input name="AgencyContactInfo.Emails[@i].Email" class="form-control m-input" autocomplete="off" value="@email.Email" />
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label class="m-checkbox m-checkbox--focus">
+                                                    <input type="checkbox" name="AgencyContactInfo.Emails[@i].IsPrimary" @(email.IsPrimary ? "checked" : "") />
+                                                    Email chính
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                @if (i == 0)
+                                                {
+                                                    <button type="button" class="btn btn-secondary btn-sm" id="add-email" data-index="@Model.AgencyContactInfo.Emails.Count">Thêm Email</button>
+                                                }
+                                                else
+                                                {
+                                                    <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deleteEmail" data-index="@i">
+                                                        <i class="la la-trash"></i>
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                    <div hidden id="addEmailTemplate">
+                                        <div class="form-group m-form__group row email-item" data-index="{pIndex}">
+                                            <label class="col-lg-2 col-form-label">&nbsp;</label>
+                                            <div class="col-lg-3">
+                                                <select name="AgencyContactInfo.Emails[{pIndex}].TypeId" asp-items="@(new SelectList(ViewBag.EmailTypes, "Id", "Value"))" class="form-control m-input m-input--square"></select>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <input name="AgencyContactInfo.Emails[{pIndex}].Email" class="form-control m-input" autocomplete="off" />
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label class="m-checkbox m-checkbox--focus">
+                                                    <input type="checkbox" name="AgencyContactInfo.Emails[{pIndex}].IsPrimary" />
+                                                    Email chính
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <input type="hidden" class="IsDeletedEmail" name="AgencyContactInfo.Emails[{pIndex}].IsDeleted" value="false">
+                                                <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deleteEmail" data-index="{pIndex}">
+                                                    <i class="la la-trash"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="address-container">
+                                    @for (var i = 0; i < Model.AgencyContactInfo.Addresses.Count; i++)
+                                    {
+                                        var address = Model.AgencyContactInfo.Addresses.ElementAt(i);
+                                        var districts = address.ProvinceId.HasValue ? allDistricts.Where(d => d.ProvinceId == address.ProvinceId.Value) : allDistricts;
+                                        var wards = address.DistrictPlaceId.HasValue ? allWards.Where(w => w.DistrictPlaceId == address.DistrictPlaceId.Value) : null;
+                                        <div class="form-group m-form__group row address-item @(i == 0 ? "mt-4" : "")" data-index="@i">
+                                            <div class="col-lg-2 text-right">
+                                                <label class="col-form-label">
+                                                    Địa chỉ
+                                                </label>
+                                            </div>
+                                            <div class="col-lg-8">
+                                                <div class="form-group m-form__group row address-item">
+                                                    <input type="hidden" name="AgencyContactInfo.Addresses[@i].Id" value="@address.Id">
+                                                    <input type="hidden" class="IsDeletedAddress" name="AgencyContactInfo.Addresses[@i].IsDeleted" value="false">
+                                                    <div class="col-lg-3">
+                                                        <select name="AgencyContactInfo.Addresses[@i].TypeId" asp-items="@(new SelectList(ViewBag.AddressTypes, "Id", "Value", address.TypeId))" class="form-control m-input m-input--square">
+                                                            <option value="" selected>Chọn loại địa chỉ</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <input name="AgencyContactInfo.Addresses[@i].MoreInfo" class="form-control m-input" placeholder="Địa chỉ" autocomplete="off" value="@address.MoreInfo" />
+                                                    </div>
+                                                    <div class="col-lg-3">
+                                                        <select name="AgencyContactInfo.Addresses[@i].WardId" class="form-control m-input m-input--square contact-ward" data-index="@i">
+                                                            <option value="">Chọn phường</option>
+                                                            @if (wards != null)
+                                                            {
+                                                                @foreach (var ward in wards)
+                                                                {
+                                                                    if (address.WardId.HasValue && ward.Id == address.WardId.Value)
+                                                                    {
+                                                                        <option value="@ward.Id" selected>@ward.Name</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <option value="@ward.Id">@ward.Name</option>
+                                                                    }
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-3">
+                                                        <select name="AgencyContactInfo.Addresses[@i].DistrictPlaceId" class="form-control m-input m-input--square contact-district" data-index="@i">
+                                                            <option value="">Chọn quận</option>
+                                                            @if (districts != null)
+                                                            {
+                                                                @foreach (var district in districts)
+                                                                {
+                                                                    if (address.DistrictPlaceId.HasValue && district.Id == address.DistrictPlaceId.Value)
+                                                                    {
+                                                                        <option value="@district.Id" data-parent="@district.ProvinceId" selected>@district.Name</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <option value="@district.Id" data-parent="@district.ProvinceId">@district.Name</option>
+                                                                    }
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-3">
+                                                        <select name="AgencyContactInfo.Addresses[@i].ProvinceId" asp-items="@(new SelectList(ViewBag.Provinces, "Id", "Name", address.ProvinceId))" class="form-control m-input m-input--square contact-province" data-index="@i">
+                                                            <option value="" selected>Chọn tỉnh/thành</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-3">
+                                                        <select name="AgencyContactInfo.Addresses[@i].NationalityId" asp-items="@(new SelectList(ViewBag.Nationalities, "Id", "Value", address.NationalityId))" class="form-control m-input m-input--square contact-national" data-index="@i">
+                                                            <option value="" selected>Chọn quốc gia</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        <label class="m-checkbox m-checkbox--focus">
+                                                            <input type="checkbox" name="AgencyContactInfo.Addresses[@i].IsPrimary" @(address.IsPrimary ? "checked" : "") />
+                                                            Địa chỉ chính
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-lg-1 text-right">
+                                                        @if (i > 0)
+                                                        {
+                                                            <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deleteAddress" data-index="@i">
+                                                                <i class="la la-trash"></i>
+                                                            </a>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <button type="button" class="btn btn-secondary btn-sm" id="add-address" data-index="@Model.AgencyContactInfo.Addresses.Count">Thêm địa chỉ</button>
+                                            </div>
+                                        </div>
+                                    }
+                                    <div hidden id="addAddressTemplate">
+                                        <div class="form-group m-form__group row address-item" data-index="{pIndex}">
+                                            <div class="col-lg-2 text-right">
+                                                <label class="col-form-label">&nbsp;</label>
+                                            </div>
+                                            <div class="col-lg-8">
+                                                <div class="form-group m-form__group row">
+                                                    <div class="col-lg-3">
+                                                        <select name="AgencyContactInfo.Addresses[{pIndex}].TypeId" asp-items="@(new SelectList(ViewBag.AddressTypes, "Id", "Value"))" class="form-control m-input m-input--square">
+                                                            <option value="" selected>Chọn loại địa chỉ</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <input name="AgencyContactInfo.Addresses[{pIndex}].MoreInfo" class="form-control m-input" placeholder="Địa chỉ" autocomplete="off" />
+                                                    </div>
+                                                    <div class="col-lg-3">
+                                                        <select name="AgencyContactInfo.Addresses[{pIndex}].WardId" class="form-control m-input m-input--square contact-ward" data-index="{pIndex}">
+                                                            <option value="" selected>Chọn phường</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-3">
+                                                        <select name="AgencyContactInfo.Addresses[{pIndex}].DistrictPlaceId" class="form-control m-input m-input--square contact-district" data-index="{pIndex}">
+                                                            <option value="" selected>Chọn quận</option>
+                                                            @foreach (var district in allDistricts)
+                                                            {
+                                                                <option value="@district.Id" data-parent="@district.ProvinceId">@district.Name</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-3">
+                                                        <select name="AgencyContactInfo.Addresses[{pIndex}].ProvinceId" asp-items="@(new SelectList(ViewBag.Provinces, "Id", "Name"))" class="form-control m-input m-input--square contact-province" data-index="{pIndex}">
+                                                            <option value="" selected>Chọn tỉnh/thành</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-3">
+                                                        <select name="AgencyContactInfo.Addresses[{pIndex}].NationalityId" asp-items="@(new SelectList(ViewBag.Nationalities, "Id", "Value"))" class="form-control m-input m-input--square contact-national" data-index="{pIndex}">
+                                                            <option value="" selected>Chọn quốc gia</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        <label class="m-checkbox m-checkbox--focus">
+                                                            <input type="checkbox" name="AgencyContactInfo.Addresses[{pIndex}].IsPrimary" />
+                                                            Địa chỉ chính
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-lg-1 text-right">
+                                                        <input type="hidden" class="IsDeletedAddress" name="AgencyContactInfo.Addresses[{pIndex}].IsDeleted" value="false">
+                                                        <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deleteAddress" data-index="{pIndex}">
+                                                            <i class="la la-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="social-container">
+                                    @for (var i = 0; i < Model.AgencyContactInfo.Socials.Count; i++)
+                                    {
+                                        var social = Model.AgencyContactInfo.Socials.ElementAt(i);
+                                        <div class="form-group m-form__group row social-item @(i == 0 ? "mt-4" : "")" data-index="@i">
+                                            <input type="hidden" name="AgencyContactInfo.Socials[@i].Id" value="@social.Id">
+                                            <input type="hidden" class="IsDeletedSocial" name="AgencyContactInfo.Socials[@i].IsDeleted" value="false">
+                                            <label class="col-lg-2 col-form-label">
+                                                Mạng xã hội
+                                            </label>
+                                            <div class="col-lg-3">
+                                                <select name="AgencyContactInfo.Socials[@i].TypeId" asp-items="@(new SelectList(ViewBag.SocialTypes, "Id", "Value", social.TypeId))" class="form-control m-input m-input--square"></select>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <input name="AgencyContactInfo.Socials[@i].Account" class="form-control m-input" autocomplete="off" value="@social.Account" />
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label class="m-checkbox m-checkbox--focus">
+                                                    <input type="checkbox" name="AgencyContactInfo.Socials[@i].IsPrimary" @(social.IsPrimary ? "checked" : "") />
+                                                    MXH chính
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                @if (i == 0)
+                                                {
+                                                    <button type="button" class="btn btn-secondary btn-sm" id="add-social" data-index="@Model.AgencyContactInfo.Socials.Count">Thêm MXH</button>
+                                                }
+                                                else
+                                                {
+                                                    <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deleteSocial" data-index="@i">
+                                                        <i class="la la-trash"></i>
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                    <div hidden id="addSocialTemplate">
+                                        <div class="form-group m-form__group row social-item" data-index="{pIndex}">
+                                            <label class="col-lg-2 col-form-label">&nbsp;</label>
+                                            <div class="col-lg-3">
+                                                <select name="AgencyContactInfo.Socials[{pIndex}].TypeId" asp-items="@(new SelectList(ViewBag.SocialTypes, "Id", "Value"))" class="form-control m-input m-input--square"></select>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <input name="AgencyContactInfo.Socials[{pIndex}].Account" class="form-control m-input" autocomplete="off" />
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label class="m-checkbox m-checkbox--focus">
+                                                    <input type="checkbox" name="AgencyContactInfo.Socials[{pIndex}].IsPrimary" />
+                                                    MXH chính
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <input type="hidden" class="IsDeletedSocial" name="AgencyContactInfo.Socials[{pIndex}].IsDeleted" value="false">
+                                                <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deleteSocial" data-index="{pIndex}">
+                                                    <i class="la la-trash"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="ott-container">
+                                    @for (var i = 0; i < Model.AgencyContactInfo.OTTs.Count; i++)
+                                    {
+                                        var ott = Model.AgencyContactInfo.OTTs.ElementAt(i);
+                                        <div class="form-group m-form__group row ott-item @(i == 0 ? "mt-4" : "")" data-index="@i">
+                                            <input type="hidden" name="AgencyContactInfo.OTTs[@i].Id" value="@ott.Id">
+                                            <input type="hidden" class="IsDeletedOTT" name="AgencyContactInfo.OTTs[@i].IsDeleted" value="false">
+                                            <label class="col-lg-2 col-form-label">
+                                                OTT
+                                            </label>
+                                            <div class="col-lg-3">
+                                                <select name="AgencyContactInfo.OTTs[@i].TypeId" asp-items="@(new SelectList(ViewBag.OTTTypes, "Id", "Value", ott.TypeId))" class="form-control m-input m-input--square"></select>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <input name="AgencyContactInfo.OTTs[@i].Account" class="form-control m-input" autocomplete="off" value="@ott.Account" />
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label class="m-checkbox m-checkbox--focus">
+                                                    <input type="checkbox" name="AgencyContactInfo.OTTs[@i].IsPrimary" @(ott.IsPrimary ? "checked" : "") />
+                                                    OTT chính
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                @if (i == 0)
+                                                {
+                                                    <button type="button" class="btn btn-secondary btn-sm" id="add-ott" data-index="@Model.AgencyContactInfo.OTTs.Count">Thêm OTT</button>
+                                                }
+                                                else
+                                                {
+                                                    <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deleteOTT" data-index="@i">
+                                                        <i class="la la-trash"></i>
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                    <div hidden id="addOTTTemplate">
+                                        <div class="form-group m-form__group row ott-item" data-index="{pIndex}">
+                                            <label class="col-lg-2 col-form-label">&nbsp;</label>
+                                            <div class="col-lg-3">
+                                                <select name="AgencyContactInfo.OTTs[{pIndex}].TypeId" asp-items="@(new SelectList(ViewBag.OTTTypes, "Id", "Value"))" class="form-control m-input m-input--square"></select>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <input name="AgencyContactInfo.OTTs[{pIndex}].Account" class="form-control m-input" autocomplete="off" />
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label class="m-checkbox m-checkbox--focus">
+                                                    <input type="checkbox" name="AgencyContactInfo.OTTs[{pIndex}].IsPrimary" />
+                                                    OTT chính
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <input type="hidden" class="IsDeletedOTT" name="AgencyContactInfo.OTTs[{pIndex}].IsDeleted" value="false">
+                                                <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deleteOTT" data-index="{pIndex}">
+                                                    <i class="la la-trash"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-portlet m-portlet--tab">
+                            <div class="m-portlet__head">
+                                <div class="m-portlet__head-caption">
+                                    <div class="m-portlet__head-title">
+                                        <span class="m-portlet__head-icon m--hide">
+                                            <i class="la la-gear"></i>
+                                        </span>
+                                        <h3 class="m-portlet__head-text">
+                                            Danh sách người đại diện
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-portlet__body">
+                                <div class="form-group m-form__group row">
+                                    <div class="col-lg-12 text-right">
+                                        <button type="button" class="btn btn-secondary btn-sm" id="add-arepresentative" data-index="@Model.AgencyRepresentatives.Count">Thêm người đại diện</button>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <div class="col-lg-12">
+                                        <table class="table table-striped- table-bordered table-hover table-checkable">
+                                            <thead>
+                                                <tr class="text-center">
+                                                    <th>Họ tên</th>
+                                                    <th>Người liên hệ chính</th>
+                                                    <th>Chức vụ</th>
+                                                    <th>Điện thoại</th>
+                                                    <th>Email</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="arepresentative-history">
+                                                @for (var i = 0; i < Model.AgencyRepresentatives.Count; i++)
+                                                {
+                                                    var ar = Model.AgencyRepresentatives.ElementAt(i);
+                                                    @await Component.InvokeAsync("AgencyRepresentative", new {
+                                                        model = new AgencyRepresentativeViewModel
+                                                        {
+                                                            Index = i,
+                                                            AgencyId = ar.AgencyId,
+                                                            PersonId = ar.PersonId,
+                                                            IsMainContact = ar.IsMainContact,
+                                                            EmployeeCode = ar.Person.Code,
+                                                            EmployeeEmail = ar.Person.ContactInfo.Emails.FirstOrDefault(e => e.IsPrimary)?.Email,
+                                                            EmployeeName = ar.Person.PrimaryName,
+                                                            EmployeePhone = ar.Person.ContactInfo.Phones.FirstOrDefault(e => e.IsPrimary)?.PhoneNumber,
+                                                            EmployeePosition = ar.Person.PersonCustomerWorkings.FirstOrDefault(w => w.IsWorking && w.IsMainPosition)?.Position
+                                                        }
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-portlet m-portlet--tab">
+                            <div class="m-portlet__head">
+                                <div class="m-portlet__head-caption">
+                                    <div class="m-portlet__head-title">
+                                        <span class="m-portlet__head-icon m--hide">
+                                            <i class="la la-gear"></i>
+                                        </span>
+                                        <h3 class="m-portlet__head-text">
+                                            Thanh toán - Ngân hàng
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-portlet__body">
+                                <div id="bank-container">
+                                    @for (var i = 0; i < Model.AgencyBanks.Count; i++)
+                                    {
+                                        var bank = Model.AgencyBanks.ElementAt(i);
+                                        <div class="form-group m-form__group row bank-item @(i > 0 ? "pt-4" : "")" data-index="@i">
+                                            <div class="col-lg-12">
+                                                <div class="form-group m-form__group row">
+                                                    <input type="hidden" name="AgencyBanks[@i].Id" value="@bank.Id">
+                                                    <input type="hidden" class="IsDeletedBank" name="AgencyBanks[@i].IsDeleted" value="false">
+                                                    <div class="col-lg-12">
+                                                        <div class="form-group m-form__group row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group m-form__group row">
+                                                                    <label class="col-lg-3 col-form-label">
+                                                                        Số tài khoản
+                                                                    </label>
+                                                                    <div class="col-lg-4">
+                                                                        <input name="AgencyBanks[@i].AccountNumber" class="form-control m-input" autocomplete="off" value="@bank.AccountNumber" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group m-form__group row">
+                                                                    <label class="col-lg-3 col-form-label">
+                                                                        Tên tài khoản
+                                                                    </label>
+                                                                    <div class="col-lg-9">
+                                                                        <input name="AgencyBanks[@i].AccountName" class="form-control m-input" autocomplete="off" value="@bank.AccountName" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group m-form__group row">
+                                                                    <label class="col-lg-3 col-form-label">
+                                                                        Loại tài khoản
+                                                                    </label>
+                                                                    <div class="col-lg-4">
+                                                                        <select name="AgencyBanks[@i].BankAccountTypeId" asp-items="@(new SelectList(ViewBag.BankAccountTypes, "Id", "Value", bank.BankAccountTypeId))" class="form-control m-input m-input--square">
+                                                                            <option value="" selected>Chọn</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group m-form__group row">
+                                                                    <label class="col-lg-3 col-form-label">
+                                                                        Ngân hàng
+                                                                    </label>
+                                                                    <div class="col-lg-4">
+                                                                        <input name="AgencyBanks[@i].BankName" class="form-control m-input" autocomplete="off" value="@bank.BankName" />
+                                                                    </div>
+                                                                    @if (i > 0)
+                                                                    {
+                                                                        <div class="col-lg-5">
+                                                                            <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deleteBank" data-index="@i">
+                                                                                <i class="la la-trash"></i>
+                                                                            </a>
+                                                                        </div>
+                                                                    }
+                                                                </div>
+                                                                <div class="form-group m-form__group row">
+                                                                    <label class="col-lg-3 col-form-label">
+                                                                        Swift Code
+                                                                    </label>
+                                                                    <div class="col-lg-4">
+                                                                        <input name="AgencyBanks[@i].SwiftCode" class="form-control m-input" autocomplete="off" value="@bank.SwiftCode" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group m-form__group row">
+                                                                    <label class="col-lg-3 col-form-label">
+                                                                        Chi nhánh
+                                                                    </label>
+                                                                    <div class="col-lg-4">
+                                                                        <input name="AgencyBanks[@i].BankBranch" class="form-control m-input" autocomplete="off" value="@bank.BankBranch" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group m-form__group row">
+                                                            <div class="col-lg-12">
+                                                                <div class="form-group m-form__group row">
+                                                                    <div class="col-lg-12" id="card-container-0">
+                                                                        @for (var j = 0; j < bank.AgencyBankCards.Count; j++)
+                                                                        {
+                                                                            var card = bank.AgencyBankCards.ElementAt(j);
+                                                                            <div class="form-group m-form__group row card-item" data-parent="@i" data-index="@j">
+                                                                                <input type="hidden" name="AgencyBanks[@i].AgencyBankCards[@j].Id" value="@card.Id">
+                                                                                <input type="hidden" class="IsDeletedCard" name="AgencyBanks[@i].AgencyBankCards[@j].IsDeleted" value="false">
+                                                                                <div class="col-lg-6">
+                                                                                    <div class="form-group m-form__group row">
+                                                                                        <label class="col-lg-3 col-form-label">
+                                                                                            Loại thẻ thanh toán
+                                                                                        </label>
+                                                                                        <div class="col-lg-4">
+                                                                                            <select name="AgencyBanks[@i].AgencyBankCards[@j].BankCardTypeId" asp-items="@(new SelectList(ViewBag.BankCardTypes, "Id", "Value", card.BankCardTypeId))" class="form-control m-input m-input--square">
+                                                                                                <option value="" selected>Chọn</option>
+                                                                                            </select>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="form-group m-form__group row">
+                                                                                        <label class="col-lg-3 col-form-label">
+                                                                                            Số thẻ thanh toán
+                                                                                        </label>
+                                                                                        <div class="col-lg-4">
+                                                                                            <input name="AgencyBanks[@i].AgencyBankCards[@j].CardNumber" class="form-control m-input" autocomplete="off" value="@card.CardNumber" />
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-lg-6">
+                                                                                    <div class="form-group m-form__group row">
+                                                                                        <label class="col-lg-3 col-form-label">&nbsp;</label>
+                                                                                        <div class="col-lg-9">&nbsp;</div>
+                                                                                    </div>
+                                                                                    <div class="form-group m-form__group row">
+                                                                                        <label class="col-lg-3 col-form-label">
+                                                                                            Ngày hết hạn thẻ
+                                                                                        </label>
+                                                                                        <div class="col-lg-4">
+                                                                                            <input name="AgencyBanks[@i].AgencyBankCards[@j].ExpiredDate" class="form-control m-input" autocomplete="off" value="@card.ExpiredDate" />
+                                                                                        </div>
+                                                                                        @if (j > 0)
+                                                                                        {
+                                                                                            <div class="col-lg-5">
+                                                                                                <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deleteCard" data-parent="@i" data-index="@j">
+                                                                                                    <i class="la la-trash"></i>
+                                                                                                </a>
+                                                                                            </div>
+                                                                                        }
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group m-form__group row">
+                                                                    <div class="col-lg-12 text-right">
+                                                                        <button type="button" class="btn btn-secondary btn-sm add-card" data-parent="0" data-index="@bank.AgencyBankCards.Count">Thêm thẻ thanh toán</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <div hidden id="addBankTemplate">
+                                    <div class="form-group m-form__group row border-top pt-4 bank-item" data-index="{pIndex}">
+                                        <div class="col-lg-12">
+                                            <div class="form-group m-form__group row">
+                                                <div class="col-lg-12">
+                                                    <div class="form-group m-form__group row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group m-form__group row">
+                                                                <label class="col-lg-3 col-form-label">
+                                                                    Số tài khoản
+                                                                </label>
+                                                                <div class="col-lg-4">
+                                                                    <input name="AgencyBanks[{pIndex}].AccountNumber" class="form-control m-input" autocomplete="off" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group m-form__group row">
+                                                                <label class="col-lg-3 col-form-label">
+                                                                    Tên tài khoản
+                                                                </label>
+                                                                <div class="col-lg-9">
+                                                                    <input name="AgencyBanks[{pIndex}].AccountName" class="form-control m-input" autocomplete="off" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group m-form__group row">
+                                                                <label class="col-lg-3 col-form-label">
+                                                                    Loại tài khoản
+                                                                </label>
+                                                                <div class="col-lg-4">
+                                                                    <select name="AgencyBanks[{pIndex}].BankAccountTypeId" asp-items="@(new SelectList(ViewBag.BankAccountTypes, "Id", "Value"))" class="form-control m-input m-input--square">
+                                                                        <option value="" selected>Chọn</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group m-form__group row">
+                                                                <label class="col-lg-3 col-form-label">
+                                                                    Ngân hàng
+                                                                </label>
+                                                                <div class="col-lg-4">
+                                                                    <input name="AgencyBanks[{pIndex}].BankName" class="form-control m-input" autocomplete="off" />
+                                                                </div>
+                                                                <div class="col-lg-5">
+                                                                    <input type="hidden" class="IsDeletedBank" name="AgencyBanks[{pIndex}].IsDeleted" value="false">
+                                                                    <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deleteBank" data-index="{pIndex}">
+                                                                        <i class="la la-trash"></i>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group m-form__group row">
+                                                                <label class="col-lg-3 col-form-label">
+                                                                    Swift Code
+                                                                </label>
+                                                                <div class="col-lg-4">
+                                                                    <input name="AgencyBanks[{pIndex}].SwiftCode" class="form-control m-input" autocomplete="off" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group m-form__group row">
+                                                                <label class="col-lg-3 col-form-label">
+                                                                    Chi nhánh
+                                                                </label>
+                                                                <div class="col-lg-4">
+                                                                    <input name="AgencyBanks[{pIndex}].BankBranch" class="form-control m-input" autocomplete="off" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group m-form__group row">
+                                                        <div class="col-lg-12">
+                                                            <div class="form-group m-form__group row">
+                                                                <div class="col-lg-12" id="card-container-{pIndex}">
+                                                                    <div class="form-group m-form__group row card-item">
+                                                                        <input type="hidden" class="IsDeletedCard" name="AgencyBanks[{pIndex}].AgencyBankCards[0].IsDeleted" value="false">
+                                                                        <div class="col-lg-6">
+                                                                            <div class="form-group m-form__group row">
+                                                                                <label class="col-lg-3 col-form-label">
+                                                                                    Loại thẻ thanh toán
+                                                                                </label>
+                                                                                <div class="col-lg-4">
+                                                                                    <select name="AgencyBanks[{pIndex}].AgencyBankCards[0].BankCardTypeId" asp-items="@(new SelectList(ViewBag.BankCardTypes, "Id", "Value"))" class="form-control m-input m-input--square">
+                                                                                        <option value="" selected>Chọn</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group m-form__group row">
+                                                                                <label class="col-lg-3 col-form-label">
+                                                                                    Số thẻ thanh toán
+                                                                                </label>
+                                                                                <div class="col-lg-4">
+                                                                                    <input name="AgencyBanks[{pIndex}].AgencyBankCards[0].CardNumber" class="form-control m-input" autocomplete="off" />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-lg-6">
+                                                                            <div class="form-group m-form__group row">
+                                                                                <label class="col-lg-3 col-form-label">&nbsp;</label>
+                                                                                <div class="col-lg-9">&nbsp;</div>
+                                                                            </div>
+                                                                            <div class="form-group m-form__group row">
+                                                                                <label class="col-lg-3 col-form-label">
+                                                                                    Ngày hết hạn thẻ
+                                                                                </label>
+                                                                                <div class="col-lg-4">
+                                                                                    <input name="AgencyBanks[{pIndex}].AgencyBankCards[0].ExpiredDate" class="form-control m-input" autocomplete="off" />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group m-form__group row">
+                                                                <div class="col-lg-12 text-right">
+                                                                    <button type="button" class="btn btn-secondary btn-sm add-card" data-parent="{pIndex}" data-index="1">Thêm thẻ thanh toán</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div hidden id="addCardTemplate">
+                                    <div class="form-group m-form__group row card-item" data-parent="{bIndex}" data-index="{pIndex}">
+                                        <div class="col-lg-6">
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-3 col-form-label">
+                                                    Loại thẻ thanh toán
+                                                </label>
+                                                <div class="col-lg-4">
+                                                    <select name="AgencyBanks[{bIndex}].AgencyBankCards[{pIndex}].BankCardTypeId" asp-items="@(new SelectList(ViewBag.BankCardTypes, "Id", "Value"))" class="form-control m-input m-input--square">
+                                                        <option value="" selected>Chọn</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-3 col-form-label">
+                                                    Số thẻ thanh toán
+                                                </label>
+                                                <div class="col-lg-4">
+                                                    <input name="AgencyBanks[{bIndex}].AgencyBankCards[{pIndex}].CardNumber" class="form-control m-input" autocomplete="off" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-3 col-form-label">&nbsp;</label>
+                                                <div class="col-lg-9">&nbsp;</div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-3 col-form-label">
+                                                    Ngày hết hạn thẻ
+                                                </label>
+                                                <div class="col-lg-4">
+                                                    <input name="AgencyBanks[{bIndex}].AgencyBankCards[{pIndex}].ExpiredDate" class="form-control m-input" autocomplete="off" />
+                                                </div>
+                                                <div class="col-lg-5">
+                                                    <input type="hidden" class="IsDeletedCard" name="AgencyBanks[{bIndex}].AgencyBankCards[{pIndex}].IsDeleted" value="false">
+                                                    <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deleteCard" data-parent="{bIndex}" data-index="{pIndex}">
+                                                        <i class="la la-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <div class="col-lg-12 text-right">
+                                        <button type="button" class="btn btn-secondary btn-sm" id="add-bank" data-index="@Model.AgencyBanks.Count">Thêm tài khoản ngân hàng</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-portlet m-portlet--tab">
+                            <div class="m-portlet__head">
+                                <div class="m-portlet__head-caption">
+                                    <div class="m-portlet__head-title">
+                                        <span class="m-portlet__head-icon m--hide">
+                                            <i class="la la-gear"></i>
+                                        </span>
+                                        <h3 class="m-portlet__head-text">
+                                            Thanh toán
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-portlet__body">
+                                <div class="form-group m-form__group row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-3 col-form-label">
+                                                Hình thức thanh toán
+                                            </label>
+                                            <div class="col-lg-3">
+                                                <select id="apmPaymentTypeId" asp-items="@(new SelectList(ViewBag.PaymentTypes, "Id", "Value"))" class="form-control m-input m-input--square">
+                                                    <option value="" selected>Chọn</option>
+                                                </select>
+                                            </div>
+                                            <label class="col-lg-3 col-form-label">
+                                                Loại tiền thanh toán
+                                            </label>
+                                            <div class="col-lg-3">
+                                                <select id="apmCurrencyTypeId" asp-items="@(new SelectList(ViewBag.CurrencyTypes, "Id", "Value"))" class="form-control m-input m-input--square">
+                                                    <option value="" selected>Chọn</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-3 col-form-label">
+                                                Điều khoản thanh toán
+                                            </label>
+                                            <div class="col-lg-3">
+                                                <select id="apmPaymentTermTypeId" asp-items="@(new SelectList(ViewBag.PaymentTermTypes, "Id", "Value"))" class="form-control m-input m-input--square">
+                                                    <option value="" selected>Chọn</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-3 col-form-label">
+                                                Hạn thanh toán/ Lãi suất
+                                            </label>
+                                            <div class="col-lg-3">
+                                                <input id="apmPaymentLimit" class="form-control m-input" autocomplete="off" />
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <input id="apmInterestRate" class="form-control m-input" autocomplete="off" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-3 col-form-label">
+                                                Hạn mức tín dụng
+                                            </label>
+                                            <div class="col-lg-3">
+                                                <input id="apmPaymentCredit" class="form-control m-input" autocomplete="off" />
+                                            </div>
+                                            <label class="col-lg-3 col-form-label">
+                                                Hạn mức hóa đơn
+                                            </label>
+                                            <div class="col-lg-3">
+                                                <input id="apmInvoiceLimit" class="form-control m-input" autocomplete="off" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-3 col-form-label">
+                                                Chiết khấu
+                                            </label>
+                                            <div class="col-lg-3">
+                                                <select id="apmAgencyDiscountTypeId" asp-items="@(new SelectList(ViewBag.AgencyDiscountTypes, "Id", "Value"))" class="form-control m-input m-input--square">
+                                                    <option value="" selected>Chọn</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <input id="apmDiscountAmount" class="form-control m-input" autocomplete="off" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-3 col-form-label">
+                                                Ghi chú
+                                            </label>
+                                            <div class="col-lg-9">
+                                                <textarea id="apmNote" class="form-control m-input m-input--air" rows="3"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-3 col-form-label">
+                                                Thời gian bắt đầu
+                                            </label>
+                                            <div class="col-lg-4">
+                                                <input id="apmStartDate" class="form-control m-input datepicker" autocomplete="off" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-3 col-form-label">
+                                                Thời gian kết thúc
+                                            </label>
+                                            <div class="col-lg-4">
+                                                <input id="apmEndDate" class="form-control m-input datepicker" autocomplete="off" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <div class="col-lg-12 text-right">
+                                        <button type="button" class="btn btn-secondary btn-sm" id="add-apm" data-index="@Model.AgencyPayments.Count">Cập nhật thông tin</button>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <div class="col-lg-12">
+                                        <table class="table table-striped- table-bordered table-hover table-checkable">
+                                            <thead>
+                                                <tr class="text-center">
+                                                    <th>Thời gian bắt đầu</th>
+                                                    <th>Thời gian kết thúc</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="apm-history">
+                                                @for (var i = 0; i < Model.AgencyPayments.Count; i++)
+                                                {
+                                                    var apm = Model.AgencyPayments.ElementAt(i);
+                                                    @await Component.InvokeAsync("AgencyPayment", new {
+                                                        model = new AgencyPaymentViewModel
+                                                        {
+                                                            Id = apm.Id,
+                                                            Index = i,
+                                                            EndDate = apm.EndDate,
+                                                            StartDate = apm.StartDate,
+                                                            AgencyId = apm.AgencyId,
+                                                            AgencyDiscountTypeId = apm.AgencyDiscountTypeId,
+                                                            CurrencyTypeId = apm.CurrencyTypeId,
+                                                            DiscountAmount = apm.DiscountAmount,
+                                                            InterestRate = apm.InterestRate,
+                                                            InvoiceLimit = apm.InvoiceLimit,
+                                                            Note = apm.Note,
+                                                            PaymentCredit = apm.PaymentCredit,
+                                                            PaymentLimit = apm.PaymentLimit,
+                                                            PaymentTermTypeId = apm.PaymentTermTypeId,
+                                                            PaymentTypeId = apm.PaymentTypeId
+                                                        }
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-portlet m-portlet--tab">
+                            <div class="m-portlet__head">
+                                <div class="m-portlet__head-caption">
+                                    <div class="m-portlet__head-title">
+                                        <span class="m-portlet__head-icon m--hide">
+                                            <i class="la la-gear"></i>
+                                        </span>
+                                        <h3 class="m-portlet__head-text">
+                                            Giao hàng - Khuyến mãi
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-portlet__body">
+                                <div class="form-group m-form__group row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-3 col-form-label">
+                                                Hình thức lấy hàng
+                                            </label>
+                                            <div class="col-lg-4">
+                                                <select id="adPickupTypeId" asp-items="@(new SelectList(ViewBag.PickupTypes, "Id", "Value"))" class="form-control m-input m-input--square">
+                                                    <option value="" selected>Chọn</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-3 col-form-label">
+                                                Hình thức khuyến mãi đại lý áp dụng cho khách
+                                            </label>
+                                            <div class="col-lg-4">
+                                                <select id="adAgencyDiscountCustomerTypeId" asp-items="@(new SelectList(ViewBag.AgencyDiscountCustomerTypes, "Id", "Value"))" class="form-control m-input m-input--square">
+                                                    <option value="" selected>Chọn</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-3 col-form-label">
+                                                Ghi chú
+                                            </label>
+                                            <div class="col-lg-9">
+                                                <textarea id="adNote" class="form-control m-input m-input--air" rows="3"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-3 col-form-label">
+                                                Thời gian bắt đầu áp dụng
+                                            </label>
+                                            <div class="col-lg-4">
+                                                <input id="adStartDate" class="form-control m-input datepicker" autocomplete="off" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-3 col-form-label">
+                                                Thời gian kết thúc
+                                            </label>
+                                            <div class="col-lg-4">
+                                                <input id="adEndDate" class="form-control m-input datepicker" autocomplete="off" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <div class="col-lg-12 text-right">
+                                        <button type="button" class="btn btn-secondary btn-sm" id="add-ad" data-index="@Model.AgencyDeliveries.Count">Cập nhật thông tin</button>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <div class="col-lg-12">
+                                        <table class="table table-striped- table-bordered table-hover table-checkable">
+                                            <thead>
+                                                <tr class="text-center">
+                                                    <th>Thời gian bắt đầu</th>
+                                                    <th>Thời gian kết thúc</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="ad-history">
+                                                @for (var i = 0; i < Model.AgencyDeliveries.Count; i++)
+                                                {
+                                                    var ad = Model.AgencyDeliveries.ElementAt(i);
+                                                    @await Component.InvokeAsync("AgencyDelivery", new {
+                                                        model = new AgencyDeliveryViewModel
+                                                        {
+                                                            Id = ad.Id,
+                                                            Index = i,
+                                                            EndDate = ad.EndDate,
+                                                            StartDate = ad.StartDate,
+                                                            AgencyId = ad.AgencyId,
+                                                            AgencyDiscountCustomerTypeId = ad.AgencyDiscountCustomerTypeId,
+                                                            PickupTypeId = ad.PickupTypeId,
+                                                            Note = ad.Note
+                                                        }
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-portlet m-portlet--tab">
+                            <div class="m-portlet__head">
+                                <div class="m-portlet__head-caption">
+                                    <div class="m-portlet__head-title">
+                                        <span class="m-portlet__head-icon m--hide">
+                                            <i class="la la-gear"></i>
+                                        </span>
+                                        <h3 class="m-portlet__head-text">
+                                            Nhân viên chăm sóc
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-portlet__body">
+                                <div class="form-group m-form__group row">
+                                    <div class="col-lg-12 text-right">
+                                        <button type="button" class="btn btn-secondary btn-sm" id="add-ac" data-index="@Model.AgencyCares.Count">Thêm nhân viên chăm sóc</button>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <div class="col-lg-12">
+                                        <table class="table table-striped- table-bordered table-hover table-checkable">
+                                            <thead>
+                                                <tr class="text-center">
+                                                    <th>Ngày bắt đầu tiếp nhận</th>
+                                                    <th>Ngày dừng tiếp nhận</th>
+                                                    <th>Nhân viên chăm sóc</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="ac-history">
+                                                @for (var i = 0; i < Model.AgencyCares.Count; i++)
+                                                {
+                                                    var ac = Model.AgencyCares.ElementAt(i);
+                                                    @await Component.InvokeAsync("AgencyCare", new {
+                                                        model = new AgencyCareViewModel
+                                                        {
+                                                            Id = ac.Id,
+                                                            Index = i,
+                                                            EndDate = ac.EndDate,
+                                                            StartDate = ac.StartDate,
+                                                            AgencyId = ac.AgencyId,
+                                                            EmployeeId = ac.EmployeeId,
+                                                            EmployeeName = ac.Employee.PrimaryName
+                                                        }
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="m-portlet__foot m-portlet__foot--fit">
+                        <div class="m-form__actions m-form__actions">
+                            <div class="row">
+                                <div class="col-lg-2"></div>
+                                <div class="col-lg-6">
+                                    <input type="submit" value="Submit" class="btn btn-primary" />
+                                    <a asp-action="Index">Back to List</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editAPMModal" tabindex="-1" role="dialog" aria-labelledby="editAPMModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Sửa thông tin thanh toán</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+            </div>
+            <form asp-action="AddPayment" class="m-form m-form--label-align-right" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccessEditAPM" data-ajax-failure="onFailureEditAPM">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" id="eapmIndex" name="Index" />
+                <input type="hidden" id="eapmId" name="Id" />
+                <input type="hidden" id="eapmAgencyId" name="AgencyId" />
+                <div class="modal-body">
+                    <div class="form-group m-form__group row">
+                        <div class="col-lg-12">
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-4 col-form-label">
+                                    Hình thức thanh toán
+                                </label>
+                                <div class="col-lg-4">
+                                    <select id="eapmPaymentTypeId" name="PaymentTypeId" asp-items="@(new SelectList(ViewBag.PaymentTypes, "Id", "Value"))" class="form-control m-input m-input--square">
+                                        <option value="">Chọn</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-4 col-form-label">
+                                    Loại tiền thanh toán
+                                </label>
+                                <div class="col-lg-4">
+                                    <select id="eapmCurrencyTypeId" name="CurrencyTypeId" asp-items="@(new SelectList(ViewBag.CurrencyTypes, "Id", "Value"))" class="form-control m-input m-input--square">
+                                        <option value="">Chọn</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-4 col-form-label">
+                                    Điều khoản thanh toán
+                                </label>
+                                <div class="col-lg-4">
+                                    <select id="eapmPaymentTermTypeId" name="PaymentTermTypeId" asp-items="@(new SelectList(ViewBag.PaymentTermTypes, "Id", "Value"))" class="form-control m-input m-input--square">
+                                        <option value="">Chọn</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-4 col-form-label">
+                                    Hạn thanh toán/ Lãi suất
+                                </label>
+                                <div class="col-lg-4">
+                                    <input id="eapmPaymentLimit" name="PaymentLimit" class="form-control m-input" autocomplete="off" />
+                                </div>
+                                <div class="col-lg-4">
+                                    <input id="eapmInterestRate" name="InterestRate" class="form-control m-input" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-4 col-form-label">
+                                    Hạn mức tín dụng
+                                </label>
+                                <div class="col-lg-4">
+                                    <input id="eapmPaymentCredit" name="PaymentCredit" class="form-control m-input" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-4 col-form-label">
+                                    Hạn mức hóa đơn
+                                </label>
+                                <div class="col-lg-4">
+                                    <input id="eapmInvoiceLimit" name="InvoiceLimit" class="form-control m-input" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-4 col-form-label">
+                                    Chiết khấu
+                                </label>
+                                <div class="col-lg-4">
+                                    <select id="eapmAgencyDiscountTypeId" name="AgencyDiscountTypeId" asp-items="@(new SelectList(ViewBag.AgencyDiscountTypes, "Id", "Value"))" class="form-control m-input m-input--square">
+                                        <option value="">Chọn</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-4">
+                                    <input id="eapmDiscountAmount" name="DiscountAmount" class="form-control m-input" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-4 col-form-label">
+                                    Ghi chú
+                                </label>
+                                <div class="col-lg-8">
+                                    <textarea id="eapmNote" name="Note" class="form-control m-input m-input--air" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-4 col-form-label">
+                                    Thời gian bắt đầu
+                                </label>
+                                <div class="col-lg-4">
+                                    <input id="eapmStartDate" name="StartDate" class="form-control m-input datepicker" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-4 col-form-label">
+                                    Thời gian kết thúc
+                                </label>
+                                <div class="col-lg-4">
+                                    <input id="eapmEndDate" name="EndDate" class="form-control m-input datepicker" autocomplete="off" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-info">Lưu</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editADModal" tabindex="-1" role="dialog" aria-labelledby="editADModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Sửa thông tin giao hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+            </div>
+            <form asp-action="AddDelivery" class="m-form m-form--label-align-right" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccessEditAD" data-ajax-failure="onFailureEditAD">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" id="eadIndex" name="Index" />
+                <input type="hidden" id="eadId" name="Id" />
+                <input type="hidden" id="eadAgencyId" name="AgencyId" />
+                <div class="modal-body">
+                    <div class="form-group m-form__group row">
+                        <div class="col-lg-12">
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-5 col-form-label">
+                                    Hình thức lấy hàng
+                                </label>
+                                <div class="col-lg-4">
+                                    <select id="eadPickupTypeId" name="PickupTypeId" asp-items="@(new SelectList(ViewBag.PickupTypes, "Id", "Value"))" class="form-control m-input m-input--square">
+                                        <option value="">Chọn</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-5 col-form-label">
+                                    Hình thức khuyến mãi đại lý áp dụng cho khách
+                                </label>
+                                <div class="col-lg-4">
+                                    <select id="eadAgencyDiscountCustomerTypeId" name="AgencyDiscountCustomerTypeId" asp-items="@(new SelectList(ViewBag.AgencyDiscountCustomerTypes, "Id", "Value"))" class="form-control m-input m-input--square">
+                                        <option value="">Chọn</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-5 col-form-label">
+                                    Ghi chú
+                                </label>
+                                <div class="col-lg-7">
+                                    <textarea id="eadNote" name="Note" class="form-control m-input m-input--air" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-5 col-form-label">
+                                    Thời gian bắt đầu áp dụng
+                                </label>
+                                <div class="col-lg-4">
+                                    <input id="eadStartDate" name="StartDate" class="form-control m-input datepicker" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-5 col-form-label">
+                                    Thời gian kết thúc
+                                </label>
+                                <div class="col-lg-4">
+                                    <input id="eadEndDate" name="EndDate" class="form-control m-input datepicker" autocomplete="off" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-info">Lưu</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addACModal" tabindex="-1" role="dialog" aria-labelledby="addACModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm nhân viên chăm sóc</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <input class="form-control m-input" id="srchPersonName" placeholder="Tên" />
+                    </div>
+                    <div class="col-md-3">
+                        <input class="form-control m-input" id="srchPersonPhone" placeholder="Điện thoại" />
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-info btn-sm btnSrchPerson" data-persontype="@PersonType.Employee">Tìm nhân viên</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table class="table table-striped table-bordered table-hover" id="srchemployee-table">
+                            <thead>
+                                <tr class="text-center">
+                                    <th></th>
+                                    <th>Họ tên</th>
+                                    <th>Chức vụ</th>
+                                    <th>Số điện thoại</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody class="srchemployee-container"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <input type="hidden" id="acIndex" />
+                <div class="form-group m-form__group row">
+                    <label class="col-lg-4 col-form-label">
+                        Ngày bắt đầu tiếp nhận
+                    </label>
+                    <div class="col-lg-4">
+                        <input id="acStartDate" class="form-control m-input datepicker" autocomplete="off" />
+                    </div>
+                </div>
+                <div class="form-group m-form__group row">
+                    <label class="col-lg-4 col-form-label">
+                        Ngày dừng tiếp nhận
+                    </label>
+                    <div class="col-lg-4">
+                        <input id="acEndDate" class="form-control m-input datepicker" autocomplete="off" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input class="btn btn-info btn-sm" id="btnAddAC" value="Lưu" />
+                <input class="btn btn-info btn-sm" data-dismiss="modal" value="Đóng" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editACModal" tabindex="-1" role="dialog" aria-labelledby="editACModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Sửa nhân viên chăm sóc</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+            </div>
+            <form asp-action="AddAgencyCare" class="m-form m-form--label-align-right" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccessEditAC" data-ajax-failure="onFailureEditAC">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" id="eacIndex" name="Index" />
+                <input type="hidden" id="eacId" name="Id" />
+                <input type="hidden" id="eacAgencyId" name="AgencyId" />
+                <input type="hidden" id="eacEmployeeId" name="EmployeeId" />
+                <div class="modal-body">
+                    <div class="form-group m-form__group row">
+                        <label class="col-lg-5 col-form-label">
+                            Nhân viên chăm sóc
+                        </label>
+                        <div class="col-lg-7">
+                            <input id="eacEmployeeName" class="form-control m-input" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group m-form__group row">
+                        <label class="col-lg-5 col-form-label">
+                            Ngày bắt đầu tiếp nhận
+                        </label>
+                        <div class="col-lg-7">
+                            <input id="eacStartDate" name="StartDate" class="form-control m-input datepicker" autocomplete="off" />
+                        </div>
+                    </div>
+                    <div class="form-group m-form__group row">
+                        <label class="col-lg-5 col-form-label">
+                            Ngày dừng tiếp nhận
+                        </label>
+                        <div class="col-lg-7">
+                            <input id="eacEndDate" name="EndDate" class="form-control m-input datepicker" autocomplete="off" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-info">Lưu</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addARepresentativeModal" tabindex="-1" role="dialog" aria-labelledby="addARepresentativeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm người đại diện</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="arIndex" />
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <input class="form-control m-input" id="srchPersonName" placeholder="Tên" />
+                    </div>
+                    <div class="col-md-3">
+                        <input class="form-control m-input" id="srchPersonPhone" placeholder="Điện thoại" />
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-info btn-sm btnSrchPerson" data-persontype="@PersonType.Representative">Tìm người đại diện</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table class="table table-striped table-bordered table-hover" id="srchemployee-table">
+                            <thead>
+                                <tr class="text-center">
+                                    <th></th>
+                                    <th>Họ tên</th>
+                                    <th>Chức vụ</th>
+                                    <th>Số điện thoại</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody class="srchemployee-container"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input class="btn btn-info btn-sm" id="btnAddARepresentative" value="Lưu" />
+                <input class="btn btn-info btn-sm" data-dismiss="modal" value="Đóng" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/person_agency.js?t=@(DateTimeOffset.UtcNow.ToUnixTimeSeconds())"></script>
+    <script>
+        $(document).ready(function () {
+            SetActiveMenu('agencyMenu');
+        });
+    </script>
+}

@@ -1,0 +1,588 @@
+﻿@model NinjaSaiGon.Admin.Models.ReportViewModels.DayReportFilterInput
+@{
+    ViewData["Title"] = "ByDay";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Báo cáo ngày
+                        </h3>
+                    </div>
+                </div>
+                <div class="m-portlet__head-tools">
+                    <ul class="m-portlet__nav">
+                        <li class="m-portlet__nav-item">
+                            <select class="form-control m-input m-input--air" id="multiSelectColumn" multiple>
+                                <option value="1" selected>Mã đơn hàng</option>
+                                <option value="2" selected>Thời gian đặt</option>
+                                <option value="3" selected>Thời gian giao</option>
+                                <option value="4">Thời gian vào phiếu</option>
+                                <option value="5">Thời gian ra phiếu</option>
+                                <option value="6">Thời gian in phiếu</option>
+                                <option value="7">Thời gian kết thúc</option>
+                                <option value="8" selected>Khuyến mãi</option>
+                                <option value="9">Nhóm món</option>
+                                <option value="10" selected>Món</option>
+                                <option value="11" selected>Size</option>
+                                <option value="12" selected>Đá</option>
+                                <option value="13" selected>Đường</option>
+                                <option value="14" selected>Topping</option>
+                                <option value="15">Loại ly (ly Tặng/ ly KM/ Ly gốc)</option>
+                                <option value="16" selected>Số ly</option>
+                                <option value="17" selected>Đơn giá</option>
+                                <option value="18" selected>Tổng tiền</option>
+                                <option value="19" selected>Phụ thu</option>
+                                <option value="20" selected>Giảm giá món</option>
+                                <option value="21" selected>Giảm giá thêm</option>
+                                <option value="22" selected>Giảm giá tổng</option>
+                                <option value="23" selected>Phí ship (hệ thống Ninja)</option>
+                                <option value="24" selected>Hãng vận chuyển</option>
+                                <option value="25" selected>Phí ship</option>
+                                <option value="26" selected>Thành tiền (Ninja)</option>
+                                <option value="27" selected>Thành tiền (thực thu)</option>
+                                <option value="28">Tên khách hàng</option>
+                                <option value="29">Điện thoại</option>
+                                <option value="30">Địa chỉ</option>
+                                <option value="31">Khoảng cách</option>
+                                <option value="32">Mã khách hàng</option>
+                                <option value="33">Loại khách hàng</option>
+                                <option value="34">Ghi chú</option>
+                            </select>
+                        </li>
+                        <li class="m-portlet__nav-item">
+                            <div class="m-dropdown m-dropdown--inline m-dropdown--arrow" m-dropdown-toggle="click" id="rangeDropdown">
+                                <a href="#" class="m-dropdown__toggle btn btn-secondary dropdown-toggle display-range-opt">Trong khoảng</a>
+                                <div class="m-dropdown__wrapper">
+                                    <span class="m-dropdown__arrow m-dropdown__arrow--left"></span>
+                                    <div class="m-dropdown__inner">
+                                        <div class="m-dropdown__body">
+                                            <div class="m-dropdown__content">
+                                                <ul class="m-nav">
+                                                    <li class="m-nav__item" data-range="All"><span class="m-nav__link-text">Mọi lúc</span></li>
+                                                    <li class="m-nav__item" data-range="Day">Trong ngày</li>
+                                                    <li class="m-nav__item" data-range="Week">Trong tuần</li>
+                                                    <li class="m-nav__item" data-range="Month">Trong tháng</li>
+                                                    <li class="m-nav__item" data-range="ThreeMonth">Trong 3 tháng</li>
+                                                    <li class="m-nav__item" data-range="SixMonth">Trong 6 tháng</li>
+                                                    <li class="m-nav__separator m-nav__separator--fit"></li>
+                                                    <li class="m-nav__item" data-range="Custom" data-toggle="modal" data-target="#rangeModal">Trong khoảng</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="m-portlet__nav-item">
+                            <div class="input-group pull-right" id="daterangepicker">
+                                <input type="text" class="form-control m-input report-range-picker" readonly="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="la la-calendar-check-o"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <table class="table table-striped- table-bordered table-checkable table-report table-responsive" id="m_table_1">
+                    <thead>
+                        <tr class="text-center">
+                            <th data-col="1" rowspan="2">Mã đơn hàng</th>
+                            <th class="col-time" colspan="2">Thời gian</th>
+                            <th data-col="8" rowspan="2">Khuyến mãi</th>
+                            <th data-col="9" rowspan="2" style="display: none;">Nhóm món</th>
+                            <th data-col="10" rowspan="2">Món</th>
+                            <th data-col="11" rowspan="2">Size</th>
+                            <th data-col="12" rowspan="2">Đá</th>
+                            <th data-col="13" rowspan="2">Đường</th>
+                            <th data-col="14" rowspan="2">Topping</th>
+                            <th data-col="15" rowspan="2" style="display: none;">Loại ly (ly Tặng/ ly KM/ Ly gốc)</th>
+                            <th data-col="16" rowspan="2">Số ly</th>
+                            <th class="col-money" colspan="5">Tiền</th>
+                            <th data-col="22" rowspan="2">Giảm giá tổng</th>
+                            <th class="col-ship" colspan="3">Phí ship</th>
+                            <th class="col-total" colspan="2">Doanh thu</th>
+                            <th class="col-customer" colspan="0" style="display: none;">Khách hàng</th>
+                            <th data-col="34" rowspan="2" style="display: none;">Ghi chú</th>
+                        </tr>
+                        <tr class="text-center">
+                            <th data-col="2">Đặt</th>
+                            <th data-col="3">Giao</th>
+                            <th data-col="4" style="display: none;">Vào phiếu</th>
+                            <th data-col="5" style="display: none;">Ra phiếu</th>
+                            <th data-col="6" style="display: none;">In phiếu</th>
+                            <th data-col="7" style="display: none;">Kết thúc</th>
+                            <th data-col="17">Đơn giá</th>
+                            <th data-col="18">Tổng tiền</th>
+                            <th data-col="19">Phụ thu</th>
+                            <th data-col="20">Giảm giá món</th>
+                            <th data-col="21">Giảm giá thêm</th>
+                            <th data-col="23">Phí ship<br />(hệ thống Ninja)</th>
+                            <th data-col="24">Hãng vận chuyển</th>
+                            <th data-col="25">Phí ship</th>
+                            <th data-col="26">Thành tiền (Ninja)</th>
+                            <th data-col="27">Thành tiền (thực thu)</th>
+                            <th data-col="28" style="display: none;">Tên</th>
+                            <th data-col="29" style="display: none;">Điện thoại</th>
+                            <th data-col="30" style="display: none;">Địa chỉ</th>
+                            <th data-col="31" style="display: none;">Khoảng cách</th>
+                            <th data-col="32" style="display: none;">Mã khách hàng</th>
+                            <th data-col="33" style="display: none;">Loại khách hàng</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div class="text-center" id="spinner">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination" id="pagination"></ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="rangeModal" tabindex="-1" role="dialog" aria-labelledby="rangeModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chọn thời gian</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                    </span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group m-form__group row">
+                    <label class="col-lg-4 col-form-label">
+                        Từ ngày
+                    </label>
+                    <div class="col-lg-6">
+                        <input type="text" class="form-control m-input datepicker" id="rangeBegin" />
+                    </div>
+                </div>
+                <div class="form-group m-form__group row">
+                    <label class="col-lg-4 col-form-label">
+                        Đến ngày
+                    </label>
+                    <div class="col-lg-6">
+                        <input type="text" class="form-control m-input datepicker" id="rangeEnd" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary btn-ok" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $('#multiSelectColumn').multiselect({
+            allSelectedText: 'Tất cả cột',
+            selectAllText: 'Chọn tất cả cột',
+            buttonWidth: '220px',
+            maxHeight: 220,
+            includeSelectAllOption: false,
+            onSelectAll: function () {
+                $('#m_table_1 td, #m_table_1 th').show();
+            },
+            onDeselectAll: function () {
+                $('#m_table_1 td, #m_table_1 th').hide();
+            },
+            onChange: function (option, checked, select) {
+                var opt = Number($(option).val());
+                var parent = opt >= 2 && opt <= 7 ? '.col-time' : opt >= 17 && opt <= 21 ? '.col-money' : opt >= 23 && opt <= 25 ? '.col-ship' : opt >= 26 && opt <= 27 ? '.col-total' : opt >= 28 && opt <= 33 ? '.col-customer' : '';
+
+                if (!checked) {
+                    if (parent != '') {
+                        var colspan = Number($(parent).attr('colspan'));
+                        colspan = colspan - 1;
+                        $(parent).attr('colspan', colspan);
+                        if (colspan == 0) $(parent).hide();                      
+                    }
+                    $('#m_table_1 td:nth-child(' + opt + '), #m_table_1 th[data-col=' + opt + ']').hide();
+                } else {
+                    if (parent != '') {
+                        var colspan = Number($(parent).attr('colspan'));
+                        colspan = colspan + 1;
+                        $(parent).attr('colspan', colspan);
+                        $(parent).show();
+                    }
+                    $('#m_table_1 td:nth-child(' + opt + '), #m_table_1 th[data-col=' + opt + ']').show();
+                }
+            }
+        })
+        .multiselect('selectAll', true)
+        .multiselect('updateButtonText');
+
+        $(".datepicker").datepicker({
+            format: "dd/mm/yyyy",
+            todayHighlight: !0,
+            orientation: "bottom left",
+            templates: {
+                leftArrow: '<i class="la la-angle-left"></i>',
+                rightArrow: '<i class="la la-angle-right"></i>'
+            }
+        });
+
+        $("#daterangepicker").daterangepicker({
+            buttonClasses: "m-btn btn",
+            applyClass: "btn-primary",
+            cancelClass: "btn-secondary",
+            timePicker: !0,
+            timePicker24Hour: !0,
+        });
+
+        $('#rangeDropdown .m-nav__item').on('click', function (e) {
+            var startDate, endDate;
+            $('#rangeDropdown .display-range-opt').text($(this).text());
+
+            if ($(this).data('range') != 'Custom') {
+                if ($(this).data('range') == 'Day') {
+                    startDate = new Date();
+                    endDate = new Date();
+                    endDate.setDate(endDate.getDate() + 1);
+
+                } else if ($(this).data('range') == 'Week') {
+                    endDate = new Date();
+                    endDate.setDate(endDate.getDate() + 1);
+
+                    startDate = new Date(endDate);
+                    startDate.setDate(startDate.getDate() - 7);
+                } else if ($(this).data('range') == 'Month') {
+                    endDate = new Date();
+                    endDate.setDate(endDate.getDate() + 1);
+
+                    startDate = new Date(endDate);
+                    startDate.setMonth(startDate.getMonth() - 1);
+                } else if ($(this).data('range') == 'ThreeMonth') {
+                    endDate = new Date();
+                    endDate.setDate(endDate.getDate() + 1);
+
+                    startDate = new Date(endDate);
+                    startDate.setMonth(startDate.getMonth() - 3);
+                } else if ($(this).data('range') == 'SixMonth') {
+                    endDate = new Date();
+                    endDate.setDate(endDate.getDate() + 1);
+
+                    startDate = new Date(endDate);
+                    startDate.setMonth(startDate.getMonth() - 6);
+                } else if ($(this).data('range') == 'All') {
+                    endDate = new Date();
+                    endDate.setDate(endDate.getDate() + 1);
+
+                    startDate = new Date(2018, 9, 1);
+                }
+
+                startDate.setHours(0, 0);
+                endDate.setHours(23, 59);
+
+                updateRangePicker(startDate, endDate);
+            }
+        });
+
+        $('#daterangepicker').on('apply.daterangepicker', function (ev, picker) {
+            updateRangePicker(picker.startDate, picker.endDate);
+        });
+
+        var updateRangePicker = function (startDate, endDate) {
+            $("#daterangepicker .form-control").val(moment(startDate).format("DD/MM/YYYY H:mm") + " - " + moment(endDate).format("DD/MM/YYYY H:mm"));
+            $("#daterangepicker").data('daterangepicker').startDate = moment(startDate, "YYYY-MM-DD H:mm");
+            $("#daterangepicker").data('daterangepicker').endDate = moment(endDate, "YYYY-MM-DD H:mm");
+            $("#daterangepicker").data('daterangepicker').updateView();
+            $("#daterangepicker").data('daterangepicker').updateCalendars();
+            from = moment(startDate).format("MM/DD/YYYY H:mm");
+            to = moment(endDate).format("MM/DD/YYYY H:mm");
+            getDataReportByDay(from, to);
+        }
+
+        let loadPagination = function (data) {
+            let min = Math.max(data.page - 2, 1);
+            let max = Math.min(min + 4, data.totalPage);
+
+            var paginationHtml = '<li class="page-item"><a class="page-link" href="javascript:gotoPage(1);">Đầu</a></li>' +
+                '<li class="page-item' + (data.page == 1 ? ' disabled' : '') + '"><a class="page-link" href="javascript:gotoPage(' + (data.page - 1) + ');"><span aria-hidden="true">&laquo;</span><span class="sr-only">Trước</span></a></li>'
+
+            for (var i = min; i <= max; i++) {
+                let isActive = (i == data.page);
+                paginationHtml += '<li class="page-item' + (isActive ? ' active' : '') + '"><a class="page-link" href="javascript:gotoPage(' + i + ');">' + i + '</a></li>';
+            }
+
+            paginationHtml += '<li class="page-item' + (data.page == data.totalPage ? ' disabled' : '') + '"><a class="page-link" href="javascript:gotoPage(' + (data.page + 1) + ');"><span aria-hidden="true">&raquo;</span><span class="sr-only">Sau</span></a></li>';
+            paginationHtml += '<li class="page-item"><a class="page-link" href="javascript:gotoPage(' + data.totalPage + ');">Cuối</a></li>';
+            document.getElementById('pagination').innerHTML = paginationHtml;
+        }
+
+        function getDataReportByDay(from, to, page) {
+            showSpinner();
+            let table = document.getElementById("m_table_1").getElementsByTagName('tbody')[0];
+            while (table.rows.length > 0) {
+                table.deleteRow(0);
+            }
+            $.get("/api/Report/ByDay?from=" + from + "&to=" + to + "&page=" + page, function (data) {
+                if (data.days.length > 0) {
+                    data.days.forEach(function (day) {
+                        row = table.insertRow(table.rows.length);
+                        row.className = "rowgrp";
+                        cell = row.insertCell();
+                        cell.innerHTML = day.date + ' <span><i class="fa fa-chevron-down"></i></span>';
+                        cell = row.insertCell();
+                        cell = row.insertCell();
+                        cell = row.insertCell();
+                        cell.style.display= 'none';
+                        cell = row.insertCell();
+                        cell.style.display= 'none';
+                        cell = row.insertCell();
+                        cell.style.display= 'none';
+                        cell = row.insertCell();
+                        cell.style.display= 'none';
+                        cell = row.insertCell();
+                        cell = row.insertCell();
+                        cell.style.display = 'none';
+                        cell = row.insertCell();
+                        cell = row.insertCell();
+                        cell = row.insertCell();
+                        cell = row.insertCell();
+                        cell = row.insertCell();
+                        cell = row.insertCell();
+                        cell.style.display = 'none';
+                        cell = row.insertCell();
+                        cell.innerHTML = numberWithCommas(day.drinksQuantity); //tong so ly
+                        cell = row.insertCell();
+                        cell = row.insertCell();
+                        cell.innerHTML = numberWithCommas(day.drinksTotal);
+                        cell = row.insertCell();
+                        cell.innerHTML = numberWithCommas(day.moneySurcharge);
+                        cell = row.insertCell();
+                        cell.innerHTML = numberWithCommas(day.discountAmount);
+                        cell = row.insertCell();
+                        cell = row.insertCell();
+                        cell.innerHTML = numberWithCommas(day.totalDiscountAmount);
+                        cell = row.insertCell();
+                        cell.innerHTML = numberWithCommas(day.shipFee);
+                        cell = row.insertCell();
+                        cell = row.insertCell();
+                        cell.innerHTML = numberWithCommas(day.partnerShipFee);
+                        cell = row.insertCell();
+                        cell.innerHTML = numberWithCommas(day.ninjaOrderTotal);
+                        cell = row.insertCell();
+                        cell.innerHTML = numberWithCommas(day.realOrderTotal);
+                        cell = row.insertCell();
+                        cell.style.display= 'none';
+                        cell = row.insertCell();
+                        cell.style.display= 'none';
+                        cell = row.insertCell();
+                        cell.style.display= 'none';
+                        cell = row.insertCell();
+                        cell.style.display= 'none';
+                        cell = row.insertCell();
+                        cell.style.display= 'none';
+                        cell = row.insertCell();
+                        cell.style.display= 'none';
+                        cell = row.insertCell();
+                        cell.style.display= 'none';
+
+                        day.orders.forEach(function (order) {
+                            row = table.insertRow();
+                            row.className = "roworder";
+                            cell = row.insertCell();
+                            cell.innerHTML = order.orderCode;
+                            cell = row.insertCell();
+                            cell.innerHTML = moment(order.orderPlaced).format('hh:mm DD/MM/YYYY');
+                            cell = row.insertCell();
+                            cell.innerHTML = moment(order.orderDeliveried).format('hh:mm DD/MM/YYYY');
+                            cell = row.insertCell();
+                            cell.style.display= 'none';
+                            cell = row.insertCell();
+                            cell.style.display= 'none';
+                            cell = row.insertCell();
+                            cell.style.display= 'none';
+                            cell = row.insertCell();
+                            cell.style.display= 'none';
+                            cell = row.insertCell();
+                            cell.innerHTML = order.promotionCode;
+                            cell = row.insertCell();
+                            cell.style.display = 'none';
+                            cell = row.insertCell();
+                            cell = row.insertCell();
+                            cell = row.insertCell();
+                            cell = row.insertCell();
+                            cell = row.insertCell();
+                            cell = row.insertCell();
+                            cell.style.display = 'none';
+                            cell = row.insertCell();
+                            cell.innerHTML = numberWithCommas(order.drinksQuantity);
+                            cell = row.insertCell();
+                            cell = row.insertCell();
+                            cell.innerHTML = numberWithCommas(order.drinksTotal);
+                            cell = row.insertCell();
+                            cell.innerHTML = numberWithCommas(order.moneySurcharge);
+                            cell = row.insertCell();
+                            cell.innerHTML = numberWithCommas(order.discountAmount);
+                            cell = row.insertCell();
+                            cell = row.insertCell();
+                            cell.innerHTML = numberWithCommas(order.totalDiscountAmount);
+                            cell = row.insertCell();
+                            cell.innerHTML = numberWithCommas(order.shipFee);
+                            cell = row.insertCell();
+                            cell.innerHTML = order.partner;
+                            cell = row.insertCell();
+                            cell.innerHTML = numberWithCommas(order.partnerShipFee);
+                            cell = row.insertCell();
+                            cell.innerHTML = numberWithCommas(order.ninjaOrderTotal);
+                            cell = row.insertCell();
+                            cell.innerHTML = numberWithCommas(order.realOrderTotal);
+                            cell = row.insertCell();
+                            cell.innerHTML = order.customerName;
+                            cell.style.display= 'none';
+                            cell = row.insertCell();
+                            cell.innerHTML = order.customerPhone;
+                            cell.style.display= 'none';
+                            cell = row.insertCell();
+                            cell.innerHTML = order.customerAddress;
+                            cell.style.display= 'none';
+                            cell = row.insertCell();
+                            cell.innerHTML = order.customerDistance;
+                            cell.style.display= 'none';
+                            cell = row.insertCell();
+                            cell.style.display= 'none';
+                            cell = row.insertCell();
+                            cell.style.display= 'none';
+                            cell = row.insertCell();
+                            cell.innerHTML = order.note;
+                            cell.style.display= 'none';
+
+                            order.drinks.forEach(function (drink) {
+                                row = table.insertRow();
+                                cell = row.insertCell();
+                                cell = row.insertCell();
+                                cell = row.insertCell();
+                                cell = row.insertCell();
+                                cell.style.display = 'none';
+                                cell = row.insertCell();
+                                cell.style.display = 'none';
+                                cell = row.insertCell();
+                                cell.style.display = 'none';
+                                cell = row.insertCell();
+                                cell.style.display = 'none';
+                                cell = row.insertCell();
+                                cell = row.insertCell();
+                                cell.style.display = 'none';
+                                cell = row.insertCell();
+                                cell.innerHTML = drink.drinkName;
+                                cell = row.insertCell();
+                                cell.innerHTML = drink.drinkSize;
+                                cell = row.insertCell();
+                                cell.innerHTML = drink.iceOption;
+                                cell = row.insertCell();
+                                cell.innerHTML = drink.sugarOption;
+                                cell = row.insertCell();
+                                cell.innerHTML = drink.toppings.length == 0 ? '' : drink.toppings.join('<br />');
+                                cell = row.insertCell();
+                                cell.style.display = 'none';
+                                cell = row.insertCell();
+                                cell.innerHTML = numberWithCommas(drink.quantity);
+                                cell = row.insertCell();
+                                cell.innerHTML = numberWithCommas(drink.fullPrice);
+                                cell = row.insertCell();
+                                cell.innerHTML = numberWithCommas(drink.amount);
+                                cell = row.insertCell();
+                                cell = row.insertCell();
+                                cell = row.insertCell();
+                                cell = row.insertCell();
+                                cell = row.insertCell();
+                                cell = row.insertCell();
+                                cell = row.insertCell();
+                                cell = row.insertCell();
+                                cell = row.insertCell();
+                                cell = row.insertCell();
+                                cell.style.display= 'none';
+                                cell = row.insertCell();
+                                cell.style.display= 'none';
+                                cell = row.insertCell();
+                                cell.style.display= 'none';
+                                cell = row.insertCell();
+                                cell.style.display= 'none';
+                                cell = row.insertCell();
+                                cell.style.display= 'none';
+                                cell = row.insertCell();
+                                cell.style.display= 'none';
+                                cell = row.insertCell();
+                                cell.style.display= 'none';
+                            });
+                        });
+                    });
+                } else {
+                    var row = table.insertRow();
+                    var cell = row.insertCell();
+                    cell.innerHTML = "<div class='text-center'>Không có dữ liệu</div>";
+                    cell.colSpan = 20;
+                }
+
+                loadPagination(data);
+                hideSpinner();
+            });
+        }
+
+        $(document).on('click', '.rowgrp', function () {
+            $(this).nextUntil('tr.rowgrp').slideToggle(200, function () { });
+            if ($(this).find('i').hasClass('fa-chevron-down')) {
+                $(this).find('i').removeClass('fa-chevron-down');
+                $(this).find('i').addClass('fa-chevron-up');
+            } else {
+                $(this).find('i').removeClass('fa-chevron-up');
+                $(this).find('i').addClass('fa-chevron-down');
+            }
+        });
+
+        $(document).on('click', '.btn-ok', function () {
+            var startDate = $('#rangeBegin').datepicker('getDate');
+            var endDate = $('#rangeEnd').datepicker('getDate');
+
+            startDate.setHours(0, 0);
+            endDate.setHours(23, 59);
+
+            updateRangePicker(startDate, endDate);
+        });
+
+        let gotoPage = function (page) {
+            getDataReportByDay(from, to, page);
+        }
+
+        function showSpinner() {
+            $("#spinner").show();
+        }
+        function hideSpinner() {
+            $("#spinner").hide();
+        }
+
+        function init() {
+            let endDate = new Date('@(Model.To.HasValue? Model.To.Value.ToString("MM/dd/yyyy H:mm") : "")');
+            let startDate = new Date('@(Model.From.HasValue? Model.From.Value.ToString("MM/dd/yyyy H:mm") : "")');
+
+            startDate.setHours(0, 0);
+            endDate.setHours(23, 59);
+
+            updateRangePicker(startDate, endDate);
+        }
+
+        init();
+    </script>
+}
+

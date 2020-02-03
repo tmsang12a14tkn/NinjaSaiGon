@@ -1,0 +1,122 @@
+﻿@model List<PagePermissionViewModel>
+@{
+    ViewBag.Title = "Phân quyền";
+    List<IdentityRole> roles = ViewBag.Roles as List<IdentityRole>;
+    List<ControllerActionPermission> allPermissions = ViewBag.AllPermissions as List<ControllerActionPermission>;
+    List<PagePermissionSiteViewModel> pagePermissionSites = ViewBag.Sites as List<PagePermissionSiteViewModel>;
+    var cntAllSites = pagePermissionSites.Sum(p => p.ControllerActions.Count());
+    var cntAction = 0;
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">Phân quyền</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <form asp-action="PagePermission" class="m-form m-form--label-align-right">
+                    <div class="m-portlet__body">
+                        <table class="table table-striped- table-bordered table-checkable" id="m_table_role">
+                            <thead>
+                                <tr class="text-center">
+                                    <th rowspan="2">Actions</th>
+                                    @for (int i = 0; i < roles.Count; i++)
+                                    {
+                                        <th>@roles[i].Name</th>
+                                    }
+                                </tr>
+                                <tr class="text-center">
+                                    @for (int i = 0; i < roles.Count; i++)
+                                    {
+                                        var chkRolePermission = allPermissions.Where(p => p.RoleId == roles[i].Id).Count();
+                                        <th><input class="m-checkbox--solid m-checkbox--brand select-all" type="checkbox" data-id="@roles[i].Id" @(cntAllSites == chkRolePermission ? "checked" : "")></th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < pagePermissionSites.Count; i++)
+                                {
+                                    var menuGrp = pagePermissionSites[i];
+                                    <tr class="alert-brand">
+                                        <td><b>@(!string.IsNullOrEmpty(menuGrp.MenuGroup) ? menuGrp.MenuGroup : "Other")</b></td>
+                                        @for (int j = 0; j < roles.Count; j++)
+                                        {
+                                            <td class="text-center">
+                                                <input class="m-checkbox--solid m-checkbox--brand role-chks select-grp" data-subgrp="@menuGrp.MenuGroup" data-id="@roles[j].Id" type="checkbox" @(menuGrp.ControllerActions.All(c => c.Permissions.Any(p => p.Role.Id == roles[j].Id)) ? "checked" : "") />
+                                            </td>
+                                        }
+                                    </tr>
+                                    @foreach (var ctrlAction in menuGrp.ControllerActions)
+                                    {
+                                        <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@ctrlAction.Description</td>
+                                            @for (int k = 0; k < roles.Count; k++)
+                                            {
+                                                <td class="text-center">
+                                                    @Html.Hidden("pagePermissions[" + cntAction + "].ControllerActionId", ctrlAction.Id)
+                                                    @Html.Hidden("pagePermissions[" + cntAction + "].RoleId", roles[k].Id)
+                                                    <input class="m-checkbox--solid m-checkbox--brand role-chks" data-subgrp="@menuGrp.MenuGroup" data-id="@roles[k].Id" type="checkbox" name="pagePermissions[@cntAction].CanAccess" @(ctrlAction.Permissions.Any(p => p.Role.Id == roles[k].Id) ? "checked" : "") value="true" />
+                                                </td>
+                                                cntAction++;
+                                            }
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="m-portlet__foot m-portlet__foot--fit">
+                        <div class="m-form__actions m-form__actions">
+                            <div class="row">
+                                <div class="col-lg-2"></div>
+                                <div class="col-lg-6">
+                                    <input type="submit" value="Save" class="btn btn-primary" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            SetActiveMenu('pagePermissionMenu');
+        });
+
+        $(document).on('click', '.select-all', function () {
+            var id = $(this).data('id');
+            $('.role-chks[data-id=' + id + ']').prop('checked', this.checked);
+        });
+
+        $(document).on('click', '.role-chks', function () {
+            var id = $(this).data('id');
+            var subGrp = $(this).data('subgrp');
+            if (!$(this).hasClass('select-grp')) {
+                var elGrp = $('.select-grp[data-subgrp="' + subGrp + '"][data-id=' + id + ']').get(0);
+                if ($('.role-chks[data-subgrp="' + subGrp + '"][data-id=' + id + ']:checked').length == $('.role-chks[data-subgrp="' + subGrp + '"][data-id=' + id + ']').length - 1) {
+                    elGrp.checked = true;
+                } else {
+                    elGrp.checked = false;
+                }
+            } else {
+                $('.role-chks[data-subgrp="' + subGrp + '"][data-id=' + id + ']').prop('checked', this.checked);
+            }
+            
+            var elAll = $('.select-all[data-id=' + id + ']').get(0);
+            if ($('.role-chks[data-id=' + id + ']:checked').length == $('.role-chks[data-id=' + id + ']').length) {
+                elAll.checked = true;
+            } else {
+                elAll.checked = false;
+            }
+        });
+    </script>
+}

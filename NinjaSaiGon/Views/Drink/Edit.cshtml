@@ -1,0 +1,1101 @@
+﻿@model Drink
+
+@{
+    ViewData["Title"] = "Edit";
+    var toppingGroups = ((List<Topping>)ViewBag.AllDrinkToppings).GroupBy(t => t.Category);
+    var ListIceOpt = Model.IceOptions.OrderBy(io => io.Order);
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="m-portlet m-portlet--full-height ">
+                    <div class="m-portlet__head">
+                        <div class="m-portlet__head-caption">
+                            <div class="m-portlet__head-title">
+                                <h3 class="m-portlet__head-text">
+                                    Chỉnh sửa món
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="m-portlet__head-tools">
+                            <ul class="nav nav-pills nav-pills--brand m-nav-pills--btn-pill" role="tablist">
+                                <li class="nav-item m-tabs__item">
+                                    <a class="nav-link m-tabs__link active show" data-toggle="tab" href="#editdrink" role="tab" aria-selected="true">
+                                        Thông tin chung
+                                    </a>
+                                </li>
+                                <li class="nav-item m-tabs__item">
+                                    <a class="nav-link m-tabs__link" data-toggle="tab" href="#settopping" role="tab" aria-selected="false">
+                                        Topping
+                                    </a>
+                                </li>
+                                <li class="nav-item m-tabs__item">
+                                    <a class="nav-link m-tabs__link" data-toggle="tab" href="#drinksetting" role="tab" aria-selected="false">
+                                        Thiết lập
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="m-portlet__body">
+                        <!--begin::Content-->
+                        <div class="tab-content">
+                            <div class="tab-pane active show" id="editdrink" aria-expanded="true">
+                                <div class="m-portlet">
+                                    <!--begin::Form-->
+                                    <form asp-action="Edit" asp-route-activetab="#editdrink" class="m-form m-form--label-align-right">
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <div class="m-portlet__body">
+                                            @* Photo *@
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-2 col-form-label">
+                                                    Hình ảnh
+                                                </label>
+                                                <div class="col-lg-8">
+                                                    <div class="row" id="photo-container" data-index="@(Model?.Photos.Count ?? 0)">
+                                                        @if (Model != null)
+                                                        {
+                                                            for (int i = 0; i < Model.Photos.Count; i++)
+                                                            {
+                                                                var photo = Model.Photos.ElementAt(i);
+                                                                <div class="col-sm-3 text-center" id="photo-@i">
+                                                                    <div style="background-image: url(@photo.Url); background-size: 100%; height: 180px" class="square img@(photo.IsPrimary ? " img-bordered" : "")"></div>
+                                                                    <input type="hidden" name="Photos[@i].Id" value="@photo.Id" />
+                                                                    <input type="hidden" name="Photos[@i].Url" class="url-hidden" value="@photo.Url" />
+                                                                    <input type="hidden" name="Photos[@i].PhysicalPath" value="@photo.PhysicalPath" />
+                                                                    <input type="hidden" name="Photos[@i].IsPrimary" class="isprimary-hidden" value="@photo.IsPrimary.ToString()" />
+                                                                    <input type="hidden" name="Photos[@i].IsDeleted" class="IsDeletedPhoto" value="false" />
+                                                                    <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deletePhoto" data-id="@i" title="Xoá ảnh">
+                                                                        <i class="la la-trash"></i>
+                                                                    </a>
+                                                                </div>
+                                                            }
+                                                        }
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        <label for="photoInput" class="btn btn-default">Chọn ảnh</label>
+                                                        <input id="photoInput" type="file" name="files" accept="image/*" hidden>
+                                                    </div>
+                                                    <div hidden id="addPhotoTemplate">
+                                                        <div style="background-image: url(''); background-size: 100%; height: 180px" class="square img"></div>
+                                                        <input type="hidden" name="Photos[{pIndex}].Url" class="url-hidden" />
+                                                        <input type="hidden" name="Photos[{pIndex}].PhysicalPath" class="url-hidden" />
+                                                        <input type="hidden" name="Photos[{pIndex}].IsPrimary" class="isprimary-hidden" value="false" />
+                                                        <input type="hidden" name="Photos[{pIndex}].IsDeleted" class="IsDeletedPhoto" value="false" />
+                                                        <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deletePhoto" data-id="{pIndex}" title="Xoá ảnh">
+                                                            <i class="la la-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-2 col-form-label">
+                                                    Mã
+                                                </label>
+                                                <div class="col-lg-6">
+                                                    <input asp-for="Code" class="form-control m-input" placeholder="Nhập mã" required />
+                                                    <span asp-validation-for="Code" class="form-control-feedback"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-2 col-form-label">
+                                                    Tên
+                                                </label>
+                                                <div class="col-lg-6">
+                                                    <input asp-for="Name" class="form-control m-input" placeholder="Nhập tên" />
+                                                    <span asp-validation-for="Name" class="form-control-feedback"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-2 col-form-label">
+                                                    Tên tiếng Anh
+                                                </label>
+                                                <div class="col-lg-6">
+                                                    <input asp-for="EnglishName" class="form-control m-input" placeholder="Nhập tên tiếng Anh" />
+                                                    <span asp-validation-for="EnglishName" class="form-control-feedback"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-2 col-form-label">
+                                                    Mô tả
+                                                </label>
+                                                <div class="col-lg-6">
+                                                    <textarea asp-for="Description" class="form-control m-input m-input--air" rows="3"></textarea>
+                                                    <span asp-validation-for="Description" class="form-control-feedback"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-2 col-form-label">
+                                                    Loại đồ uống
+                                                </label>
+                                                <div class="col-lg-6">
+                                                    <select asp-for="CategoryId" asp-items="@(new SelectList(ViewBag.Categories, "Id", "Name"))" class="form-control m-input m-input--square"></select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-2 col-form-label">
+                                                    Giá
+                                                </label>
+                                                <div class="col-lg-6">
+                                                    <input asp-for="Price" class="form-control m-input price-input" placeholder="Nhập giá" type="text" />
+                                                    <span asp-validation-for="Price" class="form-control-feedback"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-2 col-form-label">
+                                                    Mã vạch
+                                                </label>
+                                                <div class="col-lg-6">
+                                                    <input asp-for="Barcode" class="form-control m-input" placeholder="Nhập mã vạch" />
+                                                    <span asp-validation-for="Barcode" class="form-control-feedback"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-2 col-form-label">Món đặc trưng</label>
+                                                <div class="col-lg-6">
+                                                    <label class="m-checkbox m-checkbox--focus">
+                                                        <input asp-for="IsFeatured" />
+                                                        <span></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-2 col-form-label">Có thể nhập lại kho</label>
+                                                <div class="col-lg-6">
+                                                    <label class="m-checkbox m-checkbox--focus">
+                                                        <input asp-for="Reenter" />
+                                                        <span></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-2 col-form-label">Món gợi ý</label>
+                                                <div class="col-lg-6">
+                                                    <label class="m-checkbox m-checkbox--focus">
+                                                        <input asp-for="IsSuggested" />
+                                                        <span></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-2 col-form-label">Combo</label>
+                                                <div class="col-lg-6">
+                                                    <label class="m-checkbox m-checkbox--focus">
+                                                        <input asp-for="IsCombo" />
+                                                        <span></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-2 col-form-label">Món mở</label>
+                                                <div class="col-lg-6">
+                                                    <label class="m-checkbox m-checkbox--focus">
+                                                        <input asp-for="IsOpen" />
+                                                        <span></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-2 col-form-label">Dùng chung</label>
+                                                <div class="col-lg-6">
+                                                    <label class="m-checkbox m-checkbox--focus">
+                                                        <input asp-for="IsShared" />
+                                                        <span></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-2 col-form-label">Món mới</label>
+                                                <div class="col-lg-2">
+                                                    <label class="m-checkbox m-checkbox--focus">
+                                                        <input asp-for="IsNew" />
+                                                        <span></span>
+                                                    </label>
+                                                </div>
+                                                <label class="col-lg-4 col-form-label">Thứ tự món mới</label>
+                                                <div class="col-lg-4">
+                                                    <input asp-for="NewOrderSort" class="form-control m-input" placeholder="Thứ tự món mới" />
+                                                    <span asp-validation-for="NewOrderSort" class="form-control-feedback"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-2 col-form-label">Hoạt động</label>
+                                                <div class="col-lg-6">
+                                                    <label class="m-checkbox m-checkbox--focus">
+                                                        <input asp-for="IsActive" />
+                                                        <span></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="m-portlet__foot m-portlet__foot--fit">
+                                            <div class="m-form__actions m-form__actions">
+                                                <div class="row">
+                                                    <div class="col-lg-2"></div>
+                                                    <div class="col-lg-6">
+                                                        <input type="submit" value="Submit" class="btn btn-primary" />
+                                                        <input type="reset" value="Cancel" class="btn btn-secondary" />
+                                                        <a asp-action="Index">Back to List</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <!--end::Form-->
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="settopping" aria-expanded="false">
+                                <div class="m-portlet">
+                                    <form asp-action="EditToppings" asp-route-activetab="#settopping" class="m-form m-form--label-align-right" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccessEditToppings" data-ajax-failure="onFailureEditToppings">
+                                        <div class="m-portlet__body">
+                                            <input type="hidden" name="DrinkId" value="@Model.Id" />
+                                            <div class="form-group m-form__group row">
+                                                <div class="col-lg-3">
+                                                    <h4>Nhóm topping</h4>
+                                                    <div class="nav nav-pills flex-column" role="tablist">
+                                                        @for (var k = 0; k < toppingGroups.Count(); k++)
+                                                        {
+                                                            var toppingGroup = toppingGroups.ElementAt(k);
+                                                            <a class="nav-link@(k == 0 ? " active" : "")" id="cat-tab-@toppingGroup.Key.Id" data-toggle="pill" href="#toppingCat-@toppingGroup.Key.Id" role="tab" aria-controls="toppingCat-@toppingGroup.Key.Id" aria-selected="true">@toppingGroup.Key.Name</a>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-9">
+                                                    <div class="tab-content" id="myTabContent">
+                                                        @{
+                                                            var j = 0;
+                                                            for (var k = 0; k < toppingGroups.Count(); k++)
+                                                            {
+                                                                var toppingGroup = toppingGroups.ElementAt(k);
+                                                                var drinkToppingCategory = Model.DrinkToppingCategories?.FirstOrDefault(tc => tc.ToppingCategoryId == toppingGroup.Key.Id);
+                                                                <div class="tab-pane fade show@(k == 0 ? " active" : "")" id="toppingCat-@toppingGroup.Key.Id" role="tabpanel" aria-labelledby="cat-tab-@toppingGroup.Key.Id">
+                                                                    <table class="table table-bordered">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>ID</th>
+                                                                                <th>Tên</th>
+                                                                                <th>Chọn</th>
+                                                                                <th>Mặc định</th>
+                                                                                <th>Giá bán</th>
+                                                                                <th>Giá thêm</th>
+                                                                                <th></th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @{
+                                                                                var toppings = toppingGroup.ToList();
+                                                                                for (var i = 0; i < toppings.Count; i++)
+                                                                                {
+                                                                                    var topping = toppings[i];
+                                                                                    var drinkTopping = Model.DrinkToppings.FirstOrDefault(t => t.ToppingId == topping.Id);
+                                                                                    <tr>
+                                                                                        <td>@topping.Id</td>
+                                                                                        <td>@topping.Name</td>
+                                                                                        <td class="text-center">
+                                                                                            <input type="hidden" name="Toppings[@j].ToppingId" value="@topping.Id" />
+                                                                                            @Html.CheckBox("Toppings[" + j + "].Selected", drinkTopping != null) @*value="@(drinkTopping != null ? "true" : "false")" @(drinkTopping != null ? "checked" : "") />*@
+                                                                                        </td>
+                                                                                        <td class="text-center">
+                                                                                            @*<input type="checkbox" name="Toppings[@j].IsPrimary" value="@(drinkTopping != null && drinkTopping.IsPrimary ? "true" : "false")" @(drinkTopping != null && drinkTopping.IsPrimary ? "checked" : "") />*@
+                                                                                            @Html.CheckBox("Toppings[" + j + "].IsPrimary", drinkTopping != null && drinkTopping.IsPrimary)
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <input type="text" class="form-control price-input" name="Toppings[@j].PriceForSale" value="@(drinkTopping != null ? drinkTopping.PriceForSale.ToString() : "")" />
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <input type="text" class="form-control price-input" name="Toppings[@j].PriceForExtra" value="@(drinkTopping != null ? drinkTopping.PriceForExtra.ToString() : "")" />
+                                                                                        </td>
+                                                                                        @if (i == 0)
+                                                                                        {
+                                                                                            <td rowspan="@toppings.Count()">
+                                                                                                Số loại topping trong nhóm tối đa được phép chọn
+                                                                                                <input type="text" name="ToppingCategories[@k].Max" value="@(drinkToppingCategory?.Max)" class="form-control" />
+                                                                                                Số loại topping trong nhóm tối thiểu được phép chọn
+                                                                                                <input type="text" name="ToppingCategories[@k].Min" value="@(drinkToppingCategory?.Min)" class="form-control" />
+                                                                                                <input type="hidden" name="ToppingCategories[@k].ToppingCategoryId" value="@toppingGroup.Key.Id" />
+                                                                                            </td>
+                                                                                        }
+                                                                                    </tr>
+                                                                                    j++;
+                                                                                }
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="m-portlet__foot m-portlet__foot--fit">
+                                            <div class="m-form__actions m-form__actions">
+                                                <div class="row">
+                                                    <div class="col-lg-2"></div>
+                                                    <div class="col-lg-6">
+                                                        <input type="submit" value="Submit" class="btn btn-primary" />
+                                                        <input type="reset" value="Cancel" class="btn btn-secondary" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="drinksetting" aria-expanded="false">
+                                @*Thiết lập chung*@
+                                <div class="m-portlet">
+                                    <form asp-action="EditMisc" asp-route-activetab="#drinksetting" data-ajax="true" data-ajax-method="POST">
+                                        <input asp-for="Id" type="hidden" />
+                                        <div class="m-portlet">
+                                            <div class="m-portlet__head">
+                                                <div class="m-portlet__head-caption">
+                                                    <div class="m-portlet__head-title">
+                                                        <h4 class="m-portlet__head-text">
+                                                            Size
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                                <div class="m-portlet__head-tools">
+                                                    <a href="#" class="btn btn-primary m-btn m-btn--icon m-btn--pill" id="btnAddDrinkSize" data-drinkid="@Model.Id">
+                                                        <span>
+                                                            <i class="la la-plus"></i>
+                                                            <span>Thêm</span>
+                                                        </span>
+                                                    </a>
+
+                                                    <a href="/Drink/SortOptions?drinkId=@Model.Id" class="btn btn-primary m-btn m-btn--icon m-btn--pill">
+                                                        <span>
+                                                            <span>Sắp xếp</span>
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="m-portlet__body">
+                                                @*<div class="row">
+                                                        <div class="col-md-3">
+                                                            <div class="form-group m-form__group row">
+                                                                <label class="col-lg-7 col-form-label">Bắt buộc chọn 1</label>
+                                                                <div class="col-lg-4">
+                                                                    <label class="m-checkbox m-checkbox--focus">
+                                                                        <input asp-for="RequireSizeOption" />
+                                                                        <span></span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group m-form__group row">
+                                                                <label class="col-lg-7 col-form-label">Hiển thị</label>
+                                                                <div class="col-lg-4">
+                                                                    <label class="m-checkbox m-checkbox--focus">
+                                                                        <input asp-for="DisplaySizeOption" />
+                                                                        <span></span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>*@
+                                                <table class="table" id="lstDrinkSize">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>STT</th>
+                                                            <th>TÊN SIZE</th>
+                                                            <th>ĐỊNH MỨC</th>
+                                                            <th>ĐƠN VỊ</th>
+                                                            <th>GIÁ BÁN</th>
+                                                            <th>MẶC ĐỊNH</th>
+                                                            <th>HIỂN THỊ</th>
+                                                            <th>HIỆN Ở TRANG ĐẶT HÀNG</th>
+                                                            <th>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @for (var i = 0; i < Model.DrinkSizes.Count(); i++)
+                                                        {
+                                                            var size = Model.DrinkSizes.ElementAt(i);
+                                                        <tr>
+                                                            <td>@(i + 1)</td>
+                                                            <td>@size.Name</td>
+                                                            <td>@size.Quota</td>
+                                                            <td>@size.UnitId</td>
+                                                            <td>@size.Price</td>
+                                                            <td><input type="checkbox" class="drink-size-chkbox" data-id="@size.Id" data-drinkid="@Model.Id" @(size.IsPrimary ? "checked" : "") /></td>
+                                                            <td><input type="checkbox" class="active-size-chkbox" data-id="@size.Id" data-drinkid="@Model.Id" @(size.IsActive ? "checked" : "") /></td>
+                                                            <td><input type="checkbox" class="showorder-size-chkbox" data-id="@size.Id" data-drinkid="@Model.Id" @(size.IsShowOrder ? "checked" : "") /></td>
+                                                            <td>
+                                                                <a href="/DrinkSize/Edit/@size.Id" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill btnEditDrinkSize" title="Edit" data-id="@size.Id" data-drinkid="@Model.Id">
+                                                                    <i class="la la-edit"></i>
+                                                                </a>
+                                                                <a href="/DrinkSize/Delete/@size.Id" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btnDelDrinkSize" title="Delete" data-id="@size.Id" data-drinkid="@Model.Id">
+                                                                    <i class="la la-trash"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="m-portlet">
+                                            <div class="m-portlet__head">
+                                                <div class="m-portlet__head-caption">
+                                                    <div class="m-portlet__head-title">
+                                                        <h4 class="m-portlet__head-text">
+                                                            Mức đá
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                                <div class="m-portlet__head-tools">
+                                                    <a href="#" class="btn btn-primary m-btn m-btn--icon m-btn--pill" id="btnAddIceOption" data-drinkid="@Model.Id">
+                                                        <span>
+                                                            <i class="la la-plus"></i>
+                                                            <span>Thêm</span>
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="m-portlet__body">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group m-form__group row">
+                                                            <label class="col-lg-7 col-form-label">Bắt buộc chọn 1</label>
+                                                            <div class="col-lg-4">
+                                                                <label class="m-checkbox m-checkbox--focus">
+                                                                    <input asp-for="RequireIceOption" />
+                                                                    <span></span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group m-form__group row">
+                                                            <label class="col-lg-7 col-form-label">Hiển thị</label>
+                                                            <div class="col-lg-4">
+                                                                <label class="m-checkbox m-checkbox--focus">
+                                                                    <input asp-for="DisplayIceOption" />
+                                                                    <span></span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <table class="table" id="lstIceOption">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>STT</th>
+                                                            <th>TÊN MỨC</th>
+                                                            <th>ĐỊNH MỨC</th>
+                                                            <th>ĐƠN VỊ</th>
+                                                            <th>MẶC ĐỊNH</th>
+                                                            <th>HIỂN THỊ</th>
+                                                            <th>HIỆN Ở TRANG ĐẶT HÀNG</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @for (var i = 0; i < ListIceOpt.Count(); i++)
+                                                        {
+                                                            var opt = ListIceOpt.ElementAt(i);
+                                                            <tr>
+                                                                <td>@(i + 1)</td>
+                                                                <td>@opt.Name</td>
+                                                                <td>@opt.Quota</td>
+                                                                <td>@opt.UnitId</td>
+                                                                <td><input type="checkbox" class="drink-ice-chkbox" data-id="@opt.Id" data-drinkid="@Model.Id" @(opt.IsPrimary ? "checked" : "") /></td>
+                                                                <td><input type="checkbox" class="active-ice-chkbox" data-id="@opt.Id" data-drinkid="@Model.Id" @(opt.IsActive ? "checked" : "") /></td>
+                                                                <td><input type="checkbox" class="showorder-ice-chkbox" data-id="@opt.Id" data-drinkid="@Model.Id" @(opt.IsShowOrder ? "checked" : "") /></td>
+                                                                <td>
+                                                                    <a href="#" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill btnEditIceOption" title="Edit" data-id="@opt.Id" data-drinkid="@Model.Id">
+                                                                        <i class="la la-edit"></i>
+                                                                    </a>
+                                                                    <a href="#" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btnDelIceOption" title="Delete" data-id="@opt.Id" data-drinkid="@Model.Id">
+                                                                        <i class="la la-trash"></i>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="m-portlet">
+                                            <div class="m-portlet__head">
+                                                <div class="m-portlet__head-caption">
+                                                    <div class="m-portlet__head-title">
+                                                        <h4 class="m-portlet__head-text">
+                                                            Mức đường
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                                <div class="m-portlet__head-tools">
+                                                    <a href="#" class="btn btn-primary m-btn m-btn--icon m-btn--pill" id="btnAddSugarOption" data-drinkid="@Model.Id">
+                                                        <span>
+                                                            <i class="la la-plus"></i>
+                                                            <span>Thêm</span>
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="m-portlet__body">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group m-form__group row">
+                                                            <label class="col-lg-7 col-form-label">Bắt buộc chọn 1</label>
+                                                            <div class="col-lg-4">
+                                                                <label class="m-checkbox m-checkbox--focus">
+                                                                    <input asp-for="RequireSugarOption" />
+                                                                    <span></span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group m-form__group row">
+                                                            <label class="col-lg-7 col-form-label">Hiển thị</label>
+                                                            <div class="col-lg-4">
+                                                                <label class="m-checkbox m-checkbox--focus">
+                                                                    <input asp-for="DisplaySugarOption" />
+                                                                    <span></span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <table class="table" id="lstSugarOption">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>STT</th>
+                                                            <th>TÊN MỨC</th>
+                                                            <th>ĐỊNH MỨC</th>
+                                                            <th>ĐƠN VỊ</th>
+                                                            <th>MẶC ĐỊNH</th>
+                                                            <th>HIỂN THỊ</th>
+                                                            <th>HIỆN Ở TRANG ĐẶT HÀNG</th>
+                                                            <th>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @for (var i = 0; i < Model.SugarOptions.Count(); i++)
+                                                        {
+                                                            var opt = Model.SugarOptions.ElementAt(i);
+                                                        <tr>
+                                                            <td>@(i + 1)</td>
+                                                            <td>@opt.Name</td>
+                                                            <td>@opt.Quota</td>
+                                                            <td>@opt.UnitId</td>
+                                                            <td><input type="checkbox" class="drink-sugar-chkbox" data-id="@opt.Id" data-drinkid="@Model.Id" @(opt.IsPrimary ? "checked" : "") /></td>
+                                                            <td><input type="checkbox" class="active-sugar-chkbox" data-id="@opt.Id" data-drinkid="@Model.Id" @(opt.IsActive ? "checked" : "") /></td>
+                                                            <td><input type="checkbox" class="showorder-sugar-chkbox" data-id="@opt.Id" data-drinkid="@Model.Id" @(opt.IsShowOrder ? "checked" : "") /></td>
+                                                            <td>
+                                                                <a href="#" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill btnEditSugarOption" title="Edit" data-id="@opt.Id" data-drinkid="@Model.Id">
+                                                                    <i class="la la-edit"></i>
+                                                                </a>
+                                                                <a href="#" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btnDelSugarOption" title="Delete" data-id="@opt.Id" data-drinkid="@Model.Id">
+                                                                    <i class="la la-trash"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end::Content-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_update_size" tabindex="-1" role="dialog" aria-labelledby="updateDrinkSize" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" id="drink-size-content"></div>
+    </div>
+</div>
+<div class="modal fade" id="modal_del_size" tabindex="-1" role="dialog" aria-labelledby="delDrinkSize" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="delDrinkSize">
+                    Xóa size
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                    </span>
+                </button>
+            </div>
+            <form asp-action="DeleteDrinkSize" class="m-form m-form--label-align-right" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccessDelDrinkSize" data-ajax-failure="onFailureDelDrinkSize">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" id="hiddenSizeId" name="Id" />
+                <input type="hidden" id="hiddenDrinkId" name="DrinkId" />
+                <div class="modal-body">
+                    <div class="form-group m-form__group row">
+                        <div class="col-lg-12">
+                            <p>Bạn có chắc chắn muốn xóa size nước này không?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Đóng
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Lưu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_update_ice" tabindex="-1" role="dialog" aria-labelledby="updateIceOption" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" id="ice-opt-content"></div>
+    </div>
+</div>
+<div class="modal fade" id="modal_del_ice" tabindex="-1" role="dialog" aria-labelledby="delIceOption" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="delIceOption">
+                    Xóa mức đá
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                    </span>
+                </button>
+            </div>
+            <form asp-action="DeleteIceOption" class="m-form m-form--label-align-right" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccessDelIceOption" data-ajax-failure="onFailureDelIceOption">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" id="hiddenIceId" name="Id" />
+                <input type="hidden" id="hiddenIceDrinkId" name="DrinkId" />
+                <div class="modal-body">
+                    <div class="form-group m-form__group row">
+                        <div class="col-lg-12">
+                            <p>Bạn có chắc chắn muốn xóa size mức đá này không?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Đóng
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Lưu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_update_sugar" tabindex="-1" role="dialog" aria-labelledby="updateSugarOption" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" id="sugar-opt-content"></div>
+    </div>
+</div>
+<div class="modal fade" id="modal_del_sugar" tabindex="-1" role="dialog" aria-labelledby="delSugarOption" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="delSugarOption">
+                    Xóa mức đường
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                    </span>
+                </button>
+            </div>
+            <form asp-action="DeleteSugarOption" class="m-form m-form--label-align-right" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccessDelSugarOption" data-ajax-failure="onFailureDelSugarOption">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" id="hiddenSugarId" name="Id" />
+                <input type="hidden" id="hiddenSugarDrinkId" name="DrinkId" />
+                <div class="modal-body">
+                    <div class="form-group m-form__group row">
+                        <div class="col-lg-12">
+                            <p>Bạn có chắc chắn muốn xóa size mức đường này không?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Đóng
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Lưu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        String.prototype.replaceAll = function (search, replacement) {
+            var target = this;
+            return target.replace(new RegExp(search, 'g'), replacement);
+        };
+
+        var url = window.location.href;
+        var activeTab = url.substring(url.indexOf("#") + 1);
+        $('a[href="#' + activeTab + '"]').tab('show');
+
+        $('.nav-pills > li > a[data-toggle="tab"]').click(function (e) {
+            if (history.pushState) {
+                history.pushState(null, null, e.target.hash);
+            } else {
+                window.location.hash = e.target.hash;
+            }
+        });
+
+        $(document).ready(function () {
+            SetActiveMenu('drinkMenu');
+        });
+
+        $(".price-input").inputmask("currency", { digits: 0, prefix: "", autoUnmask: true, removeMaskOnSubmit: true });
+
+        $('#RequireSizeOption, #RequireIceOption, #RequireSugarOption, #DisplaySizeOption, #DisplayIceOption, #DisplaySugarOption').on('change', function () {
+            $(this).closest('form').submit();
+        });
+
+        $('#btnAddDrinkSize').on('click', function (e) {
+            e.preventDefault();
+            $.get('/Drink/UpdateDrinkSize?drinkId=' + $(this).data('drinkid'), function (data) {
+                $('#drink-size-content').empty();
+                $('#drink-size-content').append(data);
+                $(".price-input").inputmask("currency", { digits: 0, prefix: "", autoUnmask: true, removeMaskOnSubmit: true });
+                $('#modal_update_size').modal('show');
+            });
+        });
+        $(document).on('click', '.btnEditDrinkSize', function (e) {
+            e.preventDefault();
+            $.get('/Drink/UpdateDrinkSize?id=' + $(this).data('id') + '&drinkId=' + $(this).data('drinkid'), function (data) {
+                $('#drink-size-content').empty();
+                $('#drink-size-content').append(data);
+                $(".price-input").inputmask("currency", { digits: 0, prefix: "", autoUnmask: true, removeMaskOnSubmit: true });
+                $('#modal_update_size').modal('show');
+            });
+        });
+        $(document).on('click', '.btnDelDrinkSize', function (e) {
+            e.preventDefault();
+            $('#hiddenSizeId').val($(this).data('id'));
+            $('#hiddenDrinkId').val($(this).data('drinkid'));
+            $('#modal_del_size').modal('show');
+        });
+        $(document).on('change', '.drink-size-chkbox', function (e) {
+            e.preventDefault();
+
+            if ($('.drink-size-chkbox').length > 1) {
+                $('.drink-size-chkbox').not(this).prop('checked', false);
+            }
+
+            $.post('/Drink/UpdatePrimarySize', { id: $(this).data('id'), drinkid: $(this).data('drinkid') }, function (data) {
+                if (data.success === true) {
+                    alert("Thay đổi size mặc định thành công");
+                }
+                else {
+                    alert("Thay đổi size mặc định thất bại");
+                }
+            });
+        });
+        $(document).on('change', '.active-size-chkbox', function (e) {
+            e.preventDefault();
+
+            $.post('/Drink/UpdateOptionsActive', { id: $(this).data('id'), drinkid: $(this).data('drinkid'), type: 1 }, function (data) {
+                if (data.success === true) {
+                    alert("Cập nhật thành công");
+                }
+                else {
+                    alert("Cập nhật thất bại");
+                }
+            });
+        });
+
+        $('#btnAddIceOption').on('click', function (e) {
+            e.preventDefault();
+            $.get('/Drink/UpdateIceOption?drinkId=' + $(this).data('drinkid'), function (data) {
+                $('#ice-opt-content').empty();
+                $('#ice-opt-content').append(data);
+                $('#modal_update_ice').modal('show');
+            });
+        });
+        $(document).on('click', '.btnEditIceOption', function (e) {
+            e.preventDefault();
+            $.get('/Drink/UpdateIceOption?id=' + $(this).data('id') + '&drinkId=' + $(this).data('drinkid'), function (data) {
+                $('#ice-opt-content').empty();
+                $('#ice-opt-content').append(data);
+                $('#modal_update_ice').modal('show');
+            });
+        });
+        $(document).on('click', '.btnDelIceOption', function (e) {
+            e.preventDefault();
+            $('#hiddenIceId').val($(this).data('id'));
+            $('#hiddenIceDrinkId').val($(this).data('drinkid'));
+            $('#modal_del_ice').modal('show');
+        });
+        $(document).on('change', '.drink-ice-chkbox', function (e) {
+            e.preventDefault();
+
+            if ($('.drink-ice-chkbox').length > 1) {
+                $('.drink-ice-chkbox').not(this).prop('checked', false);
+            }
+
+            $.post('/Drink/UpdatePrimaryIce', { id: $(this).data('id'), drinkid: $(this).data('drinkid') }, function (data) {
+                if (data.success === true) {
+                    alert("Thay đổi mức đá mặc định thành công");
+                }
+                else {
+                    alert("Thay đổi mức đá mặc định thất bại");
+                }
+            });
+        });
+
+        $(document).on('change', '.active-ice-chkbox', function (e) {
+            e.preventDefault();
+
+            $.post('/Drink/UpdateOptionsActive', { id: $(this).data('id'), drinkid: $(this).data('drinkid'), type: 2 }, function (data) {
+                if (data.success === true) {
+                    alert("Cập nhật thành công");
+                }
+                else {
+                    alert("Cập nhật thất bại");
+                }
+            });
+        });
+
+        $('#btnAddSugarOption').on('click', function (e) {
+            e.preventDefault();
+            $.get('/Drink/UpdateSugarOption?drinkId=' + $(this).data('drinkid'), function (data) {
+                $('#sugar-opt-content').empty();
+                $('#sugar-opt-content').append(data);
+                $('#modal_update_sugar').modal('show');
+            });
+        });
+        $(document).on('click', '.btnEditSugarOption', function (e) {
+            e.preventDefault();
+            $.get('/Drink/UpdateSugarOption?id=' + $(this).data('id') + '&drinkId=' + $(this).data('drinkid'), function (data) {
+                $('#sugar-opt-content').empty();
+                $('#sugar-opt-content').append(data);
+                $('#modal_update_sugar').modal('show');
+            });
+        });
+        $(document).on('click', '.btnDelSugarOption', function (e) {
+            e.preventDefault();
+            $('#hiddenSugarId').val($(this).data('id'));
+            $('#hiddenSugarDrinkId').val($(this).data('drinkid'));
+            $('#modal_del_sugar').modal('show');
+        });
+        $(document).on('change', '.drink-sugar-chkbox', function (e) {
+            e.preventDefault();
+
+            if ($('.drink-sugar-chkbox').length > 1) {
+                $('.drink-sugar-chkbox').not(this).prop('checked', false);
+            }
+
+            $.post('/Drink/UpdatePrimarySugar', { id: $(this).data('id'), drinkid: $(this).data('drinkid') }, function (data) {
+                if (data.success === true) {
+                    alert("Thay đổi mức đường mặc định thành công");
+                }
+                else {
+                    alert("Thay đổi mức đường mặc định thất bại");
+                }
+            });
+        });
+        $(document).on('change', '.active-sugar-chkbox', function (e) {
+            e.preventDefault();
+
+            $.post('/Drink/UpdateOptionsActive', { id: $(this).data('id'), drinkid: $(this).data('drinkid'), type: 3 }, function (data) {
+                if (data.success === true) {
+                    alert("Cập nhật thành công");
+                }
+                else {
+                    alert("Cập nhật thất bại");
+                }
+            });
+        });
+
+        $(document).on('change', '.showorder-ice-chkbox', function (e) {
+            e.preventDefault();
+
+            $.post('/Drink/UpdateOptionsShowOrder', { id: $(this).data('id'), drinkid: $(this).data('drinkid'), type: 2 }, function (data) {
+                if (data.success === true) {
+                    alert("Cập nhật thành công");
+                }
+                else {
+                    alert("Cập nhật thất bại");
+                }
+            });
+        });
+        $(document).on('change', '.showorder-sugar-chkbox', function (e) {
+            e.preventDefault();
+
+            $.post('/Drink/UpdateOptionsShowOrder', { id: $(this).data('id'), drinkid: $(this).data('drinkid'), type: 3 }, function (data) {
+                if (data.success === true) {
+                    alert("Cập nhật thành công");
+                }
+                else {
+                    alert("Cập nhật thất bại");
+                }
+            });
+        });
+        $(document).on('change', '.showorder-size-chkbox', function (e) {
+            e.preventDefault();
+
+            $.post('/Drink/UpdateOptionsShowOrder', { id: $(this).data('id'), drinkid: $(this).data('drinkid'), type: 1 }, function (data) {
+                if (data.success === true) {
+                    alert("Cập nhật thành công");
+                }
+                else {
+                    alert("Cập nhật thất bại");
+                }
+            });
+        });
+
+        //Photo
+        $("#photoInput").on("change", function (evt) {
+            var files = evt.target.files;
+            var formData = new FormData();
+            formData.append("files", files[0]);
+
+            $.ajax({
+                type: "POST",
+                url: "/Upload/UploadPhoto",
+                data: formData,
+                contentType: false,
+                processData: false
+            }).done(function (response) {
+                console.log(response);
+                if (response.success) {
+                    var pIndex = $("#photo-container").data('index');
+                    $("#photo-container").data('index', pIndex + 1);
+                    let $photo = $('<div></div>').attr('id', 'photo-' + pIndex).attr('class', 'col-sm-3 text-center').html($("#addPhotoTemplate").html().replaceAll("{pIndex}", pIndex));
+                    $photo.appendTo($("#photo-container"));
+                    $photo.find('.img').css("background-image", "url(" + response.url + ")");
+                    $photo.find('.url-hidden').val(response.url);
+                    $photo.find('button').data('id', pIndex);
+                } else {
+                    alert(response.status);
+                }
+            });
+        });
+        $("#photo-container").on("click", ".img", function () {
+            $("#photo-container").find('.img').removeClass('img-bordered');
+            $("#photo-container").find(".isprimary-hidden").val("False");
+
+            $(this).parent().find('.img').addClass('img-bordered');
+            $(this).parent().find(".isprimary-hidden").val("True");
+        });
+        $("#photo-container").on("click", ".btn-deletePhoto", function () {
+            var photoid = $(this).data('id');
+            $('#photo-' + photoid).find('.IsDeletedPhoto').val('true');
+            $('#photo-' + photoid).hide();
+        });
+
+        var onSuccessEditToppings = function (data) {
+            if (data.success === true) {
+                alert("Lưu thành công");
+            }
+            else {
+                alert("Lưu thất bại");
+            }
+        }
+        var onFailureEditToppings = function () {
+            alert("Lưu thất bại");
+        }
+
+        var onSuccessUpdateDrinkSize = function (data) {
+            $('#modal_update_size').modal('hide');
+            if (data.success === true) {
+                $('#lstDrinkSize').replaceWith(data.html);
+                alert("Lưu thành công");
+            }
+            else {
+                alert("Lưu thất bại");
+            }
+        }
+        var onFailureUpdateDrinkSize = function () {
+            alert("Lưu thất bại");
+        }
+        var onSuccessDelDrinkSize = function (data) {
+            $('#modal_del_size').modal('hide');
+            if (data.success === true) {
+                $('#lstDrinkSize').replaceWith(data.html);
+                alert("Lưu thành công");
+            }
+            else {
+                alert("Lưu thất bại");
+            }
+        }
+        var onFailureDelDrinkSize = function () {
+            alert("Lưu thất bại");
+        }
+
+        var onSuccessUpdateIceOption = function (data) {
+            $('#modal_update_ice').modal('hide');
+            if (data.success === true) {
+                $('#lstIceOption').replaceWith(data.html);
+                alert("Lưu thành công");
+            }
+            else {
+                alert("Lưu thất bại");
+            }
+        }
+        var onFailureUpdateIceOption = function () {
+            alert("Lưu thất bại");
+        }
+        var onSuccessDelIceOption = function (data) {
+            $('#modal_del_ice').modal('hide');
+            if (data.success === true) {
+                $('#lstIceOption').replaceWith(data.html);
+                alert("Lưu thành công");
+            }
+            else {
+                alert("Lưu thất bại");
+            }
+        }
+        var onFailureDelIceOption = function () {
+            alert("Lưu thất bại");
+        }
+
+        var onSuccessUpdateSugarOption = function (data) {
+            $('#modal_update_sugar').modal('hide');
+            if (data.success === true) {
+                $('#lstSugarOption').replaceWith(data.html);
+                alert("Lưu thành công");
+            }
+            else {
+                alert("Lưu thất bại");
+            }
+        }
+        var onFailureUpdateSugarOption = function () {
+            alert("Lưu thất bại");
+        }
+        var onSuccessDelSugarOption = function (data) {
+            $('#modal_del_sugar').modal('hide');
+            if (data.success === true) {
+                $('#lstSugarOption').replaceWith(data.html);
+                alert("Lưu thành công");
+            }
+            else {
+                alert("Lưu thất bại");
+            }
+        }
+        var onFailureDelSugarOption = function () {
+            alert("Lưu thất bại");
+        }
+    </script>
+}

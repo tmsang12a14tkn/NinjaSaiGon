@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Dash board";
+}
+
+@section Scripts {
+    <script src="~/js/CreateDevice.js"></script>
+    <script type="text/javascript">
+        var wcppPingTimeout_ms = 10000; //10 sec
+        var wcppPingTimeoutStep_ms = 500; //0.5 sec
+
+        function wcppDetectOnSuccess(){
+            var wcppVer = arguments[0];
+            if (wcppVer.substring(0, 1) == "4") {
+
+            } else { //force to install WCPP v4.0
+                wcppDetectOnFailure();
+            }
+        }
+
+        function wcppDetectOnFailure() {
+        }
+
+    </script>
+
+    @Html.Raw(ViewData["WCPPDetectionScript"])
+}

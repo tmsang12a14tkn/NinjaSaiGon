@@ -1,0 +1,398 @@
+﻿@model PrivatePromotion
+
+@{
+    ViewData["Title"] = "Chỉnh sửa khuyến mãi";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Chỉnh sửa khuyến mãi
+                        </h3>
+                    </div>
+                </div>
+                <div class="m-portlet__head-tools">
+                    <ul class="nav nav-pills nav-pills--brand m-nav-pills--btn-pill" role="tablist">
+                        <li class="nav-item m-tabs__item">
+                            <a class="nav-link m-tabs__link active show" data-toggle="tab" href="#promo" role="tab" aria-selected="true">
+                                Chương trình
+                            </a>
+                        </li>
+                        <li class="nav-item m-tabs__item">
+                            <a class="nav-link m-tabs__link" data-toggle="tab" href="#promocondition" role="tab" aria-selected="true">
+                                Điều kiện khuyến mãi
+                            </a>
+                        </li>
+                        <li class="nav-item m-tabs__item">
+                            <a class="nav-link m-tabs__link" data-toggle="tab" href="#listcode" role="tab" aria-selected="true">
+                                Mã khuyến mãi
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <div class="tab-content">
+                    <div class="tab-pane active show" id="promo" aria-expanded="true">
+                        <form asp-action="Edit" class="m-form m-form--label-align-right">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="m-portlet__body">
+                                @* Photo *@
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Hình ảnh
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <div class="row" id="photo-container" data-index="@(Model != null ? Model.Photos.Count : 0)">
+                                            @if (Model != null)
+                                            {
+                                                for (int i = 0; i < Model.Photos.Count; i++)
+                                                {
+                                                    var photo = Model.Photos.ElementAt(i);
+                                                    <div class="col-sm-3 text-center" id="photo-@i">
+                                                        <div style="background-image: url(@photo.Url); background-size: 100%; height: 180px" class="square img@(photo.IsPrimary?" img-bordered":"")"></div>
+                                                        <input type="hidden" name="Photos[@i].Id" value="@photo.Id" />
+                                                        <input type="hidden" name="Photos[@i].Url" class="url-hidden" value="@photo.Url" />
+                                                        <input type="hidden" name="Photos[@i].PhysicalPath" value="@photo.PhysicalPath" />
+                                                        <input type="hidden" name="Photos[@i].IsPrimary" class="isprimary-hidden" value="@photo.IsPrimary.ToString()" />
+                                                        <input type="hidden" name="Photos[@i].IsDeleted" class="IsDeletedPhoto" value="false" />
+                                                        <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deletePhoto" data-id="@i" title="Xoá ảnh">
+                                                            <i class="la la-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label for="photoInput" class="btn btn-default">Chọn ảnh</label>
+                                            <input id="photoInput" type="file" name="files" accept="image/*" hidden>
+                                        </div>
+                                        <div hidden id="addPhotoTemplate">
+                                            <div style="background-image: url(''); background-size: 100%; height: 180px" class="square img"></div>
+                                            <input type="hidden" name="Photos[{pIndex}].Url" class="url-hidden" />
+                                            <input type="hidden" name="Photos[{pIndex}].PhysicalPath" class="url-hidden" />
+                                            <input type="hidden" name="Photos[{pIndex}].IsPrimary" class="isprimary-hidden" value="false" />
+                                            <input type="hidden" name="Photos[{pIndex}].IsDeleted" class="IsDeletedPhoto" value="false" />
+                                            <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-deletePhoto" data-id="{pIndex}" title="Xoá ảnh">
+                                                <i class="la la-trash"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Mã đợt khuyến mãi
+                                    </label>
+                                    <div class="col-lg-4">
+                                        <input asp-for="Code" class="form-control m-input" placeholder="Nhập mã" required />
+                                        <span asp-validation-for="Code" class="form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Tên đợt khuyến mãi
+                                    </label>
+                                    <div class="col-lg-4">
+                                        <input asp-for="Name" class="form-control m-input" placeholder="Nhập tên" />
+                                        <span asp-validation-for="Name" class="form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Mô tả
+                                    </label>
+                                    <div class="col-lg-10">
+                                        <textarea asp-for="Description" class="form-control m-input m-input--air" rows="3"></textarea>
+                                        <span asp-validation-for="Description" class="form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Mã khuyến mãi
+                                    </label>
+                                    <div class="col-lg-4">
+                                        <input type="button" value="Tạo mã" class="btn btn-primary" data-toggle="modal" data-target="#generateCodeModal" />
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-3 col-form-label">Áp dụng với chương trình khác</label>
+                                    <div class="col-lg-6">
+                                        <label class="m-checkbox m-checkbox--focus">
+                                            <input asp-for="ApplyWithOther" />
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Đối tượng áp dụng
+                                    </label>
+                                    <div class="col-lg-4">
+                                        <select asp-for="ApplyFor" asp-items="Html.GetEnumSelectList<ApplyFor>()" class="form-control m-input m-input--square">
+                                            <option value="">Chọn đối tượng</option>
+                                        </select>
+                                    </div>
+                                    <label class="col-lg-2 col-form-label">
+                                        Loại khách hàng
+                                    </label>
+                                    <div class="col-lg-4">
+                                        <select class="form-control m-input m-input--square">
+                                            <option value="">Chọn khách hàng</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Hình thức áp dụng
+                                    </label>
+                                    <div class="col-lg-4">
+                                        <select asp-for="ApplyRule" asp-items="Html.GetEnumSelectList<ApplyRule>()" class="form-control m-input m-input--square">
+                                            <option value="">Chọn hình thức</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Loại giảm giá
+                                    </label>
+                                    <div class="col-lg-4">
+                                        <select asp-for="DiscountType" asp-items="Html.GetEnumSelectList<DiscountType>()" class="form-control m-input m-input--square">
+                                            <option value="">Chọn loại giảm giá</option>
+                                        </select>
+                                    </div>
+                                    <label class="col-lg-2 col-form-label">
+                                        Giá trị giảm
+                                    </label>
+                                    <div class="col-lg-4">
+                                        <input class="form-control m-input currency-input" placeholder="Nhập giá trị" asp-for="DiscountValue" />
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">Kích hoạt</label>
+                                    <div class="col-lg-6">
+                                        <label class="m-checkbox m-checkbox--focus">
+                                            <input asp-for="IsActive" />
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-portlet__foot m-portlet__foot--fit">
+                                <div class="m-form__actions m-form__actions">
+                                    <div class="row">
+                                        <div class="col-lg-2"></div>
+                                        <div class="col-lg-6">
+                                            <input type="submit" value="Lưu Khuyến Mãi" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane" id="promocondition" aria-expanded="true">
+                        @await Component.InvokeAsync("PrivatePromotionDrinkSetting", new { ppId = Model.Id })
+                    </div>
+                    <div class="tab-pane" id="listcode" aria-expanded="true">
+                        @await Component.InvokeAsync("ListPrivateCode", new { privatePromotionId = Model.Id })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="generateCodeModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    Điều kiện sinh mã
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form asp-action="GenerateCode" class="m-form" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccessGenerateCode" data-ajax-failure="onFailureGenerateCode">
+                <div class="modal-body">
+
+                    <input type="hidden" name="PrivatePromotionId" value="@Model.Id" />
+                    <div class="form-group m-form__group row">
+                        <label class="col-lg-3 col-form-label">
+                            Số lượng mã cần tạo
+                        </label>
+                        <div class="col-lg-4">
+                            <input class="form-control m-input" placeholder="Số lượng mã cần tạo" name="NumOfCode" />
+                        </div>
+                    </div>
+                    <div class="form-group m-form__group row">
+                        <label class="col-lg-3 col-form-label">
+                            Số lần sử dụng tối đa
+                        </label>
+                        <div class="col-lg-4">
+                            <input class="form-control m-input" placeholder="Số lần sử dụng tối đa" name="MaxUseCode" />
+                        </div>
+                    </div>
+                    <div class="form-group m-form__group row">
+                        <label class="col-lg-3 col-form-label">Không giới hạn số lần</label>
+                        <div class="col-lg-4">
+                            <label class="m-checkbox m-checkbox--focus">
+                                <input type="checkbox" name="IsInfinityUse" value="true" />
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group m-form__group row">
+                        <label class="col-lg-3 col-form-label">
+                            Thời gian áp dụng
+                        </label>
+                        <div class="col-lg-9">&nbsp;</div>
+                    </div>
+                    <div class="form-group m-form__group row">
+                        <label class="col-lg-2 col-form-label">&nbsp;</label>
+                        <div class="col-lg-10">
+                            <div class="row">
+                                <div class="col-lg-6 row">
+                                    <label class="col-lg-5 col-form-label">
+                                        Từ ngày
+                                    </label>
+                                    <div class="col-lg-7">
+                                        <input type="text" class="form-control m-input datepicker" name="StartDate" autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 row">
+                                    <label class="col-lg-5 col-form-label">
+                                        Đến ngày
+                                    </label>
+                                    <div class="col-lg-7">
+                                        <input type="text" class="form-control m-input datepicker" name="EndDate" autocomplete="off" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 row">
+                                    <label class="col-lg-4 col-form-label">Không giới hạn thời gian</label>
+                                    <div class="col-lg-3">
+                                        <label class="m-checkbox m-checkbox--focus">
+                                            <input type="checkbox" name="IsInfinityTime" value="true" />
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-form__group row">
+                        <label class="col-lg-3 col-form-label">
+                            Quy tắc sinh mã
+                        </label>
+                        <div class="col-lg-9">&nbsp;</div>
+                    </div>
+                    <div class="form-group m-form__group row">
+                        <label class="col-lg-2 col-form-label">&nbsp;</label>
+                        <div class="col-lg-10">
+                            <div class="row">
+                                <div class="col-lg-6 row">
+                                    <label class="col-lg-5 col-form-label">
+                                        Tiền tố
+                                    </label>
+                                    <div class="col-lg-7">
+                                        <input type="text" class="form-control m-input" name="CodePrefix" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 row">
+                                    <label class="col-lg-5 col-form-label">
+                                        Hậu tố
+                                    </label>
+                                    <div class="col-lg-7">
+                                        <input type="text" class="form-control m-input" name="CodeSuffix" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-form__group row">
+                        <label class="col-lg-3 col-form-label">
+                            Comment
+                        </label>
+                        <div class="col-lg-9">
+                            <textarea class="form-control m-input m-input--air" rows="3" name="CodeComment"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary">Tạo mã</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteCodeModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    Xóa mã
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form asp-action="DeleteCode" class="m-form" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccessDeleteCode" data-ajax-failure="onFailureDeleteCode">
+                <div class="modal-body">
+                    <input type="hidden" name="CodeId" id="PrivateCodeId" />
+                    <div class="form-group m-form__group row">
+                        <label class="col-lg-12 col-form-label">
+                            Bạn có chắc chắn muốn xóa mã này không?
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editCodeModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    Chỉnh sửa mã
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form asp-action="EditCode" class="m-form" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccessEditCode" data-ajax-failure="onFailureEditCode">
+                <div class="modal-body">
+                    <div id="editcode-container"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/promotioncondition.js?t=@(DateTimeOffset.UtcNow.ToUnixTimeSeconds())"></script>
+    <script>
+        $(document).ready(function () {
+            SetActiveMenu('privatePromotionMenu');
+        });
+    </script>
+}

@@ -1,0 +1,1107 @@
+﻿@model Order
+
+@{
+    ViewData["Title"] = "Chỉnh sửa đơn hàng";
+    string message = TempData["Message"] as string;
+    CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN");
+    var orderTab = Model.Status.GetTab();
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <a href="/Orders@(orderTab)" class="m-portlet__head-text" id="backBtn">
+                            <i class="fa fa-chevron-left"></i> Trở lại
+                        </a>
+                        @*<h3 class="m-portlet__head-text">
+                                Sửa đơn hàng
+                            </h3>*@
+                    </div>
+                </div>
+                <div class="m-portlet__head-tools">
+                    <ul class="nav nav-pills nav-pills--brand m-nav-pills--btn-pill" role="tablist">
+                        <li class="nav-item m-tabs__item">
+                            <a class="nav-link m-tabs__link active show" data-toggle="tab" href="#editinfo" role="tab" aria-selected="true">
+                                Thông tin chung
+                            </a>
+                        </li>
+                        <li class="nav-item m-tabs__item">
+                            <a class="nav-link m-tabs__link" data-toggle="tab" href="#editcustomer" role="tab" aria-selected="true">
+                                Thông tin khách hàng
+                            </a>
+                        </li>
+                        <li class="nav-item m-tabs__item">
+                            <a class="nav-link m-tabs__link" data-toggle="tab" href="#editdelivery" role="tab" aria-selected="false">
+                                Thông tin giao hàng
+                            </a>
+                        </li>
+                        <li class="nav-item m-tabs__item">
+                            <a class="nav-link m-tabs__link" data-toggle="tab" href="#editdrinks" role="tab" aria-selected="false">
+                                Danh sách món
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <div id="map" style="display: none;"></div>
+                <div class="tab-content">
+                    <div class="tab-pane active show" id="editinfo" aria-expanded="true">
+                        <form asp-action="EditInfo" method="post" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccessEdit" data-ajax-failure="onFailureEdit" class="m-form m-form--label-align-right">
+                            <div class="m-portlet__body">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <input type="hidden" asp-for="OrderId" />
+                                <input asp-for="IsAutoDiscount" type="hidden" value="true" />
+                                <input asp-for="IsAutoShipFee" type="hidden" value="true" />
+                                <input asp-for="IsAutoSurcharge" type="hidden" value="true" />
+                                <input asp-for="Distance" type="hidden" />
+                                <input asp-for="DiscountAmount" type="hidden" />
+                                <input asp-for="ShipFee" type="hidden" />
+                                <input asp-for="SurchargeAmount" type="hidden" />
+                                <div class="m-form__heading">
+                                    <h3 class="m-form__heading-title">
+                                        TRẠNG THÁI ĐƠN HÀNG:
+                                    </h3>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Trạng thái
+                                    </label>
+                                    <div class="col-lg-4">
+                                        <select asp-for="Status" asp-items="Html.GetEnumSelectList<OrderStatus>()" class="form-control m-input m-input--square">
+                                            <option value="">Chọn trạng thái</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        Ghi chú
+                                    </label>
+                                    <div class="col-lg-4">
+                                        <textarea asp-for="StatusNote" class="form-control m-input m-input--air" rows="3"></textarea>
+                                        <span asp-validation-for="StatusNote" class="form-control-feedback"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group m-form__group row mt-4">
+                                    <div class="col-lg-6">
+                                        <div class="m-form__heading">
+                                            <h3 class="m-form__heading-title">
+                                                THÔNG TIN CHUNG:
+                                            </h3>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-4 col-form-label">
+                                                Mã đơn hàng
+                                            </label>
+                                            <div class="col-lg-8">
+                                                <input asp-for="Code" class="form-control m-input" placeholder="Nhập mã" required />
+                                                <span asp-validation-for="Code" class="form-control-feedback"></span>
+                                            </div>
+                                        </div>
+                                        @*<div class="form-group m-form__group row">
+            <label class="col-lg-4 col-form-label">
+                Loại đơn hàng
+            </label>
+            <div class="col-lg-8">
+                <select class="form-control m-input m-input--square">
+                    <option value="">Chọn loại</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group m-form__group row">
+            <label class="col-lg-4 col-form-label">
+                Loại Chuyến hàng
+            </label>
+            <div class="col-lg-8">
+                <select class="form-control m-input m-input--square">
+                    <option value="">Chọn loại</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group m-form__group row">
+            <label class="col-lg-4 col-form-label">
+                Của hàng (chi nhánh) bán
+            </label>
+            <div class="col-lg-8">
+                <select class="form-control m-input m-input--square">
+                    <option value="">Chọn của hàng</option>
+                </select>
+            </div>
+        </div>
+                                <div class="form-group m-form__group row">
+                                    <label class="col-lg-4 col-form-label">
+                                        Nguồn đơn hàng
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <input asp-for="OrderSource" class="form-control m-input" placeholder="Nhập nguồn đơn hàng" />
+                                        <span asp-validation-for="OrderSource" class="form-control-feedback"></span>
+                                    </div>
+                                </div>*@
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-4 col-form-label">
+                                                Nhân viên bán hàng
+                                            </label>
+                                            <div class="col-lg-8">
+                                                <input asp-for="EmployeeName" class="form-control m-input" placeholder="Nhập tên nhân viên bán hàng" />
+                                                <span asp-validation-for="EmployeeName" class="form-control-feedback"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-4 col-form-label">
+                                                Thời gian đặt hàng
+                                            </label>
+                                            <div class="col-lg-8">
+                                                <input type="text" name="OrderPlaced" class="form-control m-input datepicker" value="@Model.OrderPlaced.ToString("dd/MM/yyyy HH:mm")" />
+                                                <span asp-validation-for="OrderPlaced" class="form-control-feedback"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-4 col-form-label">
+                                                Thời gian giao hàng
+                                            </label>
+                                            <div class="col-lg-8">
+                                                <input type="text" name="OrderDeliveried" class="form-control m-input datepicker" value="@Model.OrderDeliveried.ToString("dd/MM/yyyy HH:mm")" />
+                                                <span asp-validation-for="OrderDeliveried" class="form-control-feedback"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-4 col-form-label">
+                                                Ghi chú (của NVCSKH)
+                                            </label>
+                                            <div class="col-lg-8">
+                                                <textarea asp-for="EmployeeNote" class="form-control m-input m-input--air employee-note" rows="3"></textarea>
+                                                <span asp-validation-for="EmployeeNote" class="form-control-feedback"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @* Thông tin thanh toán *@
+                                    <div class="col-lg-6" id="paymentInfo">
+                                        @await Html.PartialAsync("PaymentInfo", Model)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-portlet__foot m-portlet__foot--fit">
+                                <div class="m-form__actions m-form__actions">
+                                    <div class="row">
+                                        <div class="col-lg-2"></div>
+                                        <div class="col-lg-6">
+                                            <input type="submit" value="Lưu thông tin" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane" id="editcustomer" aria-expanded="false">
+                        <form asp-action="EditCustomer" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccessEdit" data-ajax-failure="onFailureEdit" class="m-form m-form--label-align-right">
+                            <div class="m-portlet__body">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <input type="hidden" asp-for="OrderId" />
+                                <div class="form-group m-form__group row mt-4">
+                                    <div class="col-lg-12">
+                                        <div class="m-form__heading">
+                                            <h3 class="m-form__heading-title">
+                                                THÔNG TIN KHÁCH HÀNG:
+                                            </h3>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-4 col-form-label">
+                                                Mã thẻ khách hàng
+                                            </label>
+                                            <div class="col-lg-8">
+                                                <input asp-for="CardCode" class="form-control m-input" placeholder="Nhập mã thẻ khách hàng" />
+                                                <span asp-validation-for="CardCode" class="form-control-feedback"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-4 col-form-label">
+                                                Nhóm khách hàng
+                                            </label>
+                                            <div class="col-lg-8">
+                                                <select class="form-control m-input m-input--square">
+                                                    <option value="">Chọn nhóm</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-4 col-form-label">
+                                                Tên khách hàng
+                                            </label>
+                                            <div class="col-lg-8">
+                                                <div class="row">
+                                                    <div class="col-lg-4">
+                                                        <input asp-for="LastName" class="form-control m-input" placeholder="Họ" />
+                                                        <span asp-validation-for="LastName" class="form-control-feedback"></span>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <input asp-for="MiddleName" class="form-control m-input" placeholder="Đệm và lót" />
+                                                        <span asp-validation-for="MiddleName" class="form-control-feedback"></span>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <input asp-for="FirstName" class="form-control m-input" placeholder="Tên" />
+                                                        <span asp-validation-for="FirstName" class="form-control-feedback"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-4 col-form-label">
+                                                Địa chỉ
+                                            </label>
+                                            <div class="col-lg-8">
+                                                <input asp-for="Distance" type="hidden" />
+                                                <input asp-for="AddressLine" class="form-control m-input" placeholder="Nhập địa chỉ" />
+                                                <span asp-validation-for="AddressLine" class="form-control-feedback"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-4 col-form-label">
+                                                Số điện thoại
+                                            </label>
+                                            <div class="col-lg-8">
+                                                <input asp-for="PhoneNumber" type="text" class="form-control m-input" />
+                                                <span asp-validation-for="PhoneNumber" class="form-control-feedback"></span>
+                                            </div>
+                                            @*<a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-addPhone" title="Thêm số điện thoại">
+                        <i class="la la-plus"></i>
+                    </a>*@
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-4 col-form-label">
+                                                Email
+                                            </label>
+                                            <div class="col-lg-8">
+                                                <input asp-for="Email" type="text" class="form-control m-input" />
+                                                <span asp-validation-for="Email" class="form-control-feedback"></span>
+                                            </div>
+                                            @*<a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-addEmail" title="Thêm email">
+                        <i class="la la-plus"></i>
+                    </a>*@
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-4 col-form-label">
+                                                Mạng xã hội
+                                            </label>
+                                            <div class="col-lg-8">
+                                                <input asp-for="SocialNetwork" type="text" class="form-control m-input" />
+                                                <span asp-validation-for="SocialNetwork" class="form-control-feedback"></span>
+                                            </div>
+                                            @*<a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btn-addSocial" title="Thêm mạng xã hội">
+                        <i class="la la-plus"></i>
+                    </a>*@
+                                        </div>
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-4 col-form-label">
+                                                Ghi chú của khách hàng
+                                            </label>
+                                            <div class="col-lg-8">
+                                                <textarea asp-for="CustomerNote" class="form-control m-input m-input--air customer-note" rows="3"></textarea>
+                                                <span asp-validation-for="CustomerNote" class="form-control-feedback"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="m-portlet__foot m-portlet__foot--fit">
+                                <div class="m-form__actions m-form__actions">
+                                    <div class="row">
+                                        <div class="col-lg-2"></div>
+                                        <div class="col-lg-6">
+                                            <input type="submit" value="Lưu thông tin" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="tab-pane" id="editdelivery" aria-expanded="false">
+                        <form asp-action="EditDelivery" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccessEdit" data-ajax-failure="onFailureEdit" class="m-form m-form--label-align-right">
+                            <div class="m-portlet__body">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <input type="hidden" asp-for="OrderId" />
+                                <input asp-for="IsAutoDiscount" type="hidden" value="true" />
+                                <input asp-for="IsAutoShipFee" type="hidden" value="true" />
+                                <input asp-for="IsAutoSurcharge" type="hidden" value="true" />
+                                <input asp-for="DiscountAmount" type="hidden" />
+                                <input asp-for="ShipFee" type="hidden" />
+                                <input asp-for="SurchargeAmount" type="hidden" />
+                                <div class="col-lg-12">
+                                    <div class="m-form__heading">
+                                        <h3 class="m-form__heading-title">
+                                            THÔNG TIN GIAO HÀNG:
+                                        </h3>
+                                    </div>
+                                    <div class="form-group m-form__group row">
+                                        <label class="col-lg-4 col-form-label">
+                                            Đơn vị giao hàng
+                                        </label>
+                                        <div class="col-lg-8">
+                                            <select asp-for="OrderDelivery.DeliveryPartnerId" name="Partner" id="Partner" class="form-control m-input m-input--square"></select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group m-form__group row">
+                                        <label class="col-lg-4 col-form-label">
+                                            Khoảng cách giao hàng
+                                        </label>
+                                        <div class="col-lg-8">
+                                            <input class="form-control m-input text-right" placeholder="Nhập khoảng cách" type="text" name="PartnerDistance" id="PartnerDistance" value="@(Model.OrderDelivery?.PartnerDistance ?? 0)" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group m-form__group row">
+                                        <label class="col-lg-4 col-form-label">
+                                            Phí giao hàng
+                                        </label>
+                                        <div class="col-lg-8">
+                                            <input class="form-control m-input price-input" placeholder="Nhập phí" type="text" name="PartnerShipFee" id="PartnerShipFee" value="@(Model.OrderDelivery?.PartnerShipFee ?? 0)" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group m-form__group row">
+                                        <label class="col-lg-4 col-form-label">
+                                            Người giao hàng
+                                        </label>
+                                        <div class="col-lg-8">
+                                            <div class="row mt-3">
+                                                <label class="col-lg-4 col-form-label">
+                                                    Tên
+                                                </label>
+                                                <div class="col-lg-8">
+                                                    <input type="text" name="FullName" class="form-control m-input" value="@Model.OrderDelivery?.FullName" />
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <label class="col-lg-4 col-form-label">
+                                                    Số điện thoại
+                                                </label>
+                                                <div class="col-lg-8">
+                                                    <input type="text" name="PhoneNumber" class="form-control m-input" value="@Model.OrderDelivery?.PhoneNumber" />
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <label class="col-lg-4 col-form-label">
+                                                    Email
+                                                </label>
+                                                <div class="col-lg-8">
+                                                    <input type="text" name="Email" class="form-control m-input" value="@Model.OrderDelivery?.Email" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group m-form__group row">
+                                        <label class="col-lg-4 col-form-label">
+                                            Thời gian nhận giao
+                                        </label>
+                                        <div class="col-lg-8">
+                                            <input type="text" name="AcceptedTime" class="form-control m-input datepicker" value="@Model.OrderDelivery?.AcceptedTime?.ToString("dd/MM/yyyy hh:mm")" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group m-form__group row">
+                                        <label class="col-lg-4 col-form-label">
+                                            Thời gian đi giao
+                                        </label>
+                                        <div class="col-lg-8">
+                                            <input type="text" name="BeginTime" class="form-control m-input datepicker" value="@Model.OrderDelivery?.BeginTime?.ToString("dd/MM/yyyy hh:mm")" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group m-form__group row">
+                                        <label class="col-lg-4 col-form-label">
+                                            Thời gian giao hàng xong
+                                        </label>
+                                        <div class="col-lg-8">
+                                            <input type="text" name="EndTime" class="form-control m-input datepicker" value="@Model.OrderDelivery?.EndTime?.ToString("dd/MM/yyyy hh:mm")" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group m-form__group row">
+                                        <label class="col-lg-4 col-form-label">
+                                            Địa chỉ giao hàng
+                                        </label>
+                                        <div class="col-lg-8">
+                                            <input type="text" name="Address" class="form-control m-input" value="@Model.OrderDelivery?.Address" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group m-form__group row">
+                                        <label class="col-lg-4 col-form-label">
+                                            Ghi chú giao hàng
+                                        </label>
+                                        <div class="col-lg-8">
+                                            <textarea name="Note" class="form-control m-input m-input--air" rows="3">@Model.OrderDelivery?.Note</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-portlet__foot m-portlet__foot--fit">
+                                <div class="m-form__actions m-form__actions">
+                                    <div class="row">
+                                        <div class="col-lg-2"></div>
+                                        <div class="col-lg-6">
+                                            <input type="submit" value="Lưu thông tin" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="tab-pane" id="editdrinks" aria-expanded="false">
+                        <div class="m-portlet__body">
+                            <form asp-action="EditNotes" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccessEdit" data-ajax-failure="onFailureEdit" class="m-form m-form--label-align-right">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <input type="hidden" asp-for="OrderId" />
+                                <input asp-for="IsAutoDiscount" type="hidden" value="true" />
+                                <input asp-for="IsAutoShipFee" type="hidden" value="true" />
+                                <input asp-for="IsAutoSurcharge" type="hidden" value="true" />
+                                <input asp-for="DiscountAmount" type="hidden" />
+                                <input asp-for="ShipFee" type="hidden" />
+                                <input asp-for="SurchargeAmount" type="hidden" />
+                                <div class="form-group m-form__group row mt-4">
+                                    <div class="col-lg-12">
+                                        <div class="m-form__heading">
+                                            <h3 class="m-form__heading-title">
+                                                GHI CHÚ
+                                            </h3>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group m-form__group row">
+                                                    <label class="col-lg-3 col-md-4 col-form-label">
+                                                        Ghi chú của khách hàng
+                                                    </label>
+                                                    <div class="col-lg-9 col-md-8">
+                                                        <textarea asp-for="CustomerNote" class="form-control m-input m-input--air" rows="3"></textarea>
+                                                        <span asp-validation-for="CustomerNote" class="form-control-feedback"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group m-form__group row">
+                                                    <label class="col-lg-3 col-md-4 col-form-label">
+                                                        Ghi chú (của NVCSKH)
+                                                    </label>
+                                                    <div class="col-lg-9 col-md-8">
+                                                        <textarea asp-for="EmployeeNote" class="form-control m-input m-input--air" rows="3"></textarea>
+                                                        <span asp-validation-for="EmployeeNote" class="form-control-feedback"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="m-form__actions m-form__actions">
+                                            <div class="row">
+                                                <div class="col-md-12 text-right">
+                                                    <input type="submit" value="Lưu ghi chú" class="btn btn-primary" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="form-group m-form__group row mt-4">
+                                <div class="col-lg-12">
+                                    <div class="m-form__heading">
+                                        <h3 class="m-form__heading-title">
+                                            DANH SÁCH MÓN:
+                                            <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill ml-3" id="btnAddDrink" title="Thêm món">
+                                                <i class="la la-plus"></i>
+                                            </a>
+                                        </h3>
+                                    </div>
+                                    <div class="form-group m-form__group row">
+                                        <div class="col-lg-12">
+                                            <table class="table table-striped m-table m-table--head-bg-success">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Tên món</th>
+                                                        <th>Đơn giá</th>
+                                                        <th>Số lượng</th>
+                                                        <th>Thành tiền</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @for (var i = 0; i < Model.OrderDetails.Count; i++)
+                                                    {
+                                                        var orderDetail = Model.OrderDetails[i];
+                                                        <tr id="orderDetail-@orderDetail.OrderDetailId" data-idx="@i">
+                                                            <td>
+                                                                <b>@orderDetail.DrinkName - @orderDetail.DrinkSize</b>
+                                                                @if (!string.IsNullOrEmpty(orderDetail.IceOption))
+                                                                {
+                                                                    <div class="row mt-2 pl-5">
+                                                                        + Đá: @orderDetail.IceOption
+                                                                    </div>
+                                                                }
+                                                                @if (!string.IsNullOrEmpty(orderDetail.SugarOption))
+                                                                {
+                                                                    <div class="row mt-2 pl-5">
+                                                                        + Đường @orderDetail.SugarOption
+                                                                    </div>
+                                                                }
+                                                                @if (orderDetail.OrderDetailToppings != null)
+                                                                {
+                                                                    foreach (var topping in orderDetail.OrderDetailToppings)
+                                                                    {
+                                                                        <div class="row mt-2 pl-5">
+                                                                            + @topping.ToppingName
+                                                                        </div>
+                                                                    }
+                                                                }
+                                                                <div class="row mt-2 pl-3">
+                                                                    @orderDetail.Note
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <b>@orderDetail.Price.ToString("#,###", cul.NumberFormat)</b>
+                                                                @if (!string.IsNullOrEmpty(orderDetail.IceOption))
+                                                                {
+                                                                    <div class="row mt-2 pl-3">
+                                                                        &nbsp;
+                                                                    </div>
+                                                                }
+                                                                @if (!string.IsNullOrEmpty(orderDetail.SugarOption))
+                                                                {
+                                                                    <div class="row mt-2 pl-3">
+                                                                        &nbsp;
+                                                                    </div>
+                                                                }
+                                                                @if (orderDetail.OrderDetailToppings != null)
+                                                                {
+                                                                    foreach (var topping in orderDetail.OrderDetailToppings)
+                                                                    {
+                                                                        <div class="row mt-2 pl-3">
+                                                                            @topping.Price.ToString("#,###", cul.NumberFormat)
+                                                                        </div>
+                                                                    }
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                @orderDetail.Quantity
+                                                                @if (!string.IsNullOrEmpty(orderDetail.IceOption))
+                                                                {
+                                                                    <div class="row mt-2 pl-3">
+                                                                        &nbsp;
+                                                                    </div>
+                                                                }
+                                                                @if (!string.IsNullOrEmpty(orderDetail.SugarOption))
+                                                                {
+                                                                    <div class="row mt-2 pl-3">
+                                                                        &nbsp;
+                                                                    </div>
+                                                                }
+                                                                @if (orderDetail.OrderDetailToppings != null)
+                                                                {
+                                                                    foreach (var topping in orderDetail.OrderDetailToppings)
+                                                                    {
+                                                                        <div class="row mt-2 pl-3">
+                                                                            @(topping.Quantity * orderDetail.Quantity)
+                                                                        </div>
+                                                                    }
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                <b>@((orderDetail.Price * orderDetail.Quantity).ToString("#,###", cul.NumberFormat))</b>
+                                                                @if (!string.IsNullOrEmpty(orderDetail.IceOption))
+                                                                {
+                                                                    <div class="row mt-2 pl-3">
+                                                                        &nbsp;
+                                                                    </div>
+                                                                }
+                                                                @if (!string.IsNullOrEmpty(orderDetail.SugarOption))
+                                                                {
+                                                                    <div class="row mt-2 pl-3">
+                                                                        &nbsp;
+                                                                    </div>
+                                                                }
+                                                                @if (orderDetail.OrderDetailToppings != null)
+                                                                {
+                                                                    foreach (var topping in orderDetail.OrderDetailToppings)
+                                                                    {
+                                                                        <div class="row mt-2 pl-3">
+                                                                            @((topping.Price * topping.Quantity * orderDetail.Quantity).ToString("#,###", cul.NumberFormat))
+                                                                        </div>
+                                                                    }
+                                                                }
+
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <input type="hidden" name="OrderDetails[@i].OrderDetailId" value="@orderDetail.OrderDetailId" />
+                                                                <input type="hidden" name="OrderDetails[@i].IsDeleted" class="isDeletedDrink" value="false" />
+                                                                <input type="hidden" name="OrderDetails[@i].Quantity" value="@orderDetail.Quantity" />
+                                                                <input type="hidden" name="OrderDetails[@i].DrinkSize" value="@orderDetail.DrinkSize" />
+                                                                <input type="hidden" name="OrderDetails[@i].IceOption" value="@orderDetail.IceOption" />
+                                                                <input type="hidden" name="OrderDetails[@i].SugarOption" value="@orderDetail.SugarOption" />
+                                                                @for (var j = 0; j < orderDetail.OrderDetailToppings.Count; j++)
+                                                                {
+                                                                    var topping = orderDetail.OrderDetailToppings.ElementAt(j);
+                                                                    <input type="hidden" name="OrderDetails[@i].OrderDetailToppings[@j].ToppingId" value="@topping.ToppingId" />
+                                                                    <input type="hidden" name="OrderDetails[@i].OrderDetailToppings[@j].Quantity" value="@topping.Quantity" />
+                                                                    <input type="hidden" name="OrderDetails[@i].OrderDetailToppings[@j].ToppingName" value="@topping.ToppingName" />
+                                                                    <input type="hidden" name="OrderDetails[@i].OrderDetailToppings[@j].Price" value="@topping.Price" />
+                                                                }
+                                                                <a class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill btnEditDrink" title="Edit" data-id="@orderDetail.OrderDetailId">
+                                                                    <i class="la la-edit"></i>
+                                                                </a>
+                                                                <a class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btnDeleteDrink" title="Delete" data-id="@orderDetail.OrderDetailId">
+                                                                    <i class="la la-trash"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    }
+
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr class="m-table__row--danger">
+                                                        <th><b>Tổng</b></th>
+                                                        <th></th>
+                                                        <th>@Model.OrderDetails.Sum(od => od.Quantity)</th>
+                                                        <th><b>@Model.OrderDetails.Sum(d => d.Amount).ToString("#,###", cul.NumberFormat)</b></th>
+                                                        <th></th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteDrinkModal" tabindex="-1" role="dialog" aria-labelledby="deleteDrinkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Xóa món
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                    </span>
+                </button>
+            </div>
+            <form action="DeleteOrderDetail">
+                <div class="modal-body">
+                    <div class="form-group m-form__group row">
+                        <div class="col-lg-12">
+                            <p>Bạn có chắc chắn muốn xóa món này không?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="deleteDrink_OrderDetailId" name="OrderDetailId" value="" />
+                    <button type="submit" class="btn btn-danger" id="btnConfirmDeleteDrink">
+                        Xóa
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Đóng
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editDrinkModal" tabindex="-1" role="dialog" aria-labelledby="editDrinkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Chỉnh sửa món
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                    </span>
+                </button>
+            </div>
+            <form asp-action="EditDetails" method="post">
+                <input type="hidden" asp-for="OrderId" />
+                <div id="editOrderDetailsForm"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Hủy
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="btnConfirmEditDrink">
+                        Sửa
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addDrinkModal" role="dialog" aria-labelledby="addDrinkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thêm món vào đơn hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                    </span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="col-md-3">
+                        Thức uống
+                    </label>
+                    <div class="col-md-9">
+                        <select name="DrinkId" class="form-control m-select2" id="select-drink"></select>
+                    </div>
+                </div>
+                <form asp-action="EditDetails" method="post">
+                    <input type="hidden" asp-for="OrderId" />
+                    <div id="addOrderDetailsForm"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            Hủy
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="btnConfirmEditDrink">
+                            Thêm
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thông báo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                    </span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @message
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .select2-drink {
+            width: 40px;
+        }
+    </style>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <text>
+                $("#messageModal").modal("show");
+            </text>
+            }
+        $.fn.extend({
+            trackChanges: function () {
+                $(":input", this).change(function () {
+                    $(this.form).data("changed", true);
+                });
+            },
+            isChanged: function () {
+                return this.data("changed");
+            }
+        });
+        var url = window.location.href;
+        var indexOfHashtag = url.indexOf("#");
+        var currentTab;
+        if (indexOfHashtag > 0) {
+            let activeTab = url.substring(indexOfHashtag);
+            $('a[href="' + activeTab + '"]').tab('show');
+            currentTab = activeTab;
+        }
+        else {
+            currentTab = "#editinfo";
+        }
+
+        $("form").trackChanges();
+        let confirmFormChange = function (save, cancel) {
+            $.confirm({
+                title: 'Chú ý',
+                content: 'Thông tin đã thay đổi, bạn có muốn lưu lại?',
+                type: 'green',
+                buttons: {
+                    ok: {
+                        text: "Lưu",
+                        btnClass: 'btn-primary',
+                        keys: ['enter'],
+                        action: save
+                    },
+                    cancel: {
+                        text: "Không",
+                        action: cancel
+                    }
+                },
+                animation: 'none',
+                closeAnimation: 'none'
+            });
+        }
+        $('.nav-pills > li > a[data-toggle="tab"]').on('click', function (e) {
+            let goToTab = function () {
+                currentTab = e.target.hash;
+                if (history.pushState) {
+                    history.pushState(null, null, e.target.hash);
+                } else {
+                    window.location.hash = e.target.hash;
+                }
+                $('.nav-pills > li > a[href="' + currentTab + '"]').tab('show');
+            }
+            //check form change
+            if (currentTab == "#editinfo") {
+                if ($("#editinfo form").isChanged()) {
+                    confirmFormChange(
+                        function () {
+                            $("#editinfo form").submit();
+                            $("#editinfo form").data("changed", false);
+                            goToTab();
+                        },
+                        function () {
+                            console.log("cancel");
+                            goToTab();
+                        });
+                    return false;
+                }
+            }
+            else if (currentTab == "#editcustomer") {
+                if ($("#editcustomer form").isChanged()) {
+                    confirmFormChange(
+                        function () {
+                            $("#editcustomer form").submit();
+                            $("#editcustomer form").data("changed", false);
+                            goToTab();
+                        },
+                        function () {
+                            console.log("cancel");
+                            goToTab();
+                        });
+                    return false;
+                }
+            }
+            else if (currentTab == "#editdelivery") {
+                if ($("#editdelivery form").isChanged()) {
+                    confirmFormChange(
+                        function () {
+                            $("#editdelivery form").submit();
+                            $("#editdelivery form").data("changed", false);
+                            goToTab();
+                        },
+                        function () {
+                            console.log("cancel");
+                            goToTab();
+                        });
+                    return false;
+                }
+            }
+            goToTab();
+        });
+
+        $(".datepicker").datetimepicker({
+            format: "dd/mm/yyyy hh:ii",
+            todayHighlight: !0,
+            pickerPosition: "bottom left",
+        });
+
+        $(".price-input").inputmask("currency", { digits: 0, prefix: "", autoUnmask: true, removeMaskOnSubmit: true });
+
+        var onSuccessEdit = function(e)
+        {
+            $.confirm({
+                title: 'Lưu thành công',
+                content: '',
+                type: 'green',
+                buttons: {
+                    ok: {
+                        text: "Đóng",
+                        btnClass: 'btn-primary'
+                    }
+                },
+                backgroundDismiss: true,
+                animation: 'none',
+                closeAnimation: 'none'
+            });
+            $("#" + e.action + " form").data("changed", false);
+            $("#paymentInfo").load("/Orders/PaymentInfo?orderId=@Model.OrderId");
+
+            if (e.success && e.action == 'editinfo' && e.orderTab) {
+                $("#backBtn").attr("href", "/Orders" + e.orderTab);
+            }
+            else if (e.success && e.action == 'editnotes') {
+                $(".employee-note").val(e.employeeNote);
+                $(".customer-note").val(e.customerNote)
+            }
+        }
+        var onFailureEdit = function(e)
+        {
+            $.confirm({
+                title: 'Lưu thất bại',
+                content: '',
+                type: 'red',
+                buttons: {
+                    ok: {
+                        text: "Đóng",
+                        btnClass: 'btn-primary'
+                    }
+                },
+                backgroundDismiss: true,
+                animation: 'none',
+                closeAnimation: 'none'
+            });
+        }
+
+        $(document).ready(function () {
+            SetActiveMenu('orderMenu');
+
+            $(".btnEditDrink").on("click", function () {
+                $("#editDrinkModal").modal("show");
+                var orderDetailId = $(this).data("id");
+                $("#editOrderDetailsForm").load("/Orders/EditDetails?orderDetailId=" + orderDetailId);
+            })
+
+
+            $(".btnDeleteDrink").on("click", function () {
+                $("#deleteDrinkModal").modal("show");
+                var orderDetailId = $(this).data("id");
+                $("#deleteDrink_OrderDetailId").val(orderDetailId);
+            })
+
+            //$("#btnConfirmDeleteDrink").on("click", function () {
+            //    $("#drink-" + deleteDrinkId).find("input.isDeletedDrink").val("true");
+            //    $("#drink-" + deleteDrinkId).hide();
+            //    $("#deleteDrinkModal").modal("hide");
+            //});
+
+            $("#btnAddDrink").on("click", function () {
+                //show select drink
+                $("#addDrinkModal").modal("show");
+
+            });
+            $('#addDrinkModal').on('shown.bs.modal', function (e) {
+
+                function format(state) {
+                    if (state.loading)
+                        return state.text;
+                    return "<img class='select2-drink' src='/Drink/Photo/" + state.id + "' alt='" + state.text + "' />" + state.text;
+                }
+                $.get("/Drink/List", function (data) {
+                    $("#select-drink").select2({
+                        placeholder: "Chọn thức uống",
+                        templateResult: format,
+                        templateSelection: format,
+                        data: data,
+                        escapeMarkup: function (m) { return m; }
+                    });
+                    $('#select-drink').on('select2:select', function (e) {
+                        console.log(e);
+                        var data = e.params.data;
+                        $("#addOrderDetailsForm").load("/Orders/AddDetails?drinkId=" + data.id);
+                    });
+                    $("#addOrderDetailsForm").load("/Orders/AddDetails?drinkId=" + $('#select-drink').val());
+                })
+
+            });
+        });
+
+        var updateTotal = function()
+        {
+        }
+
+        $("#editDrinkModal, #addDrinkModal").on("click", ".btn-less-topping", function () {
+
+            var $selectQuantityEl = $(this).closest(".select-quantity");
+            var $volumeElement = $selectQuantityEl.find("input.quantity-value");
+            var currentValue = Number($volumeElement.val());
+            if (currentValue > 1) {
+                $volumeElement.val(currentValue - 1);
+                //$selectQuantityEl.find("button.mid-button > span").text(numberWithCommas(currentValue - 1));
+            }
+
+            //validate topping count
+            //if (!validateToppingCount(this)) {
+                //$volumeElement.val(currentValue);
+                //$selectQuantityEl.find("button.mid-button > span").text(numberWithCommas(currentValue));
+                //return false;
+            //}
+            //updateTotalDrinkPrice();
+            return true;
+        });
+        $("#editDrinkModal, #addDrinkModal").on("click", ".btn-more-topping", function () {
+
+            var $selectQuantityEl = $(this).closest(".select-quantity");
+            var $volumeElement = $selectQuantityEl.find("input.quantity-value");
+            var currentValue = Number($volumeElement.val());
+            $volumeElement.val(currentValue + 1);
+            //$selectQuantityEl.find("button.mid-button > span").text(numberWithCommas(currentValue + 1));
+            //validate topping count
+            //if (!validateToppingCount(this)) {
+                //$volumeElement.val(currentValue);
+                //$selectQuantityEl.find("button.mid-button > span").text(numberWithCommas(currentValue));
+                //return false;
+            //}
+
+            //updateTotalDrinkPrice();
+            return true;
+        });
+        $("#editDrinkModal, #addDrinkModal").on("click", ".checkbox-topping", function (e) {
+            //e.preventDefault();
+
+            //validate topping count
+            //if (!validateToppingCount(this)) {
+            //    return false;
+            //}
+            //$(this).prop('checked', !this.checked);
+
+            if (this.checked) {
+                $(this).closest(".checkbox").find(".select-quantity").removeClass("invisible");
+            }
+            else {
+                $(this).closest(".checkbox").find(".select-quantity").addClass("invisible");
+            }
+            //updateTotalDrinkPrice();
+            return true;
+        });
+        $("#editDrinkModal, #addDrinkModal").on('click', 'input.not-required:radio', function (e) {
+            var inp = $(this);
+            if (inp.is(".checked")) {
+                inp.prop("checked", false).removeClass("checked");
+            } else {
+                $("input:radio[name='" + inp.prop("name") + "'].checked").removeClass("checked");
+                inp.addClass("checked");
+            }
+        });
+
+        $(window).on('keydown', function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        $(document).on('keyup', 'input', function (event) {
+            if (event.keyCode === 13) {
+                $(this).blur();
+                event.preventDefault();
+            }
+        });
+        $(document).on('keyup', '#PartnerDistance', function () {
+            $(this).val($(this).val().replace(".", ","));
+        });
+    </script>
+}

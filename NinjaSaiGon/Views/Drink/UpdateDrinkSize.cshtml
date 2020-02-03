@@ -1,0 +1,92 @@
+﻿@model DrinkSize
+
+<div class="modal-header">
+    <h5 class="modal-title" id="updateDrinkSize">
+        Thêm size
+    </h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">
+        </span>
+    </button>
+</div>
+<form asp-action="UpdateDrinkSize" class="m-form m-form--label-align-right" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccessUpdateDrinkSize" data-ajax-failure="onFailureUpdateDrinkSize">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.DrinkId)
+    <div class="modal-body">
+        <div class="form-group m-form__group row">
+            <label class="col-lg-3 col-form-label">
+                Tên
+            </label>
+            <div class="col-lg-6">
+                <input asp-for="Name" class="form-control m-input" placeholder="Nhập tên" />
+                <span asp-validation-for="Name" class="form-control-feedback"></span>
+            </div>
+        </div>
+        <div class="form-group m-form__group row">
+            <label class="col-lg-3 col-form-label">
+                Giá
+            </label>
+            <div class="col-lg-6">
+                <input asp-for="Price" class="form-control m-input price-input" placeholder="Nhập giá" type="text" />
+                <span asp-validation-for="Price" class="form-control-feedback"></span>
+            </div>
+        </div>
+        <div class="form-group m-form__group row">
+            <label class="col-lg-3 col-form-label">
+                Định mức
+            </label>
+            <div class="col-lg-6">
+                <input asp-for="Quota" class="form-control m-input" placeholder="Nhập định mức" type="text" />
+                <span asp-validation-for="Quota" class="form-control-feedback"></span>
+            </div>
+        </div>
+        <div class="form-group m-form__group row">
+            <label class="col-lg-3 col-form-label">
+                Đơn vị tính
+            </label>
+            <div class="col-lg-6">
+                <select asp-for="UnitId" asp-items="@(new SelectList(ViewBag.Units, "Id", "Name"))" class="form-control m-input m-input--square"></select>
+            </div>
+        </div>
+        <div class="form-group m-form__group row">
+            <label class="col-lg-3 col-form-label">Mặc định</label>
+            <div class="col-lg-6">
+                <label class="m-checkbox m-checkbox--focus">
+                    <input asp-for="IsPrimary" />
+                    <span></span>
+                </label>
+            </div>
+        </div>
+        <div class="form-group m-form__group row">
+            <label class="col-lg-3 col-form-label">Hiển thị</label>
+            <div class="col-lg-6">
+                <label class="m-checkbox m-checkbox--focus">
+                    <input asp-for="IsActive" />
+                    <span></span>
+                </label>
+            </div>
+        </div>
+        <div class="form-group m-form__group row">
+            <label class="col-lg-3 col-form-label">Hiển thị trang order</label>
+            <div class="col-lg-6">
+                <label class="m-checkbox m-checkbox--focus">
+                    <input asp-for="IsShowOrder" />
+                    <span></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Đóng
+        </button>
+        <button type="submit" class="btn btn-primary">
+            Lưu
+        </button>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

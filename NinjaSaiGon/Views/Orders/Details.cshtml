@@ -1,0 +1,238 @@
+﻿@model OrderView
+@{
+    CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN");
+    var valDistance = (double)Model.Distance / 1000;
+    var txtDistance = Math.Round(valDistance, 1);
+}
+<div class="modal-header">
+    <h5 class="modal-title">Đơn hàng @Model.Code</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">
+        </span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-6">
+            <h4>THÔNG TIN CHUNG</h4>
+            <div class="row">
+                <label class="col-md-5">Trạng thái</label>
+                <div class="col-md-7">@Html.DisplayFor(model => model.Status)</div>
+            </div>
+            <div class="row">
+                <label class="col-md-5">Tên khách hàng</label>
+                <div class="col-md-7">@Model.FullName</div>
+            </div>
+            <div class="row">
+                <label class="col-md-5">Số điện thoại</label>
+                <div class="col-md-7">@Model.PhoneNumber</div>
+            </div>
+            <div class="row">
+                <label class="col-md-5">Địa chỉ</label>
+                <div class="col-md-7 @(Model.Distance <= 0 ? "m--font-danger" : "")">@Model.AddressLine</div>
+            </div>
+            <div class="row">
+                <label class="col-md-5">Thời gian đặt</label>
+                <div class="col-md-7">@Html.DisplayFor(model => model.OrderPlaced)</div>
+            </div>
+            <div class="row">
+                <label class="col-md-5">Thời gian giao</label>
+                <div class="col-md-7@(Model.IsDeliveryNow?"":" highlight")">@Html.DisplayFor(model => model.OrderDeliveried)</div>
+            </div>
+            <div class="row">
+                <label class="col-md-5">Ghi chú khách hàng</label>
+                <div class="col-md-7 text-danger">@Html.DisplayFor(model => model.CustomerNote)</div>
+            </div>
+            <div class="row">
+                <label class="col-md-5">Ghi chú NVCSKH</label>
+                <div class="col-md-7">@Html.DisplayFor(model => model.EmployeeNote)</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h4>THÔNG TIN THANH TOÁN</h4>
+            <div class="row">
+                <label class="col-lg-6 col-form-label">
+                    Tổng
+                </label>
+                <div class="col-lg-6 m--align-right mt-2">
+                    <span class="m--font-bolder">@Model.OrderDetails.Sum(d => d.Amount).ToString("#,##0", cul.NumberFormat)</span>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-lg-6 col-form-label">
+                    Phí giao hàng: <span class="m--font-bolder m--font-danger">(@txtDistance.ToString() km)</span>
+                </label>
+                <div class="col-lg-6 m--align-right mt-2">
+                    <span class="m--font-bolder">@Model.ShipFee.ToString("#,##0", cul.NumberFormat)</span>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-lg-6 col-form-label">
+                    Mã khuyến mãi
+                </label>
+                <div class="col-lg-6 m--align-right mt-2">
+                    <span class="m--font-bolder">@Model.PromotionCode</span>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-lg-6 col-form-label">
+                    Giá giảm
+                </label>
+                <div class="col-lg-6 m--align-right mt-2">
+                    <span class="m--font-bolder m--font-danger">-@Model.DiscountAmount.ToString("#,##0", cul.NumberFormat)</span>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-lg-6 col-form-label">
+                    Phụ thu
+                </label>
+                <div class="col-lg-6 m--align-right mt-2">
+                    <span class="m--font-bolder">@Model.SurchargeAmount.ToString("#,##0", cul.NumberFormat)</span>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-lg-6 col-form-label">
+                    Thành tiền
+                </label>
+                <div class="col-lg-6 m--align-right mt-2">
+                    <h4 class="m--font-danger">@Model.OrderTotal.ToString("#,##0", cul.NumberFormat)</h4>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <table class="table table-striped m-table m-table--head-bg-success table-fixed" id="qw-order-details">
+                <thead>
+                    <tr>
+                        <th class="col-6">Tên món</th>
+                        <th class="col-2 text-center">Số lượng</th>
+                        <th class="col-2 text-right">Đơn giá</th>
+                        <th class="col-2 text-right">Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var i = 0; i < Model.OrderDetails.Count; i++)
+                    {
+                        var orderDetail = Model.OrderDetails[i];
+                        <tr id="orderDetail-@orderDetail.OrderDetailId" data-idx="@i">
+                            <td class="col-6">
+                                <b>@orderDetail.DrinkName</b>
+                                <div class="row pl-5">
+                                    + Size: @orderDetail.DrinkSize
+                                </div>
+                                @if (!string.IsNullOrEmpty(orderDetail.IceOption))
+                                {
+                                    <div class="row pl-5">
+                                        + Đá: @orderDetail.IceOption
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(orderDetail.SugarOption))
+                                {
+                                    <div class="row pl-5">
+                                        + Đường @orderDetail.SugarOption
+                                    </div>
+                                }
+                                @if (orderDetail.OrderDetailToppings.Count() > 0)
+                                {
+                                    foreach (var topping in orderDetail.OrderDetailToppings)
+                                    {
+                                        <div class="row pl-5">
+                                            + @topping.ToppingName
+                                        </div>
+                                    }
+                                }
+                            </td>
+                            <td class="col-2 text-center">
+                                <b>@orderDetail.Quantity</b>
+                                <div>
+                                    @orderDetail.Quantity
+                                </div>
+                                @if (!string.IsNullOrEmpty(orderDetail.IceOption))
+                                {
+                                    <div>
+                                        &nbsp;
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(orderDetail.SugarOption))
+                                {
+                                    <div>
+                                        &nbsp;
+                                    </div>
+                                }
+                                @if (orderDetail.OrderDetailToppings.Count() > 0)
+                                {
+                                    foreach (var topping in orderDetail.OrderDetailToppings)
+                                    {
+                                        <div>
+                                            @(topping.Quantity * orderDetail.Quantity)
+                                        </div>
+                                    }
+                                }
+                            </td>
+                            <td class="col-2 text-right">
+                                <b>@orderDetail.FullPrice.ToString("#,###", cul.NumberFormat)</b>
+                                <div>
+                                    @orderDetail.Price.ToString("#,###", cul.NumberFormat)
+                                </div>
+                                @if (!string.IsNullOrEmpty(orderDetail.IceOption))
+                                {
+                                    <div>
+                                        &nbsp;
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(orderDetail.SugarOption))
+                                {
+                                    <div>
+                                        &nbsp;
+                                    </div>
+                                }
+                                @if (orderDetail.OrderDetailToppings.Count() > 0)
+                                {
+                                    foreach (var topping in orderDetail.OrderDetailToppings)
+                                    {
+                                        <div>
+                                            @topping.Price.ToString("#,###", cul.NumberFormat)
+                                        </div>
+                                    }
+                                }
+                            </td>
+                            <td class="col-2 text-right">
+                                <b>@(orderDetail.Amount.ToString("#,###", cul.NumberFormat))</b>
+                            </td>
+                        </tr>
+                        <tr data-idx="@i">
+                            <td class="col-12" colspan="4">
+                                @orderDetail.Note
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+                <tfoot>
+                    <tr class="m-table__row--danger">
+                        <th class="col-6"><b>Tổng</b></th>
+                        <th class="col-2 text-center"><b>@Model.OrderDetails.Sum(od => od.Quantity)</b></th>
+                        <th class="col-2"><b>&nbsp;</b></th>
+                        <th class="col-2 text-right"><b>@Model.OrderDetails.Sum(d => d.Amount).ToString("#,###", cul.NumberFormat)</b></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <div class="btn-group dropup">
+        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            In bill & sticker
+        </button>
+        <div class="dropdown-menu">
+            <a href="#" class="dropdown-item btnPrintDetail" data-orderid="@Model.OrderId" data-type="0">In tất cả</a>
+            <a href="#" class="dropdown-item btnPrintDetail" data-orderid="@Model.OrderId" data-type="1">In bill khách & nội bộ</a>
+            <a href="#" class="dropdown-item btnPrintDetail" data-orderid="@Model.OrderId" data-type="2">In bill bếp</a>
+            <a href="#" class="dropdown-item btnPrintDetail" data-orderid="@Model.OrderId" data-type="3">In sticker</a>
+        </div>
+    </div>
+    <a href="/Orders/Edit?orderId=@(Model.OrderId)" class="btn btn-secondary">Sửa đơn hàng</a>
+</div>

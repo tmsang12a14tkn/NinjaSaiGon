@@ -1,0 +1,391 @@
+﻿@model HomeViewModel
+@{
+    ViewData["Title"] = "Đặt online";
+    var notifyAllowOrder = Model.NotifyPopup != null && Model.NotifyPopup.IsAllowOrder;
+    var isOpen = DateTime.Now.TimeOfDay > TimeSpan.FromHours(8) && DateTime.Now.TimeOfDay < TimeSpan.FromHours(17);
+    var isNearlyClose = DateTime.Now.TimeOfDay >= new TimeSpan(0, 16, 31, 0) && DateTime.Now.TimeOfDay < TimeSpan.FromHours(17);
+    var nextValidDateTime = DateTime.Now.TimeOfDay > new TimeSpan(0, 17, 0, 0) ?
+                            DateTime.Now.Date.AddDays(1).AddHours(9)
+                            : DateTime.Now.TimeOfDay < new TimeSpan(0, 8, 30, 0) ?
+                                DateTime.Now.Date.AddHours(9)
+                                : DateTime.Now.Minute == 0 || DateTime.Now.Minute == 30 ? DateTime.Now.AddMinutes(30)
+                                : DateTime.Now.Minute < 30 ? DateTime.Now.AddMinutes(60 - DateTime.Now.Minute)
+                                : DateTime.Now.AddMinutes((60 - DateTime.Now.Minute) + 30);
+    var startTimeOpt = nextValidDateTime.Date > DateTime.Now.Date ? new TimeSpan(0, 9, 0, 0) : new TimeSpan(0, nextValidDateTime.Hour, nextValidDateTime.Minute, 0);
+    var nextValidTimeStr = nextValidDateTime.ToString("HH:mm");
+    var nextValidDateStr = nextValidDateTime.ToString("dd/MM/yyyy");
+}
+
+<div class="row main-wrapper-row">
+    <div class="col-sm-8 col-left">
+        <input type="hidden" id="_s_opn" value="@((isOpen && notifyAllowOrder) || (isOpen && Model.NotifyPopup == null) ? 1 : 0)" />
+        <input type="hidden" id="_s_ntf" value="@(Model.NotifyPopup != null ? 1 : 0)" />
+        <div class="icon icon-primary">
+            <i class="material-icons close-map" id="close-map">close</i>
+        </div>
+        <div class="map-container">
+            <div id="map" class="map"></div>
+            <input type="hidden" id="_ao_dt_pg" value="@Model.IsInBuy1Get1" />
+            <div class="arrow-left"></div>
+        </div>
+        <div class="menu">
+            <div class="menu-container" id="accordion">
+                 
+                @await Component.InvokeAsync("Menu", new { cat = new DrinkCategory { Id = -1, Name = "Món mới" } })
+                    
+                @foreach (var cat in Model.DrinkCategories)
+                {
+                    @await Component.InvokeAsync("Menu", new { cat = cat })    
+                }
+            </div>
+        </div>
+        <div class="order" id="cart-review"></div>
+        <div class="main">
+            <div class="form-row">
+                <div class="col-sm-5 offset-sm-1">
+                    <div class="card card-plain">
+                        <a href="#">
+                            <div class="card-image">
+                                <img src="~/images/cover.jpg">
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <div class="info info-horizontal" style="padding-top:50px">
+                        <div class="icon icon-primary">
+                            <i class="material-icons">people</i>
+                        </div>
+                        <div class="description">
+                            <h4 class="info-title">Bước 1</h4>
+                            <p class="description">
+                                Nhập thông tin nhận hàng (tên, số điện thoại và địa chỉ người nhận)
+                            </p>
+                        </div>
+                    </div>
+                    <div class="info info-horizontal">
+                        <div class="icon icon-primary">
+                            <i class="material-icons">free_breakfast</i>
+                        </div>
+                        <div class="description">
+                            <h4 class="info-title">Bước 2</h4>
+                            <p class="description">
+                                Chọn loại trà, trà sữa mà bạn yêu thích.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="info info-horizontal">
+                        <div class="icon icon-primary">
+                            <i class="material-icons">redeem</i>
+                        </div>
+                        <div class="description">
+                            <h4 class="info-title">Bước 3</h4>
+                            <p class="description">
+                                Nhập mã ưu đãi (nếu có), chọn hình thức thanh toán và đặt hàng.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="loading-map" style="display: none;">
+            <div class="loading-container">
+                <img src="~/images/ripple.svg">
+                <br>
+                <span>Đang lấy vị trí hiện tại của bạn</span>
+            </div>
+        </div>
+        <div class="reload-location" style="display: none;">
+            <div class="loading-container">
+                <img src="~/images/ripple.svg">
+                <br>
+                <span>Đang lấy vị trí hiện tại của bạn</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4 col-right">
+        @if ((isOpen && notifyAllowOrder) || (isOpen && Model.NotifyPopup == null))
+        {
+            <form action="Order/CreateOrder" id="createOrderForm" method="post" data-ajax="true" data-ajax-method="post" data-ajax-success="onSuccessCreateOrder">
+                <div id="info-ship">
+                    <div class="form-row">
+                        <div class="col">
+                            <label>Thông tin người nhận</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control input-info" id="name-info" placeholder="Họ Tên">
+                        <input type="hidden" name="FirstName" id="FirstName" />
+                        <input type="hidden" name="MiddleName" id="MiddleName" />
+                        <input type="hidden" name="LastName" id="LastName" />
+                        <input type="hidden" name="_se_am" id="_se_am" />
+                        <input type="hidden" name="_dt_am" id="_dt_am" />
+                        <input type="hidden" name="_de_lg" id="_de_lg" />
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control input-info" id="phone-info" name="PhoneNumber" placeholder="Số điện thoại">
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-control input-info input-email" id="email-info" name="Email" placeholder="Email">
+                    </div>
+                    <div class="form-group mg-b-8">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="IsDeliveryNow" id="deliveryNow" value="true" checked>
+                            <label class="form-check-label" for="deliveryNow">Giao hàng ngay</label>
+                        </div>
+                        @if (!isNearlyClose)
+                        {
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="IsDeliveryNow" id="not-deliveryNow" value="false">
+                                <label class="form-check-label" for="not-deliveryNow">Chọn thời gian</label>
+                            </div>
+                        }
+                    </div>
+                    @if (!isNearlyClose)
+                    {
+                        <div class="d-none" id="deliveryDatetime">
+                            <div class="form-group mg-b-8">
+                                <div>
+                                    <span>Giao trong ngày @nextValidDateTime.ToString("dd/MM/yyyy"), lúc :</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control" id="deliveryTime" name="OrderDeliveried" data-initvalue="@nextValidDateTime.ToString("HH:mm dd/MM/yyyy")">
+                                    @while (startTimeOpt <= new TimeSpan(17, 0, 0))
+                                    {
+                                        <option value="@startTimeOpt.ToString("hh':'mm") @nextValidDateStr">@startTimeOpt.ToString("hh':'mm")</option>
+                                        startTimeOpt = startTimeOpt.Add(TimeSpan.FromMinutes(30));
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    }
+                    <div class="form-row">
+                        <div class="col">
+                            <label>Địa điểm giao hàng</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="AddressLine" id="numberAddress" placeholder="Địa chỉ" class="input-address input-info form-control" autocomplete="nope">
+                    </div>
+                    <input type="hidden" name="DistrictId" id="id_district" />
+                    @*<input type="hidden" name="City" id="id_state"/>*@
+                    @*<div class="form-row">
+                            <div class="form-group col-sm-6">
+                                <input type="text" name="District" id="districtAddress" readonly placeholder="Quận/huyện" class="form-control input-info input-address address-half">
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <input type="text" name="City" id="cityAddress" readonly placeholder="Tỉnh/thành phố" class="form-control input-info input-address address-half">
+                            </div>
+                        </div>*@
+                    <div class="alert alert-danger tch-warning tch-warning-address" style="display: none;">Vui lòng nhập địa chỉ để giao hàng</div>
+                    <div class="alert alert-danger tch-warning tch-warning-country" style="display: none;">Chúng tôi không hỗ trợ quốc gia của bạn</div>
+                    <div class="alert alert-danger tch-warning tch-warning-state" style="display: none;">Chúng tôi không hỗ trợ tỉnh thành của bạn</div>
+                    <div class="alert alert-danger tch-warning tch-warning-district" style="display: none;">Chúng tôi không hỗ trợ quận huyện của bạn</div>
+                </div>
+                @*<div id="promo-code">
+                    <div class="row">
+                        <img src="~/images/code.jpg" />
+                    </div>
+                </div>*@
+                <div id="info-cart">
+                    @*<div class="row promo-info-row">
+                            <label class="label-text">Khuyến mãi 1 tặng 1 <span class="icon-promo-help" data-toggle="popover" data-placement="auto" data-trigger="hover"> <i class="material-icons">help_outline</i></span></label>
+                        </div>*@
+                    <div class="row cart-header-row">
+                        <label class="label-text">Món đã chọn : </label>
+                    </div>
+                    <div class="row">
+                        <div class="sec-selected-drink">
+                            <div id="cart-items"></div>
+                        </div>
+                        <table class="table table-sm" id="table-sum">
+                            <tbody>
+                                <tr>
+                                    <td><strong>Tổng</strong></td>
+                                    <td class="text-center"><strong id="cart-quantity-drinks"></strong></td>
+                                    <td class="text-right"><strong id="cart-amount-drinks"></strong></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Giảm giá</strong>
+                                        <span class="icon-promo-summ-help" data-toggle="popover" data-placement="auto" data-trigger="click hover focus"> <i class="material-icons">help_outline</i></span>
+                                    </td>
+                                    <td>&nbsp;</td>
+                                    <td class="text-right">
+                                        <strong id="cart-promo-drinks" data-value="0">0</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <strong>Phí giao hàng: </strong>
+                                        <span class="pgh-txt"></span>
+                                        <span class="icon-help" data-toggle="popover" data-placement="auto" data-trigger="click hover focus"> <i class="material-icons">help_outline</i></span>
+                                    </td>
+                                    <td class="text-right"><strong id="cart-fee-ship">0</strong></td>
+                                </tr>
+
+                                <tr>
+                                    <td width="37%"><strong>Mã khuyến mãi</strong></td>
+                                    <td width="45%" class="text-right">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="PromotionCode" id="promotionCode" />
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-default" id="promotionSubmitBtn">Đồng ý</button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-right">
+                                        @*<strong id="cart-promotion">0</strong>*@
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tạm tính</strong></td>
+                                    <td>&nbsp;</td>
+                                    <td class="text-right"><strong id="cart-amount-temp">0</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div id="promotion-notify"></div>
+                    </div>
+                </div>
+                <div class="footer-info">
+                    <div class="btn-div" id="btn-div-menu">
+                        <button class="btn btn-submit-info" id="menu-btn">
+                            CHỌN MÓN
+                        </button>
+                    </div>
+                    <div class="btn-div" id="btn-div-payment" style="display: none;">
+                        <button type="button" class="btn btn-submit-info-inactive" id="view-cart-btn">
+                            XEM GIỎ HÀNG
+                        </button>
+                    </div>
+                    <div class="btn-div" id="btn-div-submit-order" style="display: none;">
+                        @*<div class="form-group">
+                                <div>
+                                    <label class="label-text">Phương thức thanh toán :</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="inlineRadio3" value="option3" checked>
+                                        <label class="form-check-label text-info" for="inlineRadio3"> Thanh toán khi nhận hàng</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="inlineRadio4" value="option4">
+                                        <label class="form-check-label text-info" for="inlineRadio4">
+                                            <img src="~/images/momo.jpg" class="logo-online-payment-momo">
+                                            <span class="text-info"> Ví MoMo </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>*@
+                        <div class="form-group is-empty">
+                            <textarea class="form-control" name="CustomerNote" id="notes" placeholder="Ghi chú cho đơn hàng"></textarea>
+                            <span class="material-input"></span>
+                        </div>
+                        <button type="button" class="btn btn-submit-info btn-submit-order" id="payment-btn">
+                            <span>ĐẶT HÀNG</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        }
+        else
+        {
+            <form>
+                <div class="form-row">
+                    <div class="col">
+                        <label>Vui lòng tải lại trang và đặt hàng online từ 8h đến 17h hằng ngày.</label>
+                    </div>
+                </div>
+            </form>
+        }
+    </div>
+</div>
+
+<div class="modal fade in" id="topping">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" role="document">
+
+        </div>
+    </div>
+</div>
+<div class="modal fade in" tabindex="-1" role="dialog" id="siteOpenModal">
+    <div class="modal-dialog modal-dialog-centered @(Model.NotifyPopup == null ? "modal-sm" : "")" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                @if (Model.NotifyPopup != null)
+                {
+                    <div class="title-missing-info text-center">@Html.Raw(Model.NotifyPopup.Content)</div>
+                }
+                else
+                {
+                    <div class="title-missing-info text-center">Thời gian cho phép đặt hàng online từ 8h đến 17h hằng ngày</div>
+                }
+                <div class="logout-content">
+                    <button class="logout-ok btn btn btn-ok-missing-info" id="btn-preview-menu" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade in" tabindex="-1" role="dialog" id="missingInfoCustomerModal">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="title-missing-info"></div>
+                <div class="logout-content">
+                    <button class="logout-ok btn btn-ok-missing-info" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="orderSuccessModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="orderSuccessModalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="orderSuccessModalTitle">Đặt hàng thành công</h5>
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>*@
+            </div>
+            <div class="modal-body">
+                Bạn đã đặt hàng thành công. Mọi chi tiết xin liên hệ 090.906.3366
+            </div>
+            <div class="modal-footer">
+                <a href="/" type="button" class="btn btn-primary">Đóng</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/x-custom-template" id="cartitem_tmpl">
+    <div class="card cart-item">
+        <div class="card-content">
+            <span class="quantity-info-cart text-light">
+                <strong><%=index%></strong>
+            </span>
+            <span>
+                <strong><%=name%></strong>
+            </span>
+            <span>
+                <span> Đường </span>
+                <span><%=sugarOption%></span>
+                <span> </span>
+            </span>
+            <span>
+                <span> Đá </span>
+                <span><%=iceOption%></span>
+                <span> </span>
+            </span>
+            <span class="total-price-info-cart">
+                <strong>
+                    <span><%=price%></span>
+                    <span> đ</span>
+                </strong>
+            </span>
+        </div>
+    </div>
+</script>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

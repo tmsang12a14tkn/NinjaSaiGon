@@ -1,0 +1,231 @@
+﻿@model IEnumerable<Drink>
+
+@{
+    ViewData["Title"] = "Drinks";
+    CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN");
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Danh sách món
+                        </h3>
+                    </div>
+                </div>
+                <div class="m-portlet__head-tools">
+                    <ul class="m-portlet__nav">
+                        <li class="m-portlet__nav-item">
+                            <a asp-action="Create" class="btn btn-accent m-btn m-btn--custom m-btn--pill m-btn--icon m-btn--air">
+                                <span>
+                                    <i class="la la-plus"></i>
+                                    <span>
+                                        Thêm món
+                                    </span>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <!--begin: Datatable -->
+                <table class="table table-striped- table-bordered table-hover table-checkable" id="m_table_1">
+                    <thead>
+                        <tr class="text-center">
+                            <th>STT</th>
+                            <th>Hình ảnh</th>
+                            <th>Tên</th>
+                            <th>Tên tiếng Anh</th>
+                            <th>Mô tả</th>
+                            <th>Loại</th>
+                            <th>Giá</th>
+                            <th width="10%">Trạng thái</th>
+                            <td width="10%">Hết hàng</td>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (var i = 0; i < Model.Count(); i++)
+                        {
+                            var item = Model.ElementAt(i);
+                            <tr>
+                                <td>@(i + 1)</td>
+                                <td>
+                                    @if (item.PrimaryPhoto != null)
+                                    {
+                                        <img src="@item.PrimaryPhoto.Url" height="50" alt="@item.Name" />
+                                    }
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.EnglishName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td>
+                                    @item.Category.Name
+                                </td>
+                                <td>
+                                    @item.Price.ToString("#,###", cul.NumberFormat)
+                                </td>
+                                <td class="text-center">
+                                    <span class="m-badge m-badge--@(item.IsActive ? "success" : "danger") m-badge--wide"></span>
+                                </td>
+                                <td class="text-center">
+                                    @if (item.OutOfStock)
+                                    {
+                                        <button type="button" class="btn m-btn--pill btn-sm btn-danger btnUpdateStock" data-id="@item.Id" data-name="@item.Name" data-outofstock="@item.OutOfStock.ToString().ToLower()">
+                                            Hết hàng
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn m-btn--pill btn-sm btn-success btnUpdateStock" data-id="@item.Id" data-name="@item.Name" data-outofstock="@item.OutOfStock.ToString().ToLower()">
+                                            Còn hàng
+                                        </button>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
+                                        <i class="la la-edit"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">
+                                        <i class="la la-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_update_stock" tabindex="-1" role="dialog" aria-labelledby="updateStock" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateStock">
+                    Món: <span id="drinkName"></span>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                    </span>
+                </button>
+            </div>
+            <form asp-action="UpdateStockStatus" class="m-form m-form--label-align-right" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccessUpdateStockStatus">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" id="hiddenId" name="Id" />
+                <div class="modal-body">
+                    <div class="form-group m-form__group row">
+                        <label class="col-lg-4 col-form-label">
+                            &nbsp;
+                        </label>
+                        <div class="col-lg-6">
+                            <input type="checkbox" name="OutOfStock" data-on-color="danger" data-off-color="success" data-on-text="Hết hàng" data-off-text="Còn hàng" data-inverse="true" value="true">
+                        </div>
+                    </div>
+                    <div class="form-group m-form__group row">
+                        <label class="col-lg-4 col-form-label">
+                            Ngày bắt đầu
+                        </label>
+                        <div class="col-lg-6">
+                            <input type="text" name="OutOfStockFrom" class="form-control m-input datepicker" />
+                        </div>
+                    </div>
+                    <div class="form-group m-form__group row">
+                        <label class="col-lg-4 col-form-label">
+                            Ngày kết thúc
+                        </label>
+                        <div class="col-lg-6">
+                            <input type="text" name="OutOfStockTo" class="form-control m-input datepicker" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">
+                        Lưu
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Đóng
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+            SetActiveMenu('drinkMenu');
+
+            $("#m_table_1").DataTable({
+                "language": {
+                    "emptyTable": "Không có dữ liệu",
+                    "info": "Hiện _START_ đến _END_ trên _TOTAL_ dòng",
+                    "infoEmpty": "Không có dữ liệu",
+                    "lengthMenu": "Hiện _MENU_ dòng",
+                    "loadingRecords": "Đang tải...",
+                    "processing": "Đang xử lý...",
+                    "search": "Tìm kiếm:",
+                    "zeroRecords": "Không tìm thấy dữ liệu phù hợp",
+                }
+            });
+
+            $(document).on('click', '.btnUpdateStock', function (e) {
+                e.preventDefault();
+                $('#hiddenId').val($(this).data('id'));
+                $('#drinkName').html($(this).data('name'));
+                $('#modal_update_stock').modal('show');
+
+                var chk = $(this).data('outofstock');
+                $("input[name='OutOfStock']").bootstrapSwitch('state', chk);
+
+                $(".datepicker").datepicker({
+                    format: "dd/mm/yyyy",
+                    todayHighlight: true,
+                    orientation: "bottom left",
+                    templates: {
+                        leftArrow: '<i class="la la-angle-left"></i>',
+                        rightArrow: '<i class="la la-angle-right"></i>'
+                    }
+                });
+            });
+        });
+
+        var onSuccessUpdateStockStatus = function (data) {
+            $('#modal_update_stock').modal('hide');
+            if (data.success == true) {
+                alert("Cập nhật thành công");
+
+                var curStock = $('.btnUpdateStock[data-id=' + data.id + ']').data('outofstock');
+                if (curStock != data.outofstock) {
+                    $('.btnUpdateStock[data-id=' + data.id + ']').data('outofstock', data.outofstock);
+                    if (data.outofstock) {
+                        $('.btnUpdateStock[data-id=' + data.id + ']').text('Hết hàng');
+                        $('.btnUpdateStock[data-id=' + data.id + ']').removeClass('btn-success');
+                        $('.btnUpdateStock[data-id=' + data.id + ']').addClass('btn-danger');
+                    } else {
+                        $('.btnUpdateStock[data-id=' + data.id + ']').text('Còn hàng');
+                        $('.btnUpdateStock[data-id=' + data.id + ']').removeClass('btn-danger');
+                        $('.btnUpdateStock[data-id=' + data.id + ']').addClass('btn-success');
+                    }
+                }
+            }
+            else {
+                alert("Cập nhật thất bại");
+            }
+        }
+    </script>
+}

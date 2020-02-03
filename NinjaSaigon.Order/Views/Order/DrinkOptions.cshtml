@@ -1,0 +1,210 @@
+﻿@model Drink
+@{
+    List<GroupedTopping> toppings = ViewBag.Toppings;
+    CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN");
+    DrinkSize drinkSize = ViewBag.Size;
+    var drinkQuantity = ViewBag.Quantity;
+    List<OrderDetailTopping> selectedToppings = ViewBag.SelectedToppings;
+    List<IceOption> listIceOpt = ViewBag.IceOptions;
+    List<SugarOption> listSugarOpt = ViewBag.SugarOptions;
+    List<DrinkSize> listDrinkSize = ViewBag.DrinkSizes;
+}
+<form action="Order/GetCartItem" data-ajax="true" data-ajax-method="post" method="post" data-ajax-success="onSuccessGetCartItem">
+    <div class="modal-header">
+        <div class="row">
+            <div class="col-sm-2 drink-opt-img">
+                <img class="image-card" src="@(Model.PrimaryPhoto?.Url??"/upload/3.png")" />
+            </div>
+            <div class="col-sm-10 drink-opt-sum">
+                <h5>@Model.Name</h5>
+                <p>Giá: <b class="drinkPriceDisplay">@drinkSize.Price.ToString("#,###", cul.NumberFormat)</b></p>
+            </div>
+        </div>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+            <i class="material-icons">clear</i>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <input id="drinkId" name="DrinkId" type="hidden" value="@Model.Id" data-name="@Model.Name" />
+        <input id="cartIndex" name="Index" type="hidden" value="@ViewBag.Index"/>
+        <div class="container-fluid">
+            <div class="row form-control topping-section">
+                <div class="col-sm-12">
+                    <h6>
+                        <strong>Size</strong>
+                        <span> </span>
+                        <span>(chọn 1 loại)</span>
+                    </h6>
+                </div>
+                <div class="col-sm-12">
+                    <div class="row">
+                        @foreach (var size in listDrinkSize)
+                        {
+                            <div class="radio col-sm-6">
+                                <label>
+                                    <input type="radio" name="DrinkSizeId" value="@size.Id" data-name="@size.Name" data-price="@size.Price" @(size.Id == ViewBag.sizeId ? "checked" : "")>
+                                    <span class="circle"></span>
+                                    <span class="check"></span>
+                                    <p>Size @size.Name (@size.Price.ToString("#,###", cul.NumberFormat))</p>
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.DisplaySugarOption)
+            {
+                <div class="row form-control topping-section">
+                    <div class="col-sm-12">
+                        <h6>
+                            <strong>CHỌN MỨC ĐƯỜNG</strong>
+                            <span> </span>
+                            <span>@(Model.RequireSugarOption ? "(bắt buộc chọn 1 loại)" : "")</span>
+                        </h6>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="row">
+                            @foreach (var sugarOption in listSugarOpt)
+                            {
+                                <div class="radio col-sm-6">
+                                    <label>
+                                        <input type="radio" class="@(!Model.RequireSugarOption ? "not-required " : "")@(sugarOption.IsPrimary ? "checked" : "")" name="SugarOptionId" value="@sugarOption.Id" data-name="@sugarOption.Name" @(sugarOption.IsPrimary ? "checked" : "")>
+                                        <span class="circle"></span>
+                                        <span class="check"></span>
+                                        <span class="circle"></span>
+                                        <span class="check"></span>
+                                        <p>@sugarOption.Name</p>
+                                    </label>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (Model.DisplayIceOption)
+            {
+                <div class="row form-control topping-section">
+                    <div class="col-sm-12">
+                        <h6>
+                            <strong>CHỌN MỨC ĐÁ</strong>
+                            <span> </span>
+                            <span>@(Model.RequireIceOption ? "(bắt buộc chọn 1 loại)" : "")</span>
+                        </h6>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="row">
+                            @foreach (var iceOption in listIceOpt)
+                            {
+                                <div class="radio col-sm-6">
+                                    <label>
+                                        <input type="radio" class="@(!Model.RequireIceOption ? "not-required " : "")@(iceOption.IsPrimary ? "checked" : "")" name="IceOptionId" value="@iceOption.Id" data-name="@iceOption.Name" @(iceOption.IsPrimary ? "checked" : "")>
+                                        <span class="circle"></span>
+                                        <span class="check"></span>
+                                        <span class="circle"></span>
+                                        <span class="check"></span>
+                                        <p>@iceOption.Name</p>
+                                    </label>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            }
+            @foreach (var grp in toppings)
+            {
+                <div class="row form-control topping-section topping-group" data-min="@grp.Min" data-max="@grp.Max">
+                    <div class="col-sm-12">
+                        <h6>
+                            <strong>@grp.Name</strong>
+                            <span> </span>
+                            @if (grp.Max.HasValue)
+                            {
+                                <span>(Chọn tối đa @grp.Max)</span>
+                            }
+                        </h6>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="row">
+                            @for (var i = 0; i < grp.Toppings.Count; i++)
+                            {
+                                var topping = grp.Toppings[i];
+                                var selectedTopping = selectedToppings.FirstOrDefault(t=>t.ToppingId == topping.Id);
+                                <div class="checkbox col-sm-6">
+                                    <div class="row">
+                                        <label class="col-md-7" for="tp_@topping.Id">
+                                            <input type="hidden" value="@topping.Id" name="Toppings[@i].ToppingId" />
+                                            @*<input type="checkbox" class="checkbox-topping" name="Toppings[@i].IsChecked" id="tp_@topping.Id" data-price="@topping.Price">*@
+                                            @Html.CheckBox($"Toppings[{i}].IsChecked", selectedTopping != null && selectedTopping.Quantity != 0, new { @class = "checkbox-topping", data_price = topping.Price, id = $"tp_{topping.Id}" })
+                                            <span class="checkbox-material">
+                                                <span class="check"></span>
+                                            </span>
+                                            <span class="circle"></span>
+                                            <span class="check"></span>
+                                            <span>@topping.Name @topping.Price.ToString("#,###", cul.NumberFormat)</span>
+                                        </label>
+                                        <div class="col-md-5 float-right select-quantity @(selectedTopping != null && selectedTopping.Quantity != 0 ? "" : "invisible")" id="select-quantity-@topping.Id">
+                                            <div class="btn-group nomargin">
+                                                <button type="button" class="btn btn-round btn-info btn-xs btn-less-topping">
+                                                    <i class="material-icons">remove</i>
+                                                </button>
+                                                <button type="button" class="btn btn-info btn-xs mid-button">
+                                                    <i class="material-icons"></i>
+                                                    <span>@(selectedTopping != null && selectedTopping.Quantity != 0 ? selectedTopping.Quantity : 1)</span>
+                                                    <div class="ripple-container"></div>
+                                                </button>
+                                                <button type="button" class="btn btn-round btn-info btn-xs btn-more-topping">
+                                                    <i class="material-icons">add</i>
+                                                    <span> </span><div class="ripple-container"></div>
+                                                </button>
+                                            </div>
+                                            <input type="hidden" name="Toppings[@i].Quantity" class="quantity-value" value="@(selectedTopping != null && selectedTopping.Quantity != 0 ? selectedTopping.Quantity:1)" />
+                                            <input type="hidden" name="Toppings[@i].Price" class="price-value" value="@topping.Price" />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="card-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="select-quantity col-6" id="select-drink-quantity">
+                    <div class="btn-group nomargin mg-t-8 mg-l-15">
+                        <button type="button" class="btn btn-round btn-info btn-xs btn-less-drink">
+                            <i class="material-icons">remove</i>
+                        </button>
+                        <button type="button" class="btn btn-info btn-xs mid-button">
+                            <i class="material-icons"></i>
+                            <span>@drinkQuantity</span>
+                            <div class="ripple-container"></div>
+                        </button>
+                        <button type="button" class="btn btn-round btn-info btn-xs btn-more-drink">
+                            <i class="material-icons">add</i>
+                            <span> </span><div class="ripple-container"></div>
+                        </button>
+                    </div>
+                    <input type="hidden" name="Quantity" class="quantity-value" value="@drinkQuantity" />
+                </div>
+                <div class="col-6">
+                    @{
+                        var amount = Model.DrinkSizes.FirstOrDefault(size => size.Id == ViewBag.sizeId)?.Price ?? 0;
+                    }
+                    <input id="drinkPrice" type="hidden" value="@amount" />
+                    <button type="button" class="btn btn-info right red mg-r-15" id="submitOrdering">
+                        <span>Đồng ý </span>
+                        <span class="drinkPriceDisplay">@amount.ToString("#,###", cul.NumberFormat)</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

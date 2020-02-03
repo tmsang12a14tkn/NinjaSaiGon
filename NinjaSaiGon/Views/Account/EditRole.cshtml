@@ -1,0 +1,58 @@
+﻿@model IdentityRole
+
+@{
+    ViewData["Title"] = "Edit Role";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Edit Role
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <form asp-action="EditRole" class="m-form m-form--label-align-right">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="m-portlet__body">
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">
+                                Role Name *
+                            </label>
+                            <div class="col-lg-10">
+                                <input asp-for="Name" class="form-control m-input" required />
+                                <span asp-validation-for="Name" class="form-control-feedback"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="m-portlet__foot m-portlet__foot--fit">
+                        <div class="m-form__actions m-form__actions">
+                            <div class="row">
+                                <div class="col-lg-2"></div>
+                                <div class="col-lg-6">
+                                    <input type="submit" value="Save" class="btn btn-primary" />
+                                    <input type="reset" value="Cancel" class="btn btn-secondary" />
+                                    <a asp-action="RoleManagement">Back to List</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            SetActiveMenu('roleMenu');
+        });
+    </script>
+}

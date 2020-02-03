@@ -1,0 +1,172 @@
+﻿@model PrivatePromotion
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Delete Promotion
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <form asp-action="Delete" class="m-form m-form--label-align-right">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="m-portlet__body">
+                        @* Photo *@
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">
+                                Hình ảnh
+                            </label>
+                            <div class="col-lg-8">
+                                <div class="row" id="photo-container" data-index="@(Model != null ? Model.Photos.Count : 0)">
+                                    @if (Model != null)
+                                    {
+                                        for (int i = 0; i < Model.Photos.Count; i++)
+                                        {
+                                            var photo = Model.Photos.ElementAt(i);
+                                            <div class="col-sm-3 text-center" id="photo-@i">
+                                                <div style="background-image: url(@photo.Url); background-size: contain; height: 150px" class="square img@(photo.IsPrimary?" img-bordered":"")"></div>
+                                                <input type="hidden" name="Photos[@i].Id" value="@photo.Id" />
+                                                <input type="hidden" name="Photos[@i].Url" class="url-hidden" value="@photo.Url" />
+                                                <input type="hidden" name="Photos[@i].PhysicalPath" value="@photo.PhysicalPath" />
+                                                <input type="hidden" name="Photos[@i].IsPrimary" class="isprimary-hidden" value="@photo.IsPrimary" />
+                                                <input type="hidden" name="Photos[@i].IsDeleted" class="IsDeletedPhoto" value="false" />
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">
+                                Mã đợt khuyến mãi
+                            </label>
+                            <div class="col-lg-4">
+                                <input asp-for="Code" class="form-control m-input" placeholder="Nhập mã" disabled />
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">
+                                Tên đợt khuyến mãi
+                            </label>
+                            <div class="col-lg-4">
+                                <input asp-for="Name" class="form-control m-input" placeholder="Nhập tên" disabled />
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">
+                                Mô tả
+                            </label>
+                            <div class="col-lg-10">
+                                <textarea asp-for="Description" class="form-control m-input m-input--air" rows="3" disabled></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-3 col-form-label">Áp dụng với chương trình khác</label>
+                            <div class="col-lg-6">
+                                <label class="m-checkbox m-checkbox--focus">
+                                    <input asp-for="ApplyWithOther" disabled />
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">
+                                Loại áp dụng
+                            </label>
+                            <div class="col-lg-4">
+                                <select asp-for="ApplyTimeType" asp-items="Html.GetEnumSelectList<ApplyTimeType>()" class="form-control m-input m-input--square" disabled>
+                                    <option value="">Chọn loại áp dụng</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">
+                                Đối tượng áp dụng
+                            </label>
+                            <div class="col-lg-4">
+                                <select asp-for="ApplyFor" asp-items="Html.GetEnumSelectList<ApplyFor>()" class="form-control m-input m-input--square" disabled>
+                                    <option value="">Chọn đối tượng</option>
+                                </select>
+                            </div>
+                            <label class="col-lg-2 col-form-label">
+                                Loại khách hàng
+                            </label>
+                            <div class="col-lg-4">
+                                <select class="form-control m-input m-input--square" disabled>
+                                    <option value="">Chọn khách hàng</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">
+                                Hình thức áp dụng
+                            </label>
+                            <div class="col-lg-4">
+                                <select asp-for="ApplyRule" asp-items="Html.GetEnumSelectList<ApplyRule>()" class="form-control m-input m-input--square" disabled>
+                                    <option value="">Chọn hình thức</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">
+                                Loại giảm giá
+                            </label>
+                            <div class="col-lg-4">
+                                <select asp-for="DiscountType" asp-items="Html.GetEnumSelectList<DiscountType>()" class="form-control m-input m-input--square" disabled>
+                                    <option value="">Chọn loại giảm giá</option>
+                                </select>
+                            </div>
+                            <label class="col-lg-2 col-form-label">
+                                Giá trị giảm
+                            </label>
+                            <div class="col-lg-4">
+                                <input asp-for="DiscountValue" class="form-control m-input" placeholder="Nhập giá trị" type="text" disabled />
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">Kích hoạt</label>
+                            <div class="col-lg-6">
+                                <label class="m-checkbox m-checkbox--focus">
+                                    <input asp-for="IsActive" disabled />
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="m-portlet__foot m-portlet__foot--fit">
+                        <div class="m-form__actions m-form__actions">
+                            <div class="row">
+                                <div class="col-lg-2"></div>
+                                <div class="col-lg-6">
+                                    <input type="submit" value="Submit" class="btn btn-primary" />
+                                    <input type="reset" value="Cancel" class="btn btn-secondary" />
+                                    <a asp-action="Index">Back to List</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+            SetActiveMenu('privatePromotionMenu');
+        });
+    </script>
+}

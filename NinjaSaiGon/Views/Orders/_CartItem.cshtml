@@ -1,0 +1,177 @@
+﻿@model CartDrinkView
+
+@{
+    CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN");
+    var selfDiscount = Model.DiscountType == 2 || Model.DiscountPercentValue != 0 || Model.DiscountMoneyValue != 0 ? 1 : 0;
+}
+
+<tr class="cart-item cart-item-header" data-mainrow="1" data-index="@Model.Index" data-isfreedrink="@Model.IsFreeDrink" data-orderdetailid="@Model.OrderDetailId" data-selfdiscount="@selfDiscount" data-price="@Model.Price" data-original-size="@Model.DrinkSize" data-original-size-price="@Model.DrinkSize" data-max-price="@Model.DrinkMaxSizePrice" data-min-price="@Model.DrinkMinSizePrice" data-max-size-id="@Model.DrinkMaxSizeId" data-min-size-id="@Model.DrinkMinSizeId" data-max-size-name="@Model.DrinkMaxSize" data-min-size-name="@Model.DrinkMinSize" data-quantity="@Model.Quantity" data-amount="@Model.Amount" data-oldprice="@Model.FullPrice" data-manual-discount-type="@Model.DiscountType" data-manual-discount-percent="@Model.DiscountPercentValue" data-manual-discount-money="@Model.DiscountMoneyValue" data-manual-discount-reason="@Model.FreeDrinkReasonId" data-manual-discount-note="@Model.DiscountReason" data-catid="@Model.CategoryId" data-drinkid="@Model.DrinkId" data-sizeid="@Model.DrinkSizeId" data-icename="@Model.IceOption" data-sugarname="@Model.SugarOption" data-isnew="@Model.IsNew">
+    <td>
+        <strong class="cart-item-name">@Model.DrinkName</strong>
+    </td>
+    <td class="text-center">
+        <b class="quantity-value">@Model.Quantity</b>
+    </td>
+    <td class="text-right">
+        <b class="drink-single-price">
+            @if (selfDiscount == 0)
+            {
+                @Model.FullPrice.ToString("#,###", cul.NumberFormat)
+            }
+            else
+            {
+                <span class="strikethough">@Model.FullPrice.ToString("#,###", cul.NumberFormat)</span>
+                <br />
+                <span>@((Model.DiscountType == 1 ? Model.FullPrice - ((Model.FullPrice * Model.DiscountPercentValue) / 100) : Model.DiscountType == 2 ? Model.FullPrice - Model.DiscountMoneyValue : 0).ToString("#,###", cul.NumberFormat))</span>
+            }
+        </b>
+    </td>
+    <td class="text-right">
+        <b class="drink-multi-price">
+            @if (selfDiscount == 0)
+            {
+                @(Model.Amount.ToString("#,###", cul.NumberFormat))
+            }
+            else
+            {
+                <span class="strikethough">@(Model.Amount.ToString("#,###", cul.NumberFormat))</span>
+                <br />
+                <span>@((Model.DiscountType == 1 ? (Model.FullPrice - ((Model.FullPrice * Model.DiscountPercentValue) / 100)) * Model.Quantity : Model.DiscountType == 2 ? (Model.FullPrice - Model.DiscountMoneyValue) * Model.Quantity : 0).ToString("#,###", cul.NumberFormat))</span>
+            }
+        </b>
+    </td>
+    @Html.Hidden("OrderDetails[" + Model.Index + "][DiscountType]", Model.DiscountType, new { @class = "manual-discount-type" })
+    @Html.Hidden("OrderDetails[" + Model.Index + "][DiscountPercentValue]", Model.DiscountPercentValue, new { @class = "manual-discount-percent" })
+    @Html.Hidden("OrderDetails[" + Model.Index + "][DiscountMoneyValue]", Model.DiscountMoneyValue, new { @class = "manual-discount-money" })
+    @Html.Hidden("OrderDetails[" + Model.Index + "][FreeDrinkReasonId]", Model.FreeDrinkReasonId, new { @class = "manual-discount-reason" })
+    @Html.Hidden("OrderDetails[" + Model.Index + "][DiscountReason]", Model.DiscountReason, new { @class = "manual-discount-note" })
+    @Html.Hidden("OrderDetails[" + Model.Index + "][OrderDetailId]", Model.OrderDetailId)
+    @Html.Hidden("OrderDetails[" + Model.Index + "][Quantity]", Model.Quantity, new { @class = "quantity-value" })
+    @Html.Hidden("OrderDetails[" + Model.Index + "][DrinkId]", Model.DrinkId)
+    @Html.Hidden("OrderDetails[" + Model.Index + "][DrinkName]", Model.DrinkName)
+    @Html.Hidden("OrderDetails[" + Model.Index + "][SugarOption]", Model.SugarOption)
+    @Html.Hidden("OrderDetails[" + Model.Index + "][IceOption]", Model.IceOption)
+    @Html.Hidden("OrderDetails[" + Model.Index + "][DrinkSizeId]", Model.DrinkSizeId, new { @class = "drinkSizeId" })
+    @Html.Hidden("OrderDetails[" + Model.Index + "][IsPromoDiscount]", Model.IsPromoDiscount, new { @class = "isPromoDiscount" })
+    @Html.Hidden("OrderDetails[" + Model.Index + "][IsDeleted]", Model.IsDeleted, new { @class = "isDeleted" })
+    @Html.Hidden("OrderDetails[" + Model.Index + "][IsFreeDrink]", Model.IsFreeDrink, new { @class = "isFreeDrink" })
+</tr>
+<tr class="cart-item cart-item-body" data-index="@Model.Index" data-orderdetailid="@Model.OrderDetailId" data-price="@Model.Price" data-quantity="@Model.Quantity" data-amount="@Model.Amount" data-catid="@Model.CategoryId" data-drinkid="@Model.DrinkId" data-sizeid="@Model.DrinkSizeId" data-icename="@Model.IceOption" data-sugarname="@Model.SugarOption" data-isnew="@Model.IsNew">
+    <td>
+        <div class="row pl-5 cart-item-size">
+            + Size: @Model.DrinkSize
+        </div>
+        @if (!string.IsNullOrEmpty(Model.IceOption))
+        {
+            <div class="row pl-5">
+                + Đá: @Model.IceOption
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.SugarOption))
+        {
+            <div class="row pl-5">
+                + Đường @Model.SugarOption
+            </div>
+        }
+        @if (Model.Toppings != null)
+        {
+            for (var i = 0; i < Model.Toppings.Count; i++)
+            {
+                var topping = Model.Toppings[i];
+                <div class="row topping pl-5" data-toppingid="@topping.ToppingId" data-quantity="@topping.Quantity" data-price="@topping.Price">
+                    + @topping.Topping
+                    @Html.Hidden($"OrderDetails[{Model.Index}][Toppings][{i}][OrderDetailId]", Model.OrderDetailId)
+                    @Html.Hidden($"OrderDetails[{Model.Index}][Toppings][{i}][ToppingId]", topping.ToppingId)
+                    @Html.Hidden($"OrderDetails[{Model.Index}][Toppings][{i}][Quantity]", topping.Quantity)
+
+                    @Html.Hidden($"OrderDetails[{Model.Index}][OrderDetailToppings][{i}][OrderDetailId]", Model.OrderDetailId)
+                    @Html.Hidden($"OrderDetails[{Model.Index}][OrderDetailToppings][{i}][ToppingId]", topping.ToppingId)
+                    @Html.Hidden($"OrderDetails[{Model.Index}][OrderDetailToppings][{i}][Quantity]", topping.Quantity)
+                </div>
+            }
+        }
+    </td>
+    <td class="text-center">
+        <div class="text-left">
+            1x<span class="quantity-value">@(Model.Quantity)</span>
+        </div>
+        @if (!string.IsNullOrEmpty(Model.IceOption))
+        {
+            <div>
+                &nbsp;
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.SugarOption))
+        {
+            <div>
+                &nbsp;
+            </div>
+        }
+        @if (Model.Toppings != null)
+        {
+            foreach (var topping in Model.Toppings)
+            {
+                <div class="text-left">
+                    @(topping.Quantity)x<span class="quantity-value">@(Model.Quantity)</span>
+                </div>
+            }
+        }
+    </td>
+    <td class="text-right">
+        <div class="cart-item-size-price">
+            @Model.Price.ToString("#,###", cul.NumberFormat)
+        </div>
+        @if (!string.IsNullOrEmpty(Model.IceOption))
+        {
+            <div>
+                &nbsp;
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.SugarOption))
+        {
+            <div>
+                &nbsp;
+            </div>
+        }
+        @if (Model.Toppings != null)
+        {
+            foreach (var topping in Model.Toppings)
+            {
+                <div>
+                    @topping.Price.ToString("#,###", cul.NumberFormat)
+                </div>
+            }
+        }
+    </td>
+    <td class="text-right">
+        <div class="row mt-2 pl-3">
+            &nbsp;
+        </div>
+        @if (!string.IsNullOrEmpty(Model.IceOption))
+        {
+            <div class="row mt-2 pl-3">
+                &nbsp;
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.SugarOption))
+        {
+            <div class="row mt-2 pl-3">
+                &nbsp;
+            </div>
+        }
+        @if (Model.Toppings != null)
+        {
+            foreach (var topping in Model.Toppings)
+            {
+                <div class="row mt-2 pl-3">
+                    @*@((topping.Price * topping.Quantity * orderDetail.Quantity).ToString("#,###", cul.NumberFormat))*@
+                </div>
+            }
+        }
+    </td>
+</tr>
+<tr class="cart-item" data-index="@Model.Index" data-orderdetailid="@Model.OrderDetailId" data-price="@Model.Price" data-quantity="@Model.Quantity" data-amount="@Model.Amount" data-catid="@Model.CategoryId" data-drinkid="@Model.DrinkId" data-sizeid="@Model.DrinkSizeId" data-icename="@Model.IceOption" data-sugarname="@Model.SugarOption" data-isnew="@Model.IsNew">
+    <td colspan="4">
+        <input class="form-control cart-item-note" name="OrderDetails[@Model.Index][Note]" placeholder="Ghi chú" value="@(!string.IsNullOrEmpty(Model.Note) ? Model.Note : "")" />
+    </td>
+</tr>

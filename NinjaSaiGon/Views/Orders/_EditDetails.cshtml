@@ -1,0 +1,139 @@
+﻿@model EditOrderDetailModel
+@{
+    List<GroupedTopping> toppings = ViewBag.Toppings;
+    List<DrinkSize> sizes = ViewBag.DrinkSizes;
+    List<IceOption> iceOptions = ViewBag.IceOptions;
+    List<SugarOption> sugarOptions = ViewBag.SugarOptions;
+    var defaultSize = sizes.First();
+}
+<input type="hidden" asp-for="DrinkId" />
+<input type="hidden" asp-for="OrderDetailId" />
+<div class="modal-body">
+    <div class="form-group m-form__group row">
+        <label class="col-lg-4 col-form-label">
+            Số lượng
+        </label>
+        <div class="col-lg-8">
+            <input type="number" asp-for="Quantity" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group m-form__group row">
+        <label class="col-lg-4 col-form-label">
+            Size
+        </label>
+        <div class="col-lg-8">
+            <div class="row">
+                @foreach (var size in sizes)
+                {
+                    <div class="col-lg-6">
+                        <label>
+                            <input type="radio" name="DrinkSizeId" value="@size.Id" @((Model.DrinkSizeId > 0 && size.Id == Model.DrinkSizeId) || (size.Id == defaultSize.Id) ? "checked" : "") /> Size @size.Name - @size.Price
+                        </label>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    @if (ViewBag.DisplayIceOption == true)
+    {
+        <div class="form-group m-form__group row">
+            <label class="col-lg-4 col-form-label">
+                Đá
+            </label>
+            <div class="col-lg-8">
+                <div class="row">
+                    @foreach (var iceOption in iceOptions)
+                    {
+                        <div class="col-lg-6">
+                            <label>
+                                <input type="radio" name="IceOption" class="@(!ViewBag.RequireIceOption ? "not-required " : "")@(Model.IceOption == iceOption.Name ? "checked" : "")" value="@iceOption.Name" @(Model.IceOption == iceOption.Name ? "checked" : "") />@iceOption.Name
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    @if (ViewBag.DisplaySugarOption == true)
+    {
+        <div class="form-group m-form__group row">
+            <label class="col-lg-4 col-form-label">
+                Đường
+            </label>
+            <div class="col-lg-8">
+                <div class="row">
+                    @foreach (var sugarOption in sugarOptions)
+                    {
+                        <div class="col-lg-6">
+                            <label>
+                                <input type="radio" name="SugarOption" class="@(!ViewBag.RequireSugarOption ? "not-required " : "")@(Model.SugarOption == sugarOption.Name ? "checked" : "")" value="@sugarOption.Name" @(Model.SugarOption == sugarOption.Name ? "checked" : "") />@sugarOption.Name
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    @{
+        var i = 0;
+
+        foreach (var grp in toppings)
+        {
+            <div class="row form-control topping-section topping-group">
+                <div class="col-sm-12">
+                    <h6>
+                        <strong>@grp.Name</strong>
+                    </h6>
+                </div>
+                <div class="col-sm-12">
+                    <div class="row">
+                        @for (var j = 0; j < grp.Toppings.Count; j++)
+                        {
+                            var topping = grp.Toppings[j];
+                            var detailTopping = Model.OrderDetailToppings?.FirstOrDefault(o => o.ToppingId == topping.Id);
+
+                            <div class="checkbox col-sm-6">
+                                <div class="row">
+                                    <label class="col-md-6" for="tp_@topping.Id">
+                                        <input type="hidden" value="@topping.Id" name="OrderDetailToppings[@i].ToppingId" />
+                                        <input type="hidden" name="OrderDetailToppings[@i].Price" value="@topping.Price" />
+                                        <input type="hidden" name="OrderDetailToppings[@i].ToppingName" value="@topping.Name" />
+                                        @Html.CheckBox($"OrderDetailToppings[{i}].IsChecked", detailTopping != null && detailTopping.Quantity > 0, new { @class = "checkbox-topping", data_price = topping.Price, id = $"tp_{topping.Id}" })
+                                        <span class="checkbox-material">
+                                            <span class="check"></span>
+                                        </span>
+                                        <span class="circle"></span>
+                                        <span class="check"></span>
+                                        <span>@topping.Name @(topping.Price / 1000) K</span>
+                                    </label>
+                                    <div class="col-md-6 float-right select-quantity @(detailTopping == null || detailTopping.Quantity == 0 ? "invisible" : "")" id="select-quantity-@topping.Id">
+                                        <div class="btn-group nomargin">
+                                            <button type="button" class="btn btn-round btn-default btn-xs btn-less-topping">
+                                                <i class="material-icons">-</i>
+                                            </button>
+                                            <input type="text" name="OrderDetailToppings[@i].Quantity" class="quantity-value" value="@(detailTopping == null ? 1 : detailTopping.Quantity)" style="width: 40px" />
+                                            <button type="button" class="btn btn-round btn-default btn-xs btn-more-topping">
+                                                <i class="material-icons">+</i>
+                                                <span> </span><div class="ripple-container"></div>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            i++;
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    <div class="form-group m-form__group row">
+        <label class="col-lg-4 col-form-label">
+            Ghi chú
+        </label>
+        <div class="col-lg-8">
+            <input asp-for="Note" class="form-control" />
+        </div>
+    </div>
+</div>
+

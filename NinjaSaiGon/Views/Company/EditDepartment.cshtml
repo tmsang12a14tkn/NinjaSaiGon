@@ -1,0 +1,90 @@
+﻿@model Department
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Sửa phòng ban
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <form asp-action="EditDepartment" class="m-form m-form--label-align-right">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Code" />
+                    <div class="m-portlet pt-4">
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">
+                                Tên phòng ban
+                            </label>
+                            <div class="col-lg-4">
+                                <input asp-for="Name" class="form-control m-input" autocomplete="off" />
+                                <span asp-validation-for="Name" class="form-control-feedback"></span>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">
+                                Đơn vị
+                            </label>
+                            <div class="col-lg-4">
+                                <select asp-for="CompanyId" asp-items="@(new SelectList(ViewBag.Companies, "Id", "Name"))" class="form-control m-input m-input--square"></select>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label">&nbsp;</label>
+                            <div class="col-lg-4">
+                                <label class="m-checkbox m-checkbox--focus">
+                                    <input asp-for="IsActive" />
+                                    Hoạt động
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="m-portlet__foot m-portlet__foot--fit">
+                        <div class="m-form__actions m-form__actions">
+                            <div class="row">
+                                <div class="col-lg-2"></div>
+                                <div class="col-lg-6">
+                                    <input type="submit" value="Submit" class="btn btn-primary" />
+                                    <a asp-action="Index">Back to List</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editPosition" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Chức vụ</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div id="editPosition-container"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            SetActiveMenu('departmentMenu');
+        });
+    </script>
+}

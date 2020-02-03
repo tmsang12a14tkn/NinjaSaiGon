@@ -1,0 +1,341 @@
+﻿@model HomeViewModel
+@{
+    CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN");
+}
+
+<section class="sec-slider">
+    <div class="rev_slider_wrapper fullwidthbanner-container">
+        <div id="rev_slider_1" class="rev_slide fullwidthabanner" data-version="5.4.5" style="display:none">
+            <ul>
+                <li data-transition="fade">
+                    @if (Model.DeviceType == Wangkanai.Detection.DeviceType.Mobile)
+                    {
+                        <img src="images/ninja/slider1-mobile.jpg" alt="IMG-BG" class="rev-slidebg">
+                    }
+                    else
+                    {
+                        <img src="images/ninja/slider1.jpg" alt="IMG-BG" class="rev-slidebg">
+                    }
+
+                    <!--  -->
+                    @*<div class="tp-caption tp-resizeme layer1"
+                             data-frames='[{"delay":1300,"speed":1300,"frame":"0","from":"x:-200px;skX:85px;opacity:0;","to":"o:1;","ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"auto:auto;","ease":"Power3.easeInOut"}]'
+                             data-visibility="['on', 'on', 'on', 'on']"
+                             data-fontsize="['35', '35', '35', '35']"
+                             data-fontweight="['600']"
+                             data-lineheight="['42', '42', '42', '42']"
+                             data-color="['#333']"
+                             data-textAlign="['left', 'left', 'center', 'center']"
+                             data-x="['left']"
+                             data-y="['center']"
+                             data-hoffset="['310', '80', '0', '0']"
+                             data-voffset="['-78', '-78', '-78', '-150']"
+                             data-width="['650','650','768','576']"
+                             data-height="['auto']"
+                             data-whitespace="['normal']"
+                             data-paddingtop="[0, 0, 0, 0]"
+                             data-paddingright="[15, 15, 15, 15]"
+                             data-paddingbottom="[0, 0, 0, 0]"
+                             data-paddingleft="[15, 15, 15, 15]"
+                             data-basealign="slide"
+                             data-responsive_offset="on">
+                            <span class="child1">GRAND OPENING</span>
+                        </div>
+
+                        <!--  -->
+                        <h2 class="tp-caption tp-resizeme layer2"
+                            data-frames='[{"delay":500,"speed":1300,"frame":"0","from":"x:200px;skX:-85px;opacity:0;","to":"o:1;","ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"auto:auto;","ease":"Power3.easeInOut"}]'
+                            data-visibility="['on', 'on', 'on', 'on']"
+                            data-fontsize="['75', '75', '75', '75']"
+                            data-lineheight="['82', '82', '82', '82']"
+                            data-color="['#e49d25']"
+                            data-textAlign="['left', 'left', 'center', 'center']"
+                            data-x="['left']"
+                            data-y="['center']"
+                            data-hoffset="['310', '80', '0', '0']"
+                            data-voffset="['0', '0', '0', '-30']"
+                            data-width="['650','650','768','576']"
+                            data-height="['auto']"
+                            data-whitespace="['normal']"
+                            data-paddingtop="[0, 0, 0, 0]"
+                            data-paddingright="[15, 15, 15, 15]"
+                            data-paddingbottom="[0, 0, 0, 0]"
+                            data-paddingleft="[15, 15, 15, 15]"
+                            data-basealign="slide"
+                            data-responsive_offset="on">
+                            MUA 1 TẶNG 1
+                        </h2>
+
+                        <!--  -->
+                        <p class="tp-caption tp-resizeme layer3"
+                           data-frames='[{"delay":1300,"speed":1300,"frame":"0","from":"x:-200px;skX:85px;opacity:0;","to":"o:1;","ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"auto:auto;","ease":"Power3.easeInOut"}]'
+                           data-visibility="['on', 'on', 'on', 'on']"
+                           data-fontsize="['15', '15', '15', '15']"
+                           data-lineheight="['24', '24', '24', '24']"
+                           data-color="['#666']"
+                           data-textAlign="['left', 'left', 'center', 'center']"
+                           data-x="['left']"
+                           data-y="['center']"
+                           data-hoffset="['310', '80', '0', '0']"
+                           data-voffset="['95', '95', '95', '95']"
+                           data-width="['650','650','768','576']"
+                           data-height="['auto', 'auto', 'auto', 'auto']"
+                           data-whitespace="['normal']"
+                           data-paddingtop="[0, 0, 0, 0]"
+                           data-paddingright="[15, 15, 35, 15]"
+                           data-paddingbottom="[0, 0, 0, 0]"
+                           data-paddingleft="[15, 15, 35, 15]"
+                           data-basealign="slide"
+                           data-responsive_offset="on">
+                            <span class="slide-date">Từ ngày 01.10 – 31.10.2018</span><br />
+                            * Freeship cho mọi đơn hàng trong bán kính 1km xung quanh Chợ Bến Thành hoặc đơn hàng có giá trị từ 150.000đ. <br />
+                            * Xem thêm thể lệ chương trình tại <a href="https://order.ninjasaigon.com" target="_blank" class="slide-link">đây</a>
+                        </p>*@
+
+                    <!--  -->
+                        <div class="tp-caption tp-resizeme flex-w layer4"
+                             data-frames='[{"delay":1300,"speed":1300,"frame":"0","from":"x:-200px;skX:85px;opacity:0;","to":"o:1;","ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"auto:auto;","ease":"Power3.easeInOut"}]'
+                             data-visibility="['on', 'on', 'on', 'on']"
+                             data-fontsize="['15', '15', '15', '15']"
+                             data-lineheight="['24', '24', '24', '24']"
+                             data-color="['#666']"
+                             data-textAlign="['left', 'left', 'center', 'center']"
+                             data-x="['left']"
+                             data-y="['center']"
+                             data-hoffset="['310', '80', '0', '0']"
+                             data-voffset="['203', '203', '203', '203']"
+                             data-width="['650','650','768','576']"
+                             data-height="['auto', 'auto', 'auto', 'auto']"
+                             data-whitespace="['normal']"
+                             data-paddingtop="[0, 0, 0, 0]"
+                             data-paddingright="[15, 15, 35, 15]"
+                             data-paddingbottom="[0, 0, 0, 0]"
+                             data-paddingleft="[15, 15, 35, 15]"
+                             data-basealign="slide"
+                             data-responsive_offset="on">
+                            <a href="#sec_menu" class="btn-slide flex-c-m m-r-lg slide-link">XEM MENU</a>
+                            @if (Model.DeviceType == Wangkanai.Detection.DeviceType.Mobile)
+                            {
+                                <a href="https://order.ninjasaigon.com" target="_blank" class="btn-slide flex-c-m">ĐẶT HÀNG</a>
+                            }
+                            else
+                            {
+                                <a href="https://order.ninjasaigon.com" target="_blank" class="btn-slide flex-c-m">ĐẶT HÀNG ONLINE</a>
+                            }
+                        </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="sec-welcome bg0 p-t-100 p-b-85" id="sec_about">
+    <div class="container">
+        <div class="size-a-1 flex-col-c-m p-b-45">
+            <h3 class="txt-center txt-l-102 cl10 respon1 p-b-11">
+                NINJA SAIGON
+            </h3>
+            <p class="txt-center txt-m-108 cl10">
+                Ninja Saigon được thành lập với mục tiêu cung cấp những lựa chọn đồ uống ngon miệng và đồng thời tốt cho sức khỏe.<br />"Chất lượng, khác biệt và an toàn" - Đó là lời hứa và cam kết của Ninja Saigon đối với khách hàng.
+            </p>
+        </div>
+
+        <div class="wrap-pic-max-w flex-c-t flex-w p-t-250 item-welcome-parent">
+            <img class="size-w-1" src="images/ninja/other-01.png" alt="IMG">
+
+            <div class="item-welcome one">
+                <div class="item-welcome-pic pos-relative">
+                    <div class="wrap-pic-max-w flex-c-m item-welcome-pic-dark trans-04">
+                        <img src="images/icons/icon1.png" alt="IMG">
+                    </div>
+
+                    <div class="wrap-pic-max-w flex-c-m s-full ab-t-l item-welcome-pic-light trans-04">
+                        <img src="images/icons/icon1.1.png" alt="IMG">
+                    </div>
+                </div>
+
+                <div class="item-welcome-txt p-t-20">
+                    <h4 class="txt-m-110 cl10 txt-center p-b-7">
+                        CÔNG THỨC KHÁC BIỆT
+                    </h4>
+
+                    <p class="txt-s-106 cl6 txt-center">
+                        Chúng tôi không ngừng nghiên cứu phát triển các công thức và phương pháp chế biến từ truyền thống đến hiện đại cho từng dòng sản phẩm.
+                    </p>
+                </div>
+            </div>
+
+            <div class="item-welcome two">
+                <div class="item-welcome-pic pos-relative">
+                    <div class="wrap-pic-max-w flex-c-m item-welcome-pic-dark trans-04">
+                        <img src="images/icons/icon2.png" alt="IMG">
+                    </div>
+
+                    <div class="wrap-pic-max-w flex-c-m s-full ab-t-l item-welcome-pic-light trans-04">
+                        <img src="images/icons/icon2.2.png" alt="IMG">
+                    </div>
+                </div>
+
+                <div class="item-welcome-txt p-t-20">
+                    <h4 class="txt-m-110 cl10 txt-center p-b-7">
+                        NGUYÊN LIỆU CAO CẤP
+                    </h4>
+
+                    <p class="txt-s-106 cl6 txt-center">
+                        Sản phẩm của Ninja Saigon chỉ sử dụng các nguyên liệu tự nhiên và cao cấp nhất, từ các thương hiệu tên tuổi.
+                    </p>
+                </div>
+            </div>
+
+            <div class="item-welcome three">
+                <div class="item-welcome-pic pos-relative">
+                    <div class="wrap-pic-max-w flex-c-m item-welcome-pic-dark trans-04">
+                        <img src="images/icons/icon3.png" alt="IMG">
+                    </div>
+
+                    <div class="wrap-pic-max-w flex-c-m s-full ab-t-l item-welcome-pic-light trans-04">
+                        <img src="images/icons/icon3.3.png" alt="IMG">
+                    </div>
+                </div>
+
+                <div class="item-welcome-txt p-t-20">
+                    <h4 class="txt-m-110 cl10 txt-center p-b-7">
+                        TƯƠI VÀ AN TOÀN
+                    </h4>
+
+                    <p class="txt-s-106 cl6 txt-center">
+                        Chúng tôi chế biến sản phẩm tươi mỗi ngày với những tiêu chuẩn đầu vào và quy trình pha chế được kiểm soát gắt gao đến từng viên đá trong mỗi cốc đồ uống.
+                    </p>
+                </div>
+            </div>
+
+            <div class="item-welcome four">
+                <div class="item-welcome-pic pos-relative">
+                    <div class="wrap-pic-max-w flex-c-m item-welcome-pic-dark trans-04">
+                        <img src="images/icons/icon4.png" alt="IMG">
+                    </div>
+
+                    <div class="wrap-pic-max-w flex-c-m s-full ab-t-l item-welcome-pic-light trans-04">
+                        <img src="images/icons/icon4.4.png" alt="IMG">
+                    </div>
+                </div>
+
+                <div class="item-welcome-txt p-t-20">
+                    <h4 class="txt-m-110 cl10 txt-center p-b-7">
+                        TIỆN LỢI
+                    </h4>
+
+                    <p class="txt-s-106 cl6 txt-center">
+                        Khách hàng có thể thưởng thức một cốc đồ uống ngon ngay tại nhà / văn phòng hay bất cứ nơi nào chỉ với vài thao tác đặt hàng đơn giản.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="sec-menu" id="sec_menu">
+    <div class="row m-0-xl">
+        <div class="sec-menu-l">
+            @for (int i = 0; i < Model.DrinkCategories.Count; i++)
+            {
+                var item = Model.DrinkCategories[i];
+                var primaryPhoto = item.Photos.Where(p => p.IsPrimary).FirstOrDefault();
+                <div class="menu-cat @(item.Name.ToLower() == "macchiato" ? "active" : "")" style="background: url(@(primaryPhoto != null ? primaryPhoto.Url : "/images/ninja/01.jpg")) no-repeat center; background-size: cover">
+                    <a class="menu-cat-name hov1-parent" data-target="#menu-c-@item.Id">
+                        <span>@item.Name</span>
+                    </a>
+                </div>
+            }
+
+            <div class="menu-cat" style="background: url(/images/ninja/08.jpg) no-repeat center; background-size: cover">
+                <a class="menu-cat-name hov1-parent" data-target="#menu-topping">
+                    <span>TOPPING</span>
+                </a>
+            </div>
+        </div>
+        <div class="sec-menu-r">
+            <div class="row m-0-xl ">
+                <div class="col-sm-12 menu-r-bg" style="background: url(/images/ninja/12.jpg) no-repeat center; background-size: cover; height: 100%;">
+                    @for (int i = 0; i < Model.DrinkCategories.Count; i++)
+                    {
+                        var item = Model.DrinkCategories[i];
+                        <div class="menu-r-details @(item.Name.ToLower() == "macchiato" ? "active" : "")" id="menu-c-@item.Id" style="@(item.Name.ToLower() == "macchiato" ? "display: block;" : "display: none;")">
+                            <h3 class="menu-r-title">@item.Name</h3>
+                            <p class="menu-r-intro">@item.Description</p>
+                            <br />
+                            <table class="menu-r-table">
+                                <tbody>
+                                    @if (item.Name.ToLower() == "cafe")
+                                    {
+                                        <tr>
+                                            <th></th>
+                                            <th>Size S</th>
+                                            <th>Size M</th>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <th></th>
+                                            <th>Size M</th>
+                                            <th>Size L</th>
+                                        </tr>
+                                    }
+                                    @foreach (var drink in item.Drinks.Where(d => d.IsActive).OrderBy(d => d.Position))
+                                    {
+                                        <tr>
+                                            <td>
+                                                <h4>@drink.Name</h4>
+                                                @if (!string.IsNullOrEmpty(drink.EnglishName))
+                                                {
+                                                    <span>@drink.EnglishName</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>&nbsp;</span>
+                                                }
+                                            </td>
+                                            @foreach (var size in drink.DrinkSizes)
+                                            {
+                                                <td><b class="pro-price">@(size.Price.ToString("#,###", cul.NumberFormat))</b></td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+
+                    <div class="menu-r-details" id="menu-topping" style="display: none;">
+                        <h3 class="menu-r-title">TOPPING</h3>
+                        <p class="menu-r-intro">Được chế biến tươi mỗi ngày từ các nguyên liệu nhập khẩu cao cấp theo công thức riêng của Ninja Saigon.</p>
+                        <br />
+                        <table class="menu-r-table">
+                            <tbody>
+                                @foreach (var topping in Model.Toppings)
+                                {
+                                    <tr>
+                                        <td>
+                                            <h4>@topping.Name</h4>
+                                            @if (!string.IsNullOrEmpty(topping.EnglishName))
+                                            {
+                                                <span>@topping.EnglishName</span>
+                                            }
+                                            else
+                                            {
+                                                <span>&nbsp;</span>
+                                            }
+                                        </td>
+                                        <td><b class="pro-price">@(topping.Price.ToString("#,###", cul.NumberFormat))</b></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,342 @@
+﻿@model PrivatePromotionDrinkSetting
+
+<form asp-action="EditPrivatePromotionDrinkSetting" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccessEditPromotionDrinkSetting" data-ajax-failure="onFailureEditPromotionDrinkSetting" method="post" class="m-form m-form--label-align-right">
+    <input type="hidden" asp-for="PrivatePromotionId" value="@Model.PrivatePromotionId" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="m-portlet__body row">
+        <div class="row">
+            <div class="col-md-12 pl-0">
+                <div class="row mb-2">
+                    <div class="m-portlet m-portlet--head-sm" style="width: 100%">
+                        <div class="m-portlet__body">
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-12 text-left">Kiểu tặng món</label>
+                                <div class="col-lg-12">
+                                    <div class="m-radio-inline">
+                                        <label class="m-radio"><input type="radio" asp-for="PromotionGiftType" value="1" data-target="promo-1">Tiền phát sinh<span></span></label>
+                                        <label class="m-radio"><input type="radio" asp-for="PromotionGiftType" value="3" data-target="promo-3">Mua m tặng n (kiểu giá thấp nhất)<span></span></label>
+                                        <label class="m-radio"><input type="radio" asp-for="PromotionGiftType" value="5">Mua size X tặng size Y<span></span></label>
+                                        <label class="m-radio"><input type="radio" asp-for="PromotionGiftType" value="2">Tổng hóa đơn<span></span></label>
+                                        <label class="m-radio"><input type="radio" asp-for="PromotionGiftType" value="4">Mua m tặng n<span></span></label>
+                                        <label class="m-radio"><input type="radio" asp-for="PromotionGiftType" value="6">Vòng quay may mắn<span></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-content gift-type" style="width: 100%">
+                <div class="tab-pane @(Model.PromotionGiftType == 1 ? "active show" : "")" id="promo-1" aria-expanded="true">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="m-portlet m-portlet--head-sm">
+                                    <div class="m-portlet__body">
+                                        <div class="row">
+                                            <div class="form-group m-form__group row mt-4 mb-1">
+                                                <div class="col-lg-12">
+                                                    <div class="form-group m-form__group row">
+                                                        <label class="col-lg-12 text-left">Điều kiện khuyến mãi</label>
+                                                        <div class="col-lg-12 row">
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group m-form__group row">
+                                                                    <label class="col-lg-4 col-form-label text-left">
+                                                                        <label class="m-checkbox">
+                                                                            <input type="checkbox" asp-for="Condition_MinMoney">
+                                                                            Số tiền
+                                                                            <span></span>
+                                                                        </label>
+                                                                        <span class="ml-3">=</span>
+                                                                    </label>
+                                                                    <div class="col-lg-8">
+                                                                        <input type="text" asp-for="Condition_MinMoneyValue" class="form-control m-input currency-input" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group m-form__group row">
+                                                                    <label class="col-lg-4 col-form-label text-left">
+                                                                        <label class="m-checkbox">
+                                                                            <input type="checkbox" asp-for="Condition_Topping">
+                                                                            Topping
+                                                                            <span></span>
+                                                                        </label>
+                                                                    </label>
+                                                                    <div class="col-lg-8">
+                                                                        <div class="m-radio-list">
+                                                                            <label class="m-radio">
+                                                                                <input type="radio" asp-for="Condition_WithTopping" value="true">
+                                                                                Tặng món kèm topping
+                                                                                <span></span>
+                                                                            </label>
+                                                                            <label class="m-radio">
+                                                                                <input type="radio" asp-for="Condition_WithTopping" value="false">
+                                                                                Tặng món không kèm topping
+                                                                                <span></span>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group m-form__group row">
+                                                                    <label class="col-lg-5 col-form-label text-left">
+                                                                        <label class="m-checkbox">
+                                                                            <input type="checkbox" asp-for="Condition_MinDrink">
+                                                                            Số ly mua
+                                                                            <span></span>
+                                                                        </label>
+                                                                        <span class="ml-3"><text>>=</text></span>
+                                                                    </label>
+                                                                    <div class="col-lg-7">
+                                                                        <input type="text" asp-for="Condition_MinDrinkValue" class="form-control m-input" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group m-form__group row">
+                                                                    <label class="col-lg-5 col-form-label text-left">
+                                                                        <label>Số ly tặng</label>
+                                                                        <span class="ml-4">=</span>
+                                                                    </label>
+                                                                    <div class="col-lg-7">
+                                                                        <input type="text" asp-for="PromotionDrinkQuantity" class="form-control m-input" />
+                                                                        <div class="m-radio-list mt-2">
+                                                                            <label class="m-radio">
+                                                                                <input type="radio" asp-for="ApplyOneTimeOrRepeat" value="true">
+                                                                                Áp dụng 1 lần
+                                                                                <span></span>
+                                                                            </label>
+                                                                            <label class="m-radio">
+                                                                                <input type="radio" asp-for="ApplyOneTimeOrRepeat" value="false">
+                                                                                Áp dụng lặp lại
+                                                                                <span></span>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-12 pt-1">
+                                            <div class="row mb-4">
+                                                <div class="col-xl-2 m--font-boldest m--icon-font-size-sm1">CHỌN MÓN</div>
+                                                <div class="col-xl-3">
+                                                    <button type="button" class="btn btn-info" id="btn-add-drink"><i class="fa fa-plus"></i></button>
+                                                </div>
+
+                                                <div class="col-xl-3 select-quantity invisible" id="drink-quantity-wrapper">
+                                                    <button type="button" class="btn btn-info btn-less-drink"><i class="fa fa-minus"></i></button>
+                                                    <input type="text" id="drink-quantity" value="1" class="quantity-value" style="width: 50px;" />
+                                                    <button type="button" class="btn btn-info btn-more-drink"><i class="fa fa-plus"></i></button>
+                                                </div>
+                                                <div class="col-xl-4 invisible" id="drink-controls">
+                                                    <button type="button" class="btn btn-info" id="btn-save-drink" data-type="1">Lưu món</button>
+                                                    <button type="button" class="btn btn-info" id="btn-remove-drink">Xóa</button>
+                                                    <button type="button" class="btn btn-info" id="btn-cancel-drink">Hủy</button>
+                                                </div>
+                                            </div>
+                                            <div class="row invisible" id="drink-selector-wrapper">
+                                                <div class="col-2 col-opt">
+                                                    <div class="m-portlet m-portlet--last m-portlet--head-lg m-portlet--responsive-mobile">
+                                                        <div class="m-portlet__head">
+                                                            <div class="m-portlet__head-wrapper">
+                                                                <div class="m-portlet__head-caption">
+                                                                    <div class="m-portlet__head-title">
+                                                                        <h4 class="m-portlet__head-text">
+                                                                            NHÓM
+                                                                        </h4>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="m-portlet__body" id="category-list">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-2 col-opt">
+                                                    <div class="m-portlet m-portlet--last m-portlet--head-lg m-portlet--responsive-mobile">
+                                                        <div class="m-portlet__head" style="">
+                                                            <div class="m-portlet__head-wrapper">
+                                                                <div class="m-portlet__head-caption">
+                                                                    <div class="m-portlet__head-title">
+                                                                        <h4 class="m-portlet__head-text">
+                                                                            MÓN
+                                                                        </h4>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="m-portlet__body" id="drink-list">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-2 col-opt">
+                                                    <div class="m-portlet m-portlet--last m-portlet--head-lg m-portlet--responsive-mobile">
+                                                        <div class="m-portlet__head" style="">
+                                                            <div class="m-portlet__head-wrapper">
+                                                                <div class="m-portlet__head-caption">
+                                                                    <div class="m-portlet__head-title">
+                                                                        <h4 class="m-portlet__head-text">
+                                                                            SIZE
+                                                                        </h4>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="m-portlet__body" id="size-list">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-opt">
+                                                    <div class="m-portlet m-portlet--last m-portlet--head-lg m-portlet--responsive-mobile">
+                                                        <div class="m-portlet__head" style="">
+                                                            <div class="m-portlet__head-wrapper">
+                                                                <div class="m-portlet__head-caption">
+                                                                    <div class="m-portlet__head-title">
+                                                                        <h4 class="m-portlet__head-text">
+                                                                            TOPPING
+                                                                        </h4>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="m-portlet__body" id="topping-list">
+                                                            <div class="topping-list-l"></div>
+                                                            <div class="topping-list-r"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="m-form mb-1">
+                                <div class="m-portlet m-portlet--head-sm" m-portlet="true">
+                                    <div class="m-portlet__head">
+                                        <div class="m-portlet__head-caption">
+                                            <div class="m-portlet__head-title">
+                                                <h3 class="m-portlet__head-text">
+                                                    MÓN TẶNG
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="m-portlet__body">
+                                        <div class="form-group m-form__group row">
+                                            <div class="col-lg-12 row">
+                                                <div class="col-lg-6">
+                                                    <div class="row">
+                                                        <label class="col-lg-12 text-left">Hình thức tặng</label>
+                                                        <div class="col-lg-12">
+                                                            <div class="form-group m-form__group">
+                                                                <div class="m-radio-list">
+                                                                    <label class="m-radio">
+                                                                        <input type="radio" asp-for="PromotionForm" value="true">
+                                                                        Tặng 1 trong các món
+                                                                        <span></span>
+                                                                    </label>
+                                                                    <label class="m-radio">
+                                                                        <input type="radio" asp-for="PromotionForm" value="false">
+                                                                        Tặng tất cả các món
+                                                                        <span></span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <label class="col-lg-12 text-left">Kiểu sinh món tặng</label>
+                                                    <div class="col-lg-12">
+                                                        <div class="m-radio-list">
+                                                            <label class="m-radio">
+                                                                <input type="radio" asp-for="PromotionDrinkRandom" value="true">
+                                                                Random
+                                                                <span></span>
+                                                            </label>
+                                                            <label class="m-radio">
+                                                                <input type="radio" asp-for="PromotionDrinkRandom" value="false">
+                                                                Theo thứ tự
+                                                                <span></span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="m-portlet m-portlet--head-sm mt-1">
+                                    <div class="m-portlet__head">
+                                        <div class="m-portlet__head-caption">
+                                            <div class="m-portlet__head-title">
+                                                <h3 class="m-portlet__head-text">
+                                                    DANH SÁCH MÓN
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="m-portlet__body">
+                                        <table class="table" id="pd-order-details">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tên món</th>
+                                                    <th class="text-center">SL</th>
+                                                    <th class="text-right">Đơn giá</th>
+                                                    <th class="text-right">Thành tiền</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @for (var i = 0; i < Model.PrivatePromotionDrinks.Count; i++)
+                                                {
+                                                    var promotionDrink = Model.PrivatePromotionDrinks.ElementAt(i);
+                                                    @await Component.InvokeAsync("PrivatePromotionDrinkItem", new { ppDrinkId = promotionDrink.Id, index = i });
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-form text-center">
+                                <input type="submit" value="Lưu" class="btn btn-info mr-2" />
+                                <input type="reset" value="Hủy" class="btn btn-info" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane @(Model.PromotionGiftType == 3 ? "active show" : "")" id="promo-3" aria-expanded="true">
+                    <div class="row">
+                        <div class="m-portlet m-portlet--head-sm" style="width: 100%">
+                            <div class="m-portlet__body">
+                                <div class="form-group m-form__group row mt-4 mb-1">
+                                    <div class="col-md-12">
+                                        <div class="form-group m-form__group row">
+                                            <label class="col-lg-2 col-form-label text-left">Tỷ lệ Số ly mua / Số ly tặng</label>
+                                            <div class="col-lg-4">
+                                                <div class="row">
+                                                    <input type="text" asp-for="PromotionDrinkBuyQuantity" class="form-control m-input currency-input col-md-5" />
+                                                    <span class="col-md-1">/</span>
+                                                    <input type="text" asp-for="PromotionDrinkGiveQuantity" class="form-control m-input currency-input col-md-5" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <input type="submit" value="Lưu" class="btn btn-info mr-2" />
+                                        <input type="reset" value="Hủy" class="btn btn-info" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

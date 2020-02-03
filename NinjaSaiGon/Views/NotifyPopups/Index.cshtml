@@ -1,0 +1,131 @@
+﻿@model IEnumerable<NinjaSaiGon.Data.Models.NotifyPopup>
+
+@{
+    ViewData["Title"] = "Quản lý thông báo";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Danh sách thông báo
+                        </h3>
+                    </div>
+                </div>
+                <div class="m-portlet__head-tools">
+                    <ul class="m-portlet__nav">
+                        <li class="m-portlet__nav-item">
+                            <a asp-action="Create" class="btn btn-accent m-btn m-btn--custom m-btn--pill m-btn--icon m-btn--air">
+                                <span>
+                                    <i class="la la-plus"></i>
+                                    <span>
+                                        Thêm thông báo
+                                    </span>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <!--begin: Datatable -->
+                <table class="table table-striped- table-bordered table-hover table-checkable" id="m_table_1">
+                    <thead>
+                        <tr class="text-center">
+                            <th>STT</th>
+                            <th width="30%">Tên</th>
+                            <th width="30%">Nội dung</th>
+                            <th>Từ ngày</th>
+                            <th>Đến ngày</th>
+                            <th>Cho phép đặt hàng</th>
+                            <th>Trạng thái</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (var i = 0; i < Model.Count(); i++)
+                        {
+                            var item = Model.ElementAt(i);
+                            <tr>
+                                <td>@(i + 1)</td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.Raw(item.Content)
+                                </td>
+                                <td>
+                                    @(item.StartDate.HasValue ? item.StartDate.Value.ToString("dd/MM/yyyy") : "")
+                                </td>
+                                <td>
+                                    @(item.EndDate.HasValue ? item.EndDate.Value.ToString("dd/MM/yyyy") : "")
+                                </td>
+                                <td class="text-center"><input type="checkbox" class="allow-order-chkbox" data-id="@item.Id" @(item.IsAllowOrder ? "checked" : "") /></td>
+                                <td class="text-center"><input type="checkbox" class="isactive-chkbox" data-id="@item.Id" @(item.IsActive ? "checked" : "") /></td>
+                                <td class="text-center">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
+                                        <i class="la la-edit"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">
+                                        <i class="la la-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+            SetActiveMenu('notifyMenu');
+
+            $("#m_table_1").DataTable({
+                "language": {
+                    "emptyTable": "Không có dữ liệu",
+                    "info": "Hiện _START_ đến _END_ trên _TOTAL_ dòng",
+                    "infoEmpty": "Không có dữ liệu",
+                    "lengthMenu": "Hiện _MENU_ dòng",
+                    "loadingRecords": "Đang tải...",
+                    "processing": "Đang xử lý...",
+                    "search": "Tìm kiếm:",
+                    "zeroRecords": "Không tìm thấy dữ liệu phù hợp"
+                }
+            });
+
+            $(document).on('change', '.allow-order-chkbox', function (e) {
+                e.preventDefault();
+                $.post('/NotifyPopups/UpdateAllowOrder', { id: $(this).data('id') }, function (data) {
+                    if (data.success === true) {
+                        alert("Cập nhật thành công");
+                    }
+                    else {
+                        alert("Cập nhật thất bại");
+                    }
+                });
+            });
+
+            $(document).on('change', '.isactive-chkbox', function (e) {
+                e.preventDefault();
+                $.post('/NotifyPopups/UpdateActiveNotify', { id: $(this).data('id') }, function (data) {
+                    if (data.success === true) {
+                        alert("Cập nhật thành công");
+                        location.reload();
+                    }
+                    else {
+                        alert("Cập nhật thất bại");
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,820 @@
+﻿@model NinjaSaiGon.Admin.Models.OrderModels.OrderViewModel
+
+@{
+    ViewData["Title"] = "Chỉnh sửa đơn hàng";
+    CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN");
+    var enumList = Enum.GetValues(typeof(NinjaSaiGon.Data.Models.QuickOrderStatus)).Cast<NinjaSaiGon.Data.Models.QuickOrderStatus>();
+    var valDistance = (double)Model.Distance / 1000;
+    var txtDistance = Math.Round(valDistance, 1);
+    var startTimeOPOpt = new TimeSpan(0, 9, 0, 0);
+    var startTimeODOpt = new TimeSpan(0, 9, 0, 0);
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper" id="quick-create-order">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <input type="hidden" id="sid" name="sid" value="@Url.ActionContext.HttpContext.Session.Id" />
+            <form asp-action="QuickEdit" class="m-form m-form--label-align-right">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input asp-for="OrderId" type="hidden" />
+                <input asp-for="Code" type="hidden" />
+                <input asp-for="IsSpecialPromo" type="hidden" />
+                <input asp-for="IsDeliveryNow" type="hidden" />
+                <input type="hidden" name="IsPrint" id="IsPrint" value="False" />
+                <input type="hidden" name="TypePrint" id="TypePrint" value="0" />
+                <div class="m-portlet__body row m-row--col-separator-xl">
+                    <div class="col-md-8">
+                        <div class="row mb-1">
+                            <div id="map" style="display: none;"></div>
+                            <input id="_se_am" type="hidden" value="@Model.ShipFee" />
+                            <input id="_dt_am" type="hidden" value="@Model.DiscountAmount" />
+                            <input id="_ao_dt_pg" type="hidden" value="@Model.IsSpecialPromo.ToString()" />
+                            <div class="m-portlet m-portlet--head-sm" m-portlet="true" style="width: 100%;">
+                                <div class="m-portlet__head">
+                                    <div class="m-portlet__head-caption">
+                                        <div class="m-portlet__head-title">
+                                            <h3 class="m-portlet__head-text">
+                                                THÔNG TIN CHUNG:
+                                            </h3>
+                                        </div>
+                                    </div>
+                                    <div class="m-portlet__head-tools">
+                                        <ul class="m-portlet__nav">
+                                            <li class="m-portlet__nav-item">
+                                                <a href="" m-portlet-tool="toggle" class="m-portlet__nav-link m-portlet__nav-link--icon">
+                                                    <i class="la la-angle-down"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="m-portlet__body">
+                                    <div class="form-group m-form__group row mt-4 mb-1">
+                                        <div class="col-lg-7">
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-4 col-form-label">
+                                                    Trạng thái
+                                                </label>
+                                                <div class="col-lg-8">
+                                                    <div class="m-radio-inline" data-toggle="buttons">
+                                                        @foreach (var opt in enumList)
+                                                        {
+                                                            <label class="btn btn-info btn-sm order-status-opt @(Convert.ToInt32(opt) == Convert.ToInt32(Model.Status) ? "active" : "")">
+                                                                <input type="radio" @(Convert.ToInt32(opt) == Convert.ToInt32(Model.Status) ? "checked" : "") name="Status" value="@Convert.ToInt32(opt).ToString()" style="display: none;">
+                                                                @Html.DisplayFor(e => opt)
+                                                                <span></span>
+                                                            </label>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-4 col-form-label">
+                                                    Tên khách hàng
+                                                </label>
+                                                <div class="col-lg-8">
+                                                    <div class="row">
+                                                        <div class="col-lg-4">
+                                                            <input asp-for="LastName" class="form-control m-input" placeholder="Họ" autocomplete="off" />
+                                                            <span asp-validation-for="LastName" class="form-control-feedback"></span>
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <input asp-for="MiddleName" class="form-control m-input" placeholder="Đệm và lót" autocomplete="off" />
+                                                            <span asp-validation-for="MiddleName" class="form-control-feedback"></span>
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <input asp-for="FirstName" class="form-control m-input" placeholder="Tên" autocomplete="off" required />
+                                                            <span asp-validation-for="FirstName" class="form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-4 col-form-label">&nbsp;</label>
+                                                <div class="col-lg-8 text-right">
+                                                    <button type="button" class="btn btn-info btn-sm" id="btn-updateOrderSource">Cập nhật nguồn đơn hàng</button>
+                                                    <button type="button" class="btn btn-info btn-sm" id="btn-updateCustomer">Cập nhật khách hàng</button>
+                                                    <input asp-for="OrderSourceId" type="hidden" value="@Model.OrderSourceId" />
+                                                    <input asp-for="OrderCustomerType" type="hidden" value="@Model.OrderCustomerType" />
+                                                    <input asp-for="AgencyId" type="hidden" value="@Model.AgencyId" />
+                                                    <input asp-for="CustomerId" type="hidden" value="@Model.CustomerId" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-4 col-form-label">
+                                                    Số điện thoại
+                                                </label>
+                                                <div class="col-lg-8">
+                                                    <input asp-for="PhoneNumber" type="text" class="form-control m-input" autocomplete="off" required />
+                                                    <span asp-validation-for="PhoneNumber" class="form-control-feedback"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-4 col-form-label">
+                                                    Địa chỉ
+                                                </label>
+                                                <div class="col-lg-8">
+                                                    <input type="hidden" asp-for="Distance" />
+                                                    <input asp-for="AddressLine" class="form-control m-input" placeholder="Nhập địa chỉ" autocomplete="off" required />
+                                                    <span asp-validation-for="AddressLine" class="form-control-feedback"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-5">
+                                            <div class="m-form__heading">
+                                                <h3 class="m-form__heading-title">&nbsp;</h3>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-4 col-form-label">
+                                                    Thời gian đặt
+                                                    <input asp-for="OrderPlaced" type="hidden" />
+                                                </label>
+                                                <div class="col-lg-4">
+                                                    <input type="text" id="OrderPlacedDatePicker" class="form-control m-input datepicker" value="@Model.OrderPlaced.ToString("dd/MM/yyyy")" autocomplete="off" />
+                                                    <span asp-validation-for="OrderPlaced" class="form-control-feedback"></span>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div class="input-group">
+                                                        <input type="text" id="OrderPlacedTimePicker" class="form-control m-input time-input" value="@Model.OrderPlaced.ToString("HH:mm")" autocomplete="off" />
+                                                        <div class="input-group-append">
+                                                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <span class="sr-only">Toggle Dropdown</span>
+                                                            </button>
+                                                            <div class="dropdown-menu" style="max-height: 300px; min-width: initial; overflow-y: auto;">
+                                                                @while (startTimeOPOpt <= new TimeSpan(17, 0, 0))
+                                                                {
+                                                                    <a class="dropdown-item" href="" data-val="@startTimeOPOpt.ToString("hh':'mm")">@startTimeOPOpt.ToString("hh':'mm")</a>
+                                                                    startTimeOPOpt = startTimeOPOpt.Add(TimeSpan.FromMinutes(30));
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-4 col-form-label">
+                                                    Thời gian giao
+                                                    <input asp-for="OrderDeliveried" type="hidden" />
+                                                </label>
+                                                <div class="col-lg-4">
+                                                    <input type="text" id="OrderDeliveriedDatePicker" class="form-control m-input datepicker" value="@Model.OrderDeliveried.ToString("dd/MM/yyyy")" autocomplete="off" />
+                                                    <span asp-validation-for="OrderDeliveried" class="form-control-feedback"></span>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div class="input-group">
+                                                        <input type="text" id="OrderDeliveriedTimePicker" class="form-control m-input time-input" value="@Model.OrderDeliveried.ToString("HH:mm")" autocomplete="off" />
+                                                        <div class="input-group-append">
+                                                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <span class="sr-only">Toggle Dropdown</span>
+                                                            </button>
+                                                            <div class="dropdown-menu" style="max-height: 300px; min-width: initial; overflow-y: auto;">
+                                                                @while (startTimeODOpt <= new TimeSpan(17, 0, 0))
+                                                                {
+                                                                    <a class="dropdown-item" href="" data-val="@startTimeODOpt.ToString("hh':'mm")">@startTimeODOpt.ToString("hh':'mm")</a>
+                                                                    startTimeODOpt = startTimeODOpt.Add(TimeSpan.FromMinutes(30));
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-4 col-form-label">
+                                                    Ghi chú khách hàng
+                                                </label>
+                                                <div class="col-lg-8">
+                                                    <textarea asp-for="CustomerNote" class="form-control m-input m-input--air" rows="2"></textarea>
+                                                    <span asp-validation-for="CustomerNote" class="form-control-feedback"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-4 col-form-label">
+                                                    Ghi chú NVCSKH
+                                                </label>
+                                                <div class="col-lg-8">
+                                                    <textarea asp-for="EmployeeNote" class="form-control m-input m-input--air" rows="2"></textarea>
+                                                    <span asp-validation-for="EmployeeNote" class="form-control-feedback"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @Html.HiddenFor(model => model.CardCode)
+                                    @Html.HiddenFor(model => model.StatusNote)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-1">
+                            <div class="m-portlet m-portlet--head-sm m-portlet--collapse" m-portlet="true" style="width: 100%;">
+                                <div class="m-portlet__head">
+                                    <div class="m-portlet__head-caption">
+                                        <div class="m-portlet__head-title">
+                                            <h3 class="m-portlet__head-text">
+                                                THÔNG TIN CHI TIẾT
+                                            </h3>
+                                        </div>
+                                    </div>
+                                    <div class="m-portlet__head-tools">
+                                        <ul class="m-portlet__nav">
+                                            <li class="m-portlet__nav-item">
+                                                <a href="" m-portlet-tool="toggle" class="m-portlet__nav-link m-portlet__nav-link--icon" id="collapse-top-detail">
+                                                    <i class="la la-angle-down"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="m-portlet__body" style="display: none; overflow: hidden; padding-top: 0px; padding-bottom: 0px;">
+                                    <div class="form-group m-form__group row mt-2">
+                                        <div class="col-lg-12">
+                                            <div class="form-group m-form__group row">
+                                                <label class="col-lg-2 col-form-label">
+                                                    Nhân viên bán hàng
+                                                </label>
+                                                <div class="col-lg-4">
+                                                    <input asp-for="EmployeeName" class="form-control m-input" autocomplete="off" />
+                                                    <span asp-validation-for="EmployeeName" class="form-control-feedback"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-form__group row">
+                                                <div class="col-lg-12">
+                                                    <div class="m-form__heading">
+                                                        <h3 class="m-form__heading-title pl-4">
+                                                            THÔNG TIN GIAO HÀNG:
+                                                        </h3>
+                                                    </div>
+                                                    <div class="form-group m-form__group row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group m-form__group row">
+                                                                <label class="col-lg-4 col-form-label">
+                                                                    Đơn vị giao hàng
+                                                                </label>
+                                                                <div class="col-lg-8">
+                                                                    <input name="OrderDelivery.OrderId" type="hidden" value="@(Model.OrderDelivery?.OrderId ?? 0)" />
+                                                                    <select name="OrderDelivery.DeliveryPartnerId" asp-items="@(new SelectList(ViewBag.DeliveryPartners, "Id", "Name", Model.OrderDelivery?.DeliveryPartnerId?.ToString()))" class="form-control m-input m-input--square">
+                                                                        <option value="">Chọn</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group m-form__group row">
+                                                                <label class="col-lg-4 col-form-label">
+                                                                    Khoảng cách giao hàng
+                                                                </label>
+                                                                <div class="col-lg-8">
+                                                                    <input type="text" name="OrderDelivery.PartnerDistance" class="form-control m-input text-right" placeholder="Nhập khoảng cách" autocomplete="off" value="@(Model.OrderDelivery?.PartnerDistance ?? 0)" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group m-form__group row">
+                                                                <label class="col-lg-4 col-form-label">
+                                                                    Phí giao hàng
+                                                                </label>
+                                                                <div class="col-lg-8">
+                                                                    <input type="text" name="OrderDelivery.PartnerShipFee" class="form-control m-input price-input" placeholder="Nhập phí" autocomplete="off" value="@(Model.OrderDelivery?.PartnerShipFee ?? 0)" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group m-form__group row">
+                                                                <label class="col-lg-4 col-form-label">
+                                                                    Người giao hàng
+                                                                </label>
+                                                                <div class="col-lg-8">
+                                                                    <div class="row mt-3">
+                                                                        <label class="col-lg-5 col-form-label">
+                                                                            Tên
+                                                                        </label>
+                                                                        <div class="col-lg-7">
+                                                                            <input type="text" name="OrderDelivery.FullName" class="form-control m-input" autocomplete="off" value="@Model.OrderDelivery?.FullName" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mt-3">
+                                                                        <label class="col-lg-5 col-form-label">
+                                                                            Số điện thoại
+                                                                        </label>
+                                                                        <div class="col-lg-7">
+                                                                            <input type="text" name="OrderDelivery.PhoneNumber" class="form-control m-input" autocomplete="off" value="@Model.OrderDelivery?.PhoneNumber" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mt-3">
+                                                                        <label class="col-lg-5 col-form-label">
+                                                                            Email
+                                                                        </label>
+                                                                        <div class="col-lg-7">
+                                                                            <input type="text" name="OrderDelivery.Email" class="form-control m-input" autocomplete="off" value="@Model.OrderDelivery?.Email" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group m-form__group row">
+                                                                <label class="col-lg-5 col-form-label">
+                                                                    Thời gian nhận giao
+                                                                </label>
+                                                                <div class="col-lg-7">
+                                                                    <input type="text" name="OrderDelivery.AcceptedTime" class="form-control m-input datepicker" autocomplete="off" value="@Model.OrderDelivery?.AcceptedTime?.ToString("dd/MM/yyyy hh:mm")" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group m-form__group row">
+                                                                <label class="col-lg-5 col-form-label">
+                                                                    Thời gian đi giao
+                                                                </label>
+                                                                <div class="col-lg-7">
+                                                                    <input type="text" name="OrderDelivery.BeginTime" class="form-control m-input datepicker" autocomplete="off" value="@Model.OrderDelivery?.BeginTime?.ToString("dd/MM/yyyy hh:mm")" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group m-form__group row">
+                                                                <label class="col-lg-5 col-form-label">
+                                                                    Thời gian giao hàng xong
+                                                                </label>
+                                                                <div class="col-lg-7">
+                                                                    <input type="text" name="OrderDelivery.EndTime" class="form-control m-input datepicker" autocomplete="off" value="@Model.OrderDelivery?.EndTime?.ToString("dd/MM/yyyy hh:mm")" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group m-form__group row">
+                                                                <label class="col-lg-5 col-form-label">
+                                                                    Địa chỉ giao hàng
+                                                                </label>
+                                                                <div class="col-lg-7">
+                                                                    <input type="text" name="OrderDelivery.Address" class="form-control m-input" autocomplete="off" value="@Model.OrderDelivery?.Address" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group m-form__group row">
+                                                                <label class="col-lg-5 col-form-label">
+                                                                    Ghi chú giao hàng
+                                                                </label>
+                                                                <div class="col-lg-7">
+                                                                    <textarea name="OrderDelivery.Note" class="form-control m-input m-input--air" rows="3">@Model.OrderDelivery?.Note</textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="m-portlet m-portlet--head-sm" style="width: 100%;">
+                                <div class="m-portlet__head" style="border: 0;">
+                                    <div class="row mt-2">
+                                        <div class="col-xl-2 m--font-boldest m--icon-font-size-sm1">CHỌN MÓN</div>
+                                        <div class="col-xl-3">
+                                            <button type="button" class="btn btn-info" id="btn-add-drink"><i class="fa fa-plus"></i></button>
+                                        </div>
+
+                                        <div class="col-xl-3 select-quantity invisible" id="drink-quantity-wrapper">
+                                            <button type="button" class="btn btn-info btn-less-drink"><i class="fa fa-minus"></i></button>
+                                            <input type="text" id="drink-quantity" value="1" class="quantity-value" style="width: 50px;" />
+                                            <button type="button" class="btn btn-info btn-more-drink"><i class="fa fa-plus"></i></button>
+                                        </div>
+                                        <div class="col-xl-4 invisible" id="drink-controls">
+                                            <button type="button" class="btn btn-info" id="btn-discount">Giảm giá</button>
+                                            <button type="button" class="btn btn-info" id="btn-save-drink">Lưu món</button>
+                                            <button type="button" class="btn btn-info" id="btn-remove-drink">Xóa</button>
+                                            <button type="button" class="btn btn-info" id="btn-cancel-drink">Hủy</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="m-portlet__body">
+                                    <div class="col-xl-12 pt-1">
+                                        <div class="row invisible" id="drink-selector-wrapper">
+                                            <div class="col-2 col-opt">
+                                                <div class="m-portlet m-portlet--last m-portlet--head-lg m-portlet--responsive-mobile">
+                                                    <div class="m-portlet__head">
+                                                        <div class="m-portlet__head-wrapper">
+                                                            <div class="m-portlet__head-caption">
+                                                                <div class="m-portlet__head-title">
+                                                                    <h4 class="m-portlet__head-text">
+                                                                        NHÓM
+                                                                    </h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="m-portlet__body" id="category-list">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-2 col-opt">
+                                                <div class="m-portlet m-portlet--last m-portlet--head-lg m-portlet--responsive-mobile">
+                                                    <div class="m-portlet__head" style="">
+                                                        <div class="m-portlet__head-wrapper">
+                                                            <div class="m-portlet__head-caption">
+                                                                <div class="m-portlet__head-title">
+                                                                    <h4 class="m-portlet__head-text">
+                                                                        MÓN
+                                                                    </h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="m-portlet__body" id="drink-list">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-2 col-opt">
+                                                <div class="m-portlet m-portlet--last m-portlet--head-lg m-portlet--responsive-mobile">
+                                                    <div class="m-portlet__head" style="">
+                                                        <div class="m-portlet__head-wrapper">
+                                                            <div class="m-portlet__head-caption">
+                                                                <div class="m-portlet__head-title">
+                                                                    <h4 class="m-portlet__head-text">
+                                                                        SIZE
+                                                                    </h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="m-portlet__body" id="size-list">
+                                                    </div>
+                                                </div>
+                                                <div class="m-portlet m-portlet--last m-portlet--head-lg m-portlet--responsive-mobile">
+                                                    <div class="m-portlet__head">
+                                                        <div class="m-portlet__head-wrapper">
+                                                            <div class="m-portlet__head-caption">
+                                                                <div class="m-portlet__head-title">
+                                                                    <h4 class="m-portlet__head-text">
+                                                                        ĐƯỜNG
+                                                                    </h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="m-portlet__body" id="sugar-list">
+                                                    </div>
+                                                </div>
+                                                <div class="m-portlet m-portlet--last m-portlet--head-lg m-portlet--responsive-mobile">
+                                                    <div class="m-portlet__head" style="">
+                                                        <div class="m-portlet__head-wrapper">
+                                                            <div class="m-portlet__head-caption">
+                                                                <div class="m-portlet__head-title">
+                                                                    <h4 class="m-portlet__head-text">
+                                                                        ĐÁ
+                                                                    </h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="m-portlet__body" id="ice-list">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-opt">
+                                                <div class="m-portlet m-portlet--last m-portlet--head-lg m-portlet--responsive-mobile">
+                                                    <div class="m-portlet__head" style="">
+                                                        <div class="m-portlet__head-wrapper">
+                                                            <div class="m-portlet__head-caption">
+                                                                <div class="m-portlet__head-title">
+                                                                    <h4 class="m-portlet__head-text">
+                                                                        TOPPING
+                                                                    </h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="m-portlet__body" id="topping-list">
+                                                        <div class="topping-list-l"></div>
+                                                        <div class="topping-list-r"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4" id="paymentInfo">
+                        <div class="m-form mb-1">
+                            <div class="m-portlet m-portlet--head-sm" m-portlet="true">
+                                <div class="m-portlet__head">
+                                    <div class="m-portlet__head-caption">
+                                        <div class="m-portlet__head-title">
+                                            <h3 class="m-portlet__head-text">
+                                                THÔNG TIN CHUNG:
+                                            </h3>
+                                        </div>
+                                    </div>
+                                    <div class="m-portlet__head-tools">
+                                        <ul class="m-portlet__nav">
+                                            <li class="m-portlet__nav-item">
+                                                <a href="" m-portlet-tool="toggle" class="m-portlet__nav-link m-portlet__nav-link--icon" id="collapse-top-payment">
+                                                    <i class="la la-angle-down"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="m-portlet__body">
+                                    <div class="row">
+                                        <label class="col-lg-4 col-form-label">
+                                            Tổng
+                                        </label>
+                                        <div class="col-lg-8 m--align-right mt-2">
+                                            <span class="m--font-bolder cart-amount-drinks">@Model.OrderDetails.Sum(d => d.Amount).ToString("#,###", cul.NumberFormat)</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-lg-4 col-form-label">
+                                            Giảm giá
+                                        </label>
+                                        <div class="col-lg-8 m--align-right mt-2">
+                                            <span class="m--font-bolder" id="cart-promo-drinks">-@(!Model.IsAutoDiscount ? "0" : Model.DiscountAmount > 0 ? Model.DiscountAmount.ToString("#,###", cul.NumberFormat) : "0")</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-lg-5 col-form-label">
+                                            <input data-switch="true" type="checkbox" @(Model.IsAutoDiscount ? "checked" : "") data-size="small" data-on-color="danger" data-off-color="success" data-on-text="Auto" data-off-text="Manual" data-handle-width="100" name="IsAutoDiscount" id="IsAutoDiscount" value="true">
+                                            <input type="hidden" value="false" name="IsAutoDiscount">
+                                        </label>
+                                        <div class="col-lg-7 m--align-right mt-2">
+                                            <input class="form-control m-input m--align-right price-input" id="DiscountAmountManual" value="@(!Model.IsAutoDiscount ? Model.DiscountAmount : 0)" @(Model.IsAutoDiscount ? "disabled" : "")>
+                                            <input type="hidden" asp-for="DiscountAmount">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-lg-4 col-form-label">
+                                            Phụ thu
+                                        </label>
+                                        <div class="col-lg-8 m--align-right mt-2">
+                                            <span class="m--font-bolder" id="cart-surcharge">@(!Model.IsAutoSurcharge ? "0" : Model.SurchargeAmount > 0 ? Model.SurchargeAmount.ToString("#,###", cul.NumberFormat) : "0")</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-lg-5 col-form-label">
+                                            <input data-switch="true" type="checkbox" @(Model.IsAutoSurcharge ? "checked" : "") data-size="small" data-on-color="danger" data-off-color="success" data-on-text="Auto" data-off-text="Manual" data-handle-width="100" name="IsAutoSurcharge" id="IsAutoSurcharge" value="true">
+                                            <input type="hidden" value="false" name="IsAutoSurcharge">
+                                        </label>
+                                        <div class="col-lg-7 m--align-right mt-2">
+                                            <input class="form-control m-input m--align-right price-input" id="SurchargeAmountManual" value="@(!Model.IsAutoSurcharge ? Model.SurchargeAmount : 0)" @(Model.IsAutoSurcharge ? "disabled" : "")>
+                                            <input type="hidden" asp-for="SurchargeAmount">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-lg-4 col-form-label">
+                                            Phí giao hàng: <span class="m--font-danger" id="lb-Distance">@txtDistance.ToString() km</span>
+                                        </label>
+                                        <div class="col-lg-8 m--align-right mt-2">
+                                            <span class="m--font-bolder" id="cart-fee-ship">@(!Model.IsAutoShipFee ? "0" : Model.ShipFee > 0 ? Model.ShipFee.ToString("#,###", cul.NumberFormat) : "0")</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-lg-5 col-form-label">
+                                            <input data-switch="true" type="checkbox" @(Model.IsAutoShipFee ? "checked" : "") data-size="small" data-on-color="danger" data-off-color="success" data-on-text="Auto" data-off-text="Manual" data-handle-width="100" name="IsAutoShipFee" id="IsAutoShipFee" value="true">
+                                            <input type="hidden" value="false" name="IsAutoShipFee">
+                                        </label>
+                                        <div class="col-lg-7 m--align-right mt-2">
+                                            <input class="form-control m-input m--align-right price-input" id="ShipFeeManual" value="@(!Model.IsAutoShipFee ? Model.ShipFee : 0)" @(Model.IsAutoShipFee ? "disabled" : "")>
+                                            <input type="hidden" asp-for="ShipFee">
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <label class="col-lg-4 col-form-label">
+                                            Mã khuyến mãi
+                                        </label>
+                                        <div class="col-lg-5">
+                                            <div class="input-group">
+                                                <input class="form-control m-input m--align-right" name="PromotionCode" id="promotionCode" value="@Model.PromotionCode" placeholder="Nhập mã khuyến mãi">
+                                                <div class="input-group-append">
+                                                    <button type="button" class="btn btn-default" id="promotionSubmitBtn">OK</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 m--align-right mt-2">
+                                            @*<span class="m--font-bolder" id="cart-promotion">@(Model.PromotionDiscountValue > 0 ? Model.PromotionDiscountValue.ToString("#,###", cul.NumberFormat) : "0")</span>*@
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-lg-4 col-form-label">
+                                            Thành tiền
+                                        </label>
+                                        <div class="col-lg-8 m--align-right mt-2">
+                                            <span class="m--font-danger m--font-bolder" id="cart-amount-temp">@(Model.OrderTotal > 0 ? Model.OrderTotal.ToString("#,###", cul.NumberFormat) : "0")</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-portlet m-portlet--head-sm mt-1">
+                                <div class="m-portlet__head">
+                                    <div class="m-portlet__head-caption">
+                                        <div class="m-portlet__head-title">
+                                            <h3 class="m-portlet__head-text">
+                                                HÓA ĐƠN CHI TIẾT:
+                                            </h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="m-portlet__body">
+                                    <table class="table" id="qc-order-details">
+                                        <thead>
+                                            <tr>
+                                                <th>Tên món</th>
+                                                <th class="text-center">SL</th>
+                                                <th class="text-right">Đơn giá</th>
+                                                <th class="text-right">Thành tiền</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @for (var i = 0; i < Model.OrderDetails.Count; i++)
+                                            {
+                                                var item = Model.OrderDetails[i];
+                                                item.Index = i;
+                                                @await Html.PartialAsync("_CartItem", item)
+                                            }
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>Tổng cộng</th>
+                                                <th class="text-center"><strong id="cart-quantity-drinks">@Model.OrderDetails.Sum(od => od.Quantity)</strong></th>
+                                                <th></th>
+                                                <th class="text-right"><strong class="cart-amount-drinks">@Model.OrderDetails.Sum(d => d.Amount).ToString("#,###", cul.NumberFormat)</strong></th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-form text-center">
+                            <input type="submit" value="Lưu" class="btn btn-info mr-2" id="btnSubmitForm" />
+                            <div class="btn-group dropup mr-2">
+                                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Lưu và In
+                                </button>
+                                <div class="dropdown-menu">
+                                    <input type="button" value="Lưu và In tất cả" class="dropdown-item btnPrintDetail" data-type="0" />
+                                    <input type="button" value="Lưu và In bill khách & nội bộ" class="dropdown-item btnPrintDetail" data-type="1" />
+                                    <input type="button" value="Lưu và In bill bếp" class="dropdown-item btnPrintDetail" data-type="2" />
+                                    <input type="button" value="Lưu và In sticker" class="dropdown-item btnPrintDetail" data-type="3" />
+                                </div>
+                            </div>
+                            <input type="reset" value="Hủy" class="btn btn-info" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateCustomer" tabindex="-1" role="dialog" aria-labelledby="updateCustomerLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cập nhật khách hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <select id="srchCusType" asp-items="Html.GetEnumSelectList<OrderCustomerType>()" class="form-control m-input"></select>
+                    </div>
+                    <div class="col-md-3">
+                        <input class="form-control m-input" id="srchCusName" placeholder="Tên" />
+                    </div>
+                    <div class="col-md-3">
+                        <input class="form-control m-input" id="srchCusPhone" placeholder="Điện thoại" />
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-info btn-sm" id="btnSrchCustomer">Tìm khách hàng</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table class="table table-striped table-bordered table-hover" id="srchcustomer-table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Họ tên</th>
+                                    <th>Số điện thoại</th>
+                                </tr>
+                            </thead>
+                            <tbody id="srchcustomer-container"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input class="btn btn-info btn-sm" id="btnSaveUpdateCustomer" value="Cập nhật" />
+                <input class="btn btn-info btn-sm" data-dismiss="modal" value="Đóng" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateOrderSource" tabindex="-1" role="dialog" aria-labelledby="updateOrderSourceLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cập nhật nguồn đơn hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <select id="srchSourceType" asp-items="@(new SelectList(ViewBag.OrderSourceTypes, "Id", "Name"))" class="form-control m-input">
+                            <option value="">Chọn</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <input class="form-control m-input" id="srchSourceName" placeholder="Tên" />
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-info btn-sm" id="btnSrchSourceType">Tìm nguồn đơn hàng</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table class="table table-striped table-bordered table-hover" id="srchordersource-table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Mã</th>
+                                    <th>Tên</th>
+                                    <th>Loại nguồn</th>
+                                </tr>
+                            </thead>
+                            <tbody id="srchordersource-container"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input class="btn btn-info btn-sm" id="btnSaveUpdateOrderSource" value="Cập nhật" />
+                <input class="btn btn-info btn-sm" data-dismiss="modal" value="Đóng" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="discountModal" tabindex="-1" role="dialog" aria-labelledby="discountModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Giảm giá</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                    </span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <label class="col-md-3">Giảm giá theo</label>
+                            <div class="col-md-9">
+                                <div class="row mb-2 modalDiscountOpt-wrapper">
+                                    <div class="col-md-5">
+                                        <label class="m-radio"><input type="radio" name="modalDiscountOpt" value="1">Phần trăm<span></span></label>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <input class="form-control text-right modalPercentDiscount" value="0" />
+                                    </div>
+                                </div>
+                                <div class="row mb-2 modalDiscountOpt-wrapper">
+                                    <div class="col-md-5">
+                                        <label class="m-radio"><input type="radio" name="modalDiscountOpt" value="2">Số tiền<span></span></label>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <input class="form-control price-input modalMoneyDiscount" value="0" />
+                                    </div>
+                                </div>
+                                <div class="row mb-2 modalDiscountOpt-wrapper">
+                                    <div class="col-md-7">
+                                        <label class="m-radio"><input type="radio" name="modalDiscountOpt" value="3">Tặng món<span></span></label>
+                                        <span class="ml-3">Lý do tặng</span>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <select class="form-control modalDiscountReason">
+                                            <option value="">Chọn</option>
+                                            <option value="1">Tặng thoải mái</option>
+                                            <option value="2">Tặng vô tư</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-3">Lý do</label>
+                            <div class="col-md-9">
+                                <textarea class="form-control" id="modalDiscountNote"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input class="btn btn-info" id="btnSaveDrinkDiscount" value="Đồng ý" />
+                <input class="btn btn-info" data-dismiss="modal" value="Hủy" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/quickcreate.js?t=@(DateTimeOffset.UtcNow.ToUnixTimeSeconds())"></script>
+}

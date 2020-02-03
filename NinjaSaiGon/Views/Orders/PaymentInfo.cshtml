@@ -1,0 +1,80 @@
+﻿@model Order
+@{
+    CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN");
+    var valDistance = (double)Model.Distance / 1000;
+    var txtDistance = Math.Round(valDistance, 1);
+}
+
+<div class="m-form__heading">
+    <h3 class="m-form__heading-title">
+        THÔNG TIN THANH TOÁN:
+    </h3>
+</div>
+<div class="row">
+    <label class="col-lg-4 col-form-label">
+        Tổng
+    </label>
+    <div class="col-lg-8 m--align-right mt-2">
+        <span class="m--font-bolder">@Model.OrderDetails.Sum(d => d.Amount).ToString("#,###", cul.NumberFormat)</span>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <label class="col-lg-4 col-form-label">
+        Phí giao hàng: <span class="m--font-danger">@txtDistance.ToString() km</span>
+    </label>
+    <div class="col-lg-8 m--align-right mt-2">
+        <span class="m--font-bolder">@Model.ShipFee.ToString("#,###", cul.NumberFormat)</span>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <label class="col-lg-4 col-form-label">
+        Mã khuyến mãi
+    </label>
+    <div class="col-lg-5">
+        <input class="form-control m-input m--align-right" name="PromotionCode" placeholder="Nhập mã khuyến mãi" value="@Model.PromotionCode" />
+    </div>
+    <div class="col-lg-3 m--align-right mt-2">
+        <span class="m--font-bolder">@Model.PromotionDiscountValue.ToString("#,###", cul.NumberFormat) @(Model.PromotionDiscountType == DiscountType.Money ? "" : "%") </span>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <label class="col-lg-4 col-form-label">
+        Giá giảm
+    </label>
+    <div class="col-lg-8 m--align-right mt-2">
+        <span class="m--font-bolder">-@Model.DiscountAmount.ToString("#,###", cul.NumberFormat)</span>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <label class="col-lg-4 col-form-label">
+        Phụ thu
+    </label>
+    <div class="col-lg-8 m--align-right mt-2">
+        <span class="m--font-bolder">@Model.SurchargeAmount.ToString("#,###", cul.NumberFormat)</span>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <label class="col-lg-4 col-form-label">
+        Thành tiền
+    </label>
+    <div class="col-lg-8 m--align-right mt-2">
+        <h4 class="m--font-danger">@Model.OrderTotal.ToString("#,###", cul.NumberFormat)</h4>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <label class="col-lg-4 col-form-label">
+        Phương thức thanh toán
+    </label>
+    <div class="col-lg-8">
+        <select class="form-control m-input m-input--square">
+            <option value="">Chọn</option>
+        </select>
+    </div>
+</div>
+

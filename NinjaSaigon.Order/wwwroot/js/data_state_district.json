@@ -1,0 +1,115 @@
+﻿{
+  "country": "Việt Nam",
+  "state": [
+    {
+      "sequence": 4,
+      "name": [
+        "Hồ Chí Minh",
+        "Ho Chi Minh City",
+        "Hồ Chí Minh 700000",
+        "Thành phố Hồ Chí Minh",
+        "Thành phố Hồ Chí Minh 700000"
+      ],
+      "district": [
+        {
+          "name": "Quận 1",
+          "id": 27
+        },
+        {
+          "name": "Quận 12",
+          "id": 28
+        },
+        {
+          "name": "Thủ Đức",
+          "id": 29
+        },
+        {
+          "name": "Quận 9",
+          "id": 30
+        },
+        {
+          "name": "Gò Vấp",
+          "id": 31
+        },
+        {
+          "name": "Bình Thạnh",
+          "id": 32
+        },
+        {
+          "name": "Tân Bình",
+          "id": 33
+        },
+        {
+          "name": "Tân Phú",
+          "id": 34
+        },
+        {
+          "name": "Phú Nhuận",
+          "id": 35
+        },
+        {
+          "name": "Quận 2",
+          "id": 36
+        },
+        {
+          "name": "Quận 3",
+          "id": 37
+        },
+        {
+          "name": "Quận 10",
+          "id": 38
+        },
+        {
+          "name": "Quận 11",
+          "id": 39
+        },
+        {
+          "name": "Quận 4",
+          "id": 40
+        },
+        {
+          "name": "Quận 5",
+          "id": 41
+        },
+        {
+          "name": "Quận 6",
+          "id": 42
+        },
+        {
+          "name": "Quận 8",
+          "id": 43
+        },
+        {
+          "name": "Bình Tân",
+          "id": 44
+        },
+        {
+          "name": "Quận 7",
+          "id": 45
+        },
+        {
+          "name": "Củ Chi",
+          "id": 46
+        },
+        {
+          "name": "Hóc Môn",
+          "id": 47
+        },
+        {
+          "name": "Bình Chánh",
+          "id": 48
+        },
+        {
+          "name": "Nhà Bè",
+          "id": 49
+        },
+        {
+          "name": "Cần Giờ",
+          "id": 50
+        }
+      ],
+      "id": 60
+    }
+  ],
+  "id": 243
+}

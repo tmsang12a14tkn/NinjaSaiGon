@@ -1,0 +1,27 @@
+﻿@model Department
+
+<table class="table table-striped- table-bordered table-hover table-checkable" id="tb-employee">
+    <thead>
+        <tr class="text-center">
+            <th>Mã</th>
+            <th>Tên</th>
+            <th>Chức vụ</th>
+            <th>Ngày bắt đầu chức vụ</th>
+            <th>Ngày kết thúc chức vụ</th>
+            <th>Chức vụ chính</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Employees)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Person.PrimaryName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Person.PrimaryDOB)</td>
+                <td>@Html.DisplayFor(modelItem => item.DepartmentPosition.Name)</td>
+                <td class="text-center">@item.PositionBeginDate?.ToString("dd/MM/yyyy")</td>
+                <td class="text-center">@item.PositionEndDate?.ToString("dd/MM/yyyy")</td>
+                <td class="text-center"><input type="checkbox" @(item.IsMainPosition ? "checked" : "") readonly /></td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,14 @@
+﻿@model List<OrderSource>
+
+@for (var i = 0; i < Model.Count; i++)
+{
+    var item = Model[i];
+    <tr class="row-source-chks">
+        <td class="text-center">
+            <input class="m-checkbox--solid m-checkbox--brand source-chks" type="checkbox" value="@item.Id" />
+        </td>
+        <td>@item.Code</td>
+        <td>@item.Name</td>
+        <td>@item.OrderSourceType.Name</td>
+    </tr>
+}

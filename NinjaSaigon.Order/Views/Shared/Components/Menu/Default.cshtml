@@ -1,0 +1,138 @@
+﻿@model List<Drink>
+@{
+    bool isOpen = (bool)ViewData["IsOpen"];
+    NotifyPopup notifyPopup = (NotifyPopup)ViewData["NotifyPopup"];
+    bool isMobileTablet = (bool)ViewData["isMobileTablet"];
+    DrinkCategory cat = (DrinkCategory)ViewData["cat"];
+}
+
+@if (Model.Any())
+{
+    <div class="menu-card">
+        <div class="menu-card-header row" data-toggle="collapse" data-target="#cat_@cat.Id">
+            <div class="col-sm-12">
+                <div class="category-name@(cat.Id == -1?" category-newdrink": "")">@cat.Name</div>
+                <div class="size-col-title">
+                    <div class="icon icon-primary arrow-down">
+                        <i class="material-icons">arrow_drop_down</i>
+                    </div>
+                    <div class="icon icon-primary arrow-up">
+                        <i class="material-icons">arrow_drop_up</i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="cat_@cat.Id" class="collapse">
+            <div class="menu-card-body row">
+                @foreach (var drink in Model)
+                {
+                    var photo = drink.PrimaryPhoto == null ? "/upload/1.png" : drink.PrimaryPhoto.Url;
+                    var outOfStock = drink.OutOfStock == true && (!drink.OutOfStockFrom.HasValue || drink.OutOfStockFrom < DateTime.Now) && (!drink.OutOfStockTo.HasValue || drink.OutOfStockTo > DateTime.Now);
+                    if (!isMobileTablet)
+                    {
+                        <div class="col-sm-3">
+                            <div class="card">
+                                @if (drink.IsNew)
+                                {
+                                    <div class="card-highlight">
+                                        <span><img src="~/images/new.101.svg" /></span>
+                                    </div>
+                                }
+                                <img class="card-img-top" src="@photo" alt="@drink.Name - @drink.EnglishName">
+                                <div class="card-body">
+                                    <h6 class="card-title">@drink.Name</h6>
+                                    <div class="variants-container row">
+                                        @if (outOfStock)
+                                        {
+                                            <div class="col-sm-12 col-variant col-first">
+                                                <button type="button" class="btn btn-default">Hết món</button>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            for (int i = 0; i < drink.DrinkSizes.Count && i < 2; i++)
+                                            {
+                                                <div class="@(drink.DrinkSizes.Count == 1 ? "col-sm-12" : "col-6") col-variant col-first">
+                                                    @if ((isOpen && notifyPopup != null && notifyPopup.IsAllowOrder) || (isOpen && notifyPopup == null))
+                                                    {
+                                                        <a class="drink-option-btn" data-drinkid="@drink.Id" data-sizeid="@drink.DrinkSizes[i].Id">
+                                                            <div>
+                                                                <img src="@(i == 0 ? "/images/cup-s.png" : "/images/cup-m.png")" class="glass-icon-variant">
+                                                                <div class="icon icon-primary icon-plus">
+                                                                    <i class="material-icons">add</i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="price-variant">@(drink.DrinkSizes[i].Price / 1000)K</div>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a>
+                                                            <div>
+                                                                <img src="@(i == 0 ? "/images/cup-s-close.png" : "/images/cup-m-close.png")" class="glass-icon-variant">
+                                                                <div class="icon icon-primary icon-plus">
+                                                                    <i class="material-icons">add</i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="price-variant">@(drink.DrinkSizes[i].Price / 1000)K</div>
+                                                        </a>
+                                                    }
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-sm-12">
+                            <div class="d-menu-item row no-gutters">
+                                <div class=" col-auto">
+                                    <div class="menu-item-img">
+                                        <img src="@photo" class="img-fluid" alt="@drink.Name - @drink.EnglishName">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="menu-item-content">
+                                        <h6 class="menu-item-name">
+                                            @drink.Name
+                                            @if (drink.IsNew)
+                                            {
+                                            <span class="category-newdrink"> - NEW</span>
+                                            }
+                                        </h6>
+                                        <div class="menu-item-note">@drink.EnglishName</div>
+                                    </div>
+                                </div>
+                                <div class="col-auto align-self-center">
+                                    <div class="menu-item-number ">
+                                        <div class="row no-gutters justify-content-end align-items-center">
+                                            <div class="col-auto text-center"></div>
+                                            <div class="col"></div>
+                                            <div class="col-auto text-center ">
+                                                @if ((isOpen && notifyPopup != null && notifyPopup.IsAllowOrder) || (isOpen && notifyPopup == null) && !outOfStock)
+                                                {
+                                                    <span class="memu-item-add icon icon-primary icon-plus drink-option-btn" data-drinkid="@drink.Id" data-sizeid="@drink.DrinkSizes[0].Id">
+                                                        <i class="material-icons">add</i>
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="memu-item-add icon icon-primary icon-plus ns-closed">
+                                                        <i class="material-icons">add</i>
+                                                    </span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+}

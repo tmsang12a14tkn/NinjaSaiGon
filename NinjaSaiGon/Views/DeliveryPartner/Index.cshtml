@@ -1,0 +1,93 @@
+﻿@model IEnumerable<DeliveryPartner>
+
+@{
+    ViewData["Title"] = "Danh sách đơn vị giao hàng";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Danh sách đơn vị giao hàng
+                        </h3>
+                    </div>
+                </div>
+                <div class="m-portlet__head-tools">
+                    <ul class="m-portlet__nav">
+                        <li class="m-portlet__nav-item">
+                            <a asp-action="Create" class="btn btn-accent m-btn m-btn--custom m-btn--pill m-btn--icon m-btn--air">
+                                <span>
+                                    <i class="la la-plus"></i>
+                                    <span>
+                                        Thêm đơn vị giao hàng
+                                    </span>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <!--begin: Datatable -->
+                <table class="table table-striped- table-bordered table-hover table-checkable" id="m_table_1">
+                    <thead>
+                        <tr class="text-center">
+                            <th>Mã</th>
+                            <th>Tên đơn vị</th>
+                            <th>Mô tả</th>
+                            <th width="10%">Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="m-portlet__nav-link" title="Edit">
+                                        @Html.DisplayFor(modelItem => item.Code)
+                                    </a>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td class="text-center">
+                                    <span class="m-badge m-badge--@(item.Status ? "success" : "danger") m-badge--wide"></span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+            SetActiveMenu('oDeliveryMenu');
+
+            $("#m_table_1").DataTable({
+                "aaSorting": [],
+                "language": {
+                    "emptyTable": "Không có dữ liệu",
+                    "info": "Hiện _START_ đến _END_ trên _TOTAL_ dòng",
+                    "infoEmpty": "Không có dữ liệu",
+                    "lengthMenu": "Hiện _MENU_ dòng",
+                    "loadingRecords": "Đang tải...",
+                    "processing": "Đang xử lý...",
+                    "search": "Tìm kiếm:",
+                    "zeroRecords": "Không tìm thấy dữ liệu phù hợp",
+                },
+            });
+        });
+    </script>
+}

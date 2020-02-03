@@ -1,0 +1,153 @@
+﻿@model NinjaSaiGon.Admin.Models.ReportViewModels.OrderFilterView
+@{
+    ViewData["Title"] = "ByWeek";
+    DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
+    Calendar cal = dfi.Calendar;
+    var weektab = ViewBag.weektab;
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-tools">
+                        <a href="/report/bysearch" class="btn btn-default">
+                            Báo cáo dạng tìm kiếm
+                        </a>
+                        <a href="/report/byweek" class="btn btn-primary">
+                            Báo cáo theo tuần
+                        </a>
+                    </div>
+                </div>
+                <div class="m-portlet__head-tools">
+                    <ul class="m-portlet__nav">
+                        <li class="m-portlet__nav-item"></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <ul class="nav nav-tabs report-by-week" id="weekTabs">
+                    <li class="">
+                        <a href="/Report/ByWeek"><i class="fa fa-home"></i></a>
+                    </li>
+                    <li><input readonly id="dateselect" type="text" class="datepicker" data-dateselected="@(Model.DateSelected.Day)@(Model.DateSelected.Month)@(Model.DateSelected.Year)" value=""></li>
+
+                    @if (Model.WeekTabs.Count() > 0)
+                    {
+                        if (Model.WeekTabs.Count() > 0)
+                        {
+                            <li class="">
+                                <a href="/Report/ByWeek?toDate=@(Model.End.Value.AddDays(-36).ToString("MM/dd/yyyy"))"><i class="fa fa-chevron-left"></i></a>
+                            </li>
+                        }
+
+                        for (int i = 0; i < Model.WeekTabs.Count(); i++)
+                        {
+                            var week = cal.GetWeekOfYear(Model.WeekTabs[i].Begin.AddDays(3), dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
+                            var begin = Model.WeekTabs[i].Begin;
+                            var end = Model.WeekTabs[i].Begin.AddDays(7);
+                            <li class="">
+                                <a class="weekTab@(Model.WeekTabs[i].IsCurrent? " active show" : "")" data-from="@begin.ToString("MM/dd/yyyy")" data-to="@end.ToString("MM/dd/yyyy")" href="#" role="tab" data-toggle="tab">
+                                    <b>Tuần @week</b>
+                                    <span style="font-size: 14px"> (@begin.ToString(begin.Year == end.Year ? "dd/MM" : "dd/MM/yyyy") - @begin.AddDays(6).ToShortDateString())</span>
+                                </a>
+                            </li>
+                        }
+                        if (Model.WeekTabs.Count() > 0)
+                        {
+                            <li class="">
+                                <a href="/Report/ByWeek?toDate=@(Model.End.Value.AddDays(34).ToString("MM/dd/yyyy"))"><i class="fa fa-chevron-right"></i></a>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="">
+                            <a><b>Không có dữ liệu !</b></a>
+                        </li>
+                    }
+                </ul>
+
+                <div class="table-responsive">
+                    <table class="table table-striped- table-bordered table-checkable table-report" id="m_table_1">
+                        <thead>
+                            <tr class="text-center">
+                                <th rowspan="2"></th>
+                                <th rowspan="2">Đơn hàng</th>
+                                <th colspan="4">Số ly</th>
+                                <th colspan="7">Nhóm món</th>
+                                <th rowspan="2">Tổng tiền</th>
+                                <th rowspan="2">Giảm giá</th>
+                                <th rowspan="2">Phụ thu</th>
+                                <th colspan="3">Phí ship</th>
+                                <th rowspan="2">Thành tiền<br />(Hệ thống Ninja)</th>
+                                <th rowspan="2">Thành tiền<br />(thực thu)</th>
+                            </tr>
+                            <tr class="text-center">
+                                <th>Tổng</th>
+                                <th>Ly Gốc</th>
+                                <th>Ly Khuyến mãi</th>
+                                <th>Ly Tặng</th>
+                                <th>Cafe</th>
+                                <th>Trà</th>
+                                <th>Trà sữa</th>
+                                <th>Thanh nhiệt</th>
+                                <th>Nước ép</th>
+                                <th>Macchiato</th>
+                                <th>Soda & Mojito</th>
+                                <th>Phí ship<br />(hệ thống Ninja)</th>
+                                <th>Hãng vận chuyển</th>
+                                <th>Phí ship</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="text-center" id="spinner">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/report.byweek.js"></script>
+    <script>
+        $(".datepicker").datepicker({
+            format: "mm/dd/yyyy",
+            todayHighlight: !0,
+            orientation: "bottom left",
+            language: 'vi',
+            templates: {
+                leftArrow: '<i class="la la-angle-left"></i>',
+                rightArrow: '<i class="la la-angle-right"></i>'
+            }
+        });
+
+        $('#dateselect').datepicker().on('changeDate', function (e) {
+            var date = $(this).val();
+            $(this).val("");
+            window.location.href = "/Report/ByWeek?toDate=" + date;
+        });
+
+        $('.report-by-week a[data-toggle="tab"]').on('click', function (e) {
+            let from = $(this).data('from');
+            let to = $(this).data('to');
+
+            getDataReportByWeek(from, to, 1, true, 'm_table_1');
+        })
+
+        $activeWeekTab = $('#weekTabs a.weekTab.active');
+        let from = $activeWeekTab.data('from');
+        let to = $activeWeekTab.data('to');
+
+        getDataReportByWeek(from, to, 1, true, 'm_table_1');
+    </script>
+}

@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20180801103642_drink-option.cs" />
+    <Compile Remove="Migrations\20180803075507_update-category.cs" />
+    <Compile Remove="Migrations\20180803080011_update-category.cs" />
+    <Compile Remove="Migrations\20180803081131_update-category.cs" />
+    <Compile Remove="Migrations\20180803081751_update-category.cs" />
+    <Compile Remove="Migrations\20180803082013_update-category.cs" />
+    <Compile Remove="Migrations\20180803082435_update-category.cs" />
+    <Compile Remove="Migrations\20180803082905_update-category.cs" />
+    <Compile Remove="Migrations\20180806044125_update-drink-1.cs" />
+    <Compile Remove="Migrations\20180808043832_edit-topping.cs" />
+    <Compile Remove="Migrations\20180914034859_addshipfee_distance_col.cs" />
+    <Compile Remove="Migrations\20180914081347_modifyorder.cs" />
+    <Compile Remove="Migrations\20181129085021_promotiondrinksetting.cs" />
+    <Compile Remove="Migrations\20181206074531_DrinkDiscount.cs" />
+    <Compile Remove="Migrations\20190212084224_device.cs" />
+    <Compile Remove="Migrations\20190815090600_ordersource_deliverypartner.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="appsettings.Development.json" />
+    <None Remove="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.Development.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="appsettings.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="2.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="2.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore">
+      <HintPath>..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.aspnetcore.identity.entityframeworkcore\2.0.3\lib\netstandard2.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

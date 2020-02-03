@@ -1,0 +1,22 @@
+﻿@model AgencyDeliveryViewModel
+
+<tr class="ad-item" data-index="@Model.Index">
+    <td class="text-center">@Model.StartDate?.ToString("dd/MM/yyyy")</td>
+    <td class="text-center">@Model.EndDate?.ToString("dd/MM/yyyy")</td>
+    <th class="text-center">
+        <a data-index="@Model.Index" data-id="@Model.Id" data-agencyid="@Model.AgencyId" data-agencydiscountcustomertypeid="@Model.AgencyDiscountCustomerTypeId" data-pickuptypeid="@Model.PickupTypeId" data-note="@Model.Note" data-startdate="@Model.StartDate?.ToString("dd/MM/yyyy")" data-enddate="@Model.EndDate?.ToString("dd/MM/yyyy")" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill btnEditAD">
+            <i class="la la-edit"></i>
+        </a>
+        <a data-index="@Model.Index" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill btnDeleteAD">
+            <i class="la la-trash"></i>
+        </a>
+        <input type="hidden" name="AgencyDeliveries[@Model.Index].StartDate" value="@Model.StartDate">
+        <input type="hidden" name="AgencyDeliveries[@Model.Index].EndDate" value="@Model.EndDate">
+        <input type="hidden" name="AgencyDeliveries[@Model.Index].AgencyId" value="@Model.AgencyId">
+        <input type="hidden" name="AgencyDeliveries[@Model.Index].AgencyDiscountCustomerTypeId" value="@Model.AgencyDiscountCustomerTypeId">
+        <input type="hidden" name="AgencyDeliveries[@Model.Index].PickupTypeId" value="@Model.PickupTypeId">
+        <input type="hidden" name="AgencyDeliveries[@Model.Index].Note" value="@Model.Note">
+        <input type="hidden" class="IsDeleteAPM" data-index="@Model.Index" name="AgencyDeliveries[@Model.Index].IsDeleted" value="false">
+        <input type="hidden" name="AgencyDeliveries[@Model.Index].Id" value="@Model.Id">
+    </th>
+</tr>

@@ -1,0 +1,15 @@
+﻿@model List<Agency>
+
+@for (var i = 0; i < Model.Count; i++)
+{
+    var item = Model[i];
+    <tr class="row-person-chks">
+        <td class="text-center">
+            <input class="m-checkbox--solid m-checkbox--brand person-chks" type="checkbox" value="@item.Id" data-name="@(!string.IsNullOrEmpty(item.TradingName) ? $"{item.Name} ({item.TradingName})" : item.Name)" />
+        </td>
+        <td>@(!string.IsNullOrEmpty(item.TradingName) ? $"{item.Name} ({item.TradingName})" : item.Name)</td>
+        <td></td>
+        <td class="text-center">@Html.Raw(string.Join("<br />", item.AgencyContactInfo.Phones.Select(p => p.PhoneNumber)))</td>
+        <td class="text-center">@Html.Raw(string.Join("<br />", item.AgencyContactInfo.Emails.Select(p => p.Email)))</td>
+    </tr>
+}
